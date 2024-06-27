@@ -1,14 +1,12 @@
 ---
-title: PROJECT_TITLE
+title: GEA AFFORESTATION
 summary: PROJECT_SUMMARY
-    - PERSON_1
-    - PERSON_2
-date: DATE
-some_url: PROJECT_GITHUB_URL
-copyright: Copyright 2023, PROJECT_OWNER
+    - Ketan Bamniya
+date: 19-06-2024
+some_url: https://github.com/kartoza/gea-qgis-plugin
+copyright: Copyright 2024, PROJECT_OWNER
 contact: PROJECT_CONTACT
 license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-#context_id: 1234
 ---
 
 # Commit message convention

@@ -29,7 +29,7 @@ jobs:
         env:
           CONFIG_FILE: docs/mkdocs.yml
           EXTRA_PACKAGES: build-base
-          #REQUIREMENTS: folder/requirements.txt
+          REQUIREMENTS: requirements.txt
       - name: Upload PDF Artifact ⚡
         uses: actions/upload-artifact@v3
         with:
