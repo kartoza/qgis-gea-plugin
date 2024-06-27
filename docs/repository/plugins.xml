@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<plugins>
+<pyqgis_plugin name="QGIS GEA afforestation tool" version="0.0.1pre">
+                <description><![CDATA[QGIS plugin for the GEA afforestation]]></description>
+                <about><![CDATA[Adds functionality inside QGIS to enable GEA afforestation visualization and analysis.]]></about>
+                <version>0.0.1pre</version>
+                <qgis_minimum_version>3.0</qgis_minimum_version>
+                <homepage><![CDATA[https://github.com/kartoza/qgis-gea-plugin]]></homepage>
+                <file_name>qgis_gea_plugin.0.0.1pre.zip</file_name>
+                <icon>icon.png</icon>
+                <author_name><![CDATA[Kartoza]]></author_name>
+                <download_url>https://github.com/kartoza/qgis-gea-plugin/releases/download/v0.0.1pre/qgis_gea_plugin.0.0.1pre.zip</download_url>
+                <update_date>2024-06-27 17:25:28</update_date>
+                <experimental>False</experimental>
+                <deprecated>False</deprecated>
+                <tracker><![CDATA[https://github.com/kartoza/qgis-gea-plugin/issues]]></tracker>
+                <repository><![CDATA[https://github.com/kartoza/qgis-gea-plugin]]></repository>
+                <tags><![CDATA[gea, maps, afforestation]]></tags>
+                <server>False</server>
+            </pyqgis_plugin>
+</plugins> 
