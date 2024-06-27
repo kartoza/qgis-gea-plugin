@@ -93,7 +93,7 @@ through these `document`, `good first issue` and `help wanted` issues:
 
 #### Checkout a branch
 
-* **master**: PR Base branch.
+* **main**: PR Base branch.
 * **production**: lastest release branch with distribution files. Never make a PR on this.
 * **gh-pages**: API docs, examples and demo
 

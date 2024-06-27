@@ -13,27 +13,12 @@ from qgis.PyQt import (
     QtNetwork,
 )
 from qgis.PyQt.uic import loadUiType
-from qgis.core import (
-    Qgis,
-    QgsCoordinateReferenceSystem,
-    QgsGeometry,
-    QgsRectangle,
-    QgsWkbTypes,
-)
-
-from qgis.gui import (
-    QgsMessageBar,
-    QgsMapCanvas,
-    QgsRubberBand,
-)
-
-from qgis.utils import iface
 
 from ..resources import *
 
 
 WidgetUi, _ = loadUiType(
-    os.path.join(os.path.dirname(__file__), "../ui/qgis_gea_plugin.ui")
+    os.path.join(os.path.dirname(__file__), "../ui/main_dockwidget.ui")
 )
 
 
@@ -48,3 +33,11 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         super().__init__(parent)
         self.setupUi(self)
         self.iface = iface
+
+        icon_pixmap = QtGui.QPixmap(":/plugins/qgis_gea_plugin/icon.png")
+        self.icon_la.setPixmap(icon_pixmap)
+
+        self.play_btn.setIcon(
+            QtGui.QIcon(":/images/themes/default/mActionPlay.svg")
+        )
+

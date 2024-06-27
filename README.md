@@ -1,7 +1,7 @@
 # QGIS GEA Afforestation tool
 
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kartoza/qgis-gea-plugin/ci.yml?branch=master)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kartoza/qgis-gea-plugin/ci.yml?branch=main)
 ![GitHub](https://img.shields.io/github/license/kartoza/qgis-gea-plugin)
 
 QGIS plugin description.

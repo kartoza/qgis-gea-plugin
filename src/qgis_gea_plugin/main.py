@@ -22,7 +22,7 @@ from .resources import *
 from .gui.qgis_gea_plugin import QgisGeaPlugin
 
 
-class QgisPlugin:
+class QgisGea:
     """QGIS GEA Plugin Implementation."""
 
     def __init__(self, iface):
@@ -141,7 +141,7 @@ class QgisPlugin:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        icon_path = ":/plugins/qgis_gea_plugin/icon.svg"
+        icon_path = ":/plugins/qgis_gea_plugin/icon.png"
         self.add_action(
             icon_path,
             text=self.tr("Open Plugin"),

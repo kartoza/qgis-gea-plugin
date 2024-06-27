@@ -15,8 +15,8 @@
     "about": "Adds functionality inside QGIS to enable GEA afforestation visualization and analysis.",
     "author": "Kartoza",
     "email": "info@kartoza.com",
-    "description": "QGIS plugin for the GEA afforestation",
-    "version": "0.0.1",
+    "description": "View, browse and navigate through imagery.",
+    "version": "0.0.1pre",
     "changelog": ""
   }
 }
