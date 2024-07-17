@@ -1,11 +1,11 @@
-site_name: Project Name
+site_name: QGIS GEA plugin
 site_description: "Project technical and user documentation."
 site_author: "Kartoza"
 docs_dir: docs
 # site_dir: ./site
-repo_name: "Project Name"
-repo_url: "https://github.com/kartoza/<project name>"
-edit_uri: "https://github.com/kartoza/<project name>/blob/main/docs/"
+repo_name: "QGIS GEA plugin"
+repo_url: "https://github.com/kartoza/qgis-gea-plugin"
+# edit_uri: "https://github.com/kartoza/<project name>/blob/main/docs/"
 
 copyright: Kartoza and Contributors
 
