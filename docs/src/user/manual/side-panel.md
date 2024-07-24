@@ -1,6 +1,6 @@
-# User Manual: Using the Side Panel Effectively
+# User Manual: QGIS Project
 
-This user manual provides instructions on how to use the side panel effectively for the project. The side panel `Gea Afforestation Tool-Malawi 2` includes the following :
+This user manual provides instructions on how to use the QGIS project with emphasis on the Layers List panel effectively for the project. The Layers List for all of the areas of interest (`Malawi 2` shown here) includes the following :
 
 ![Side panel](./img/side-panel-1.png)
 
