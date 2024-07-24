@@ -4,8 +4,7 @@
 
 ## How to install QGIS:
 
-- **Step 1: Visit the QGIS Website:** Open your web browser and go to the QGIS official website: [QGIS Download Page](https://www.qgis.org/download/). This link will take you to the download page.
-
+- **Step 1: Visit the QGIS Website:** Open your web browser and go to the QGIS official website: [QGIS Download Page](https://www.qgis.org/download/).
 ![Download QGIS](./img/quick-start-11.png)
 
 - **Step 2: Choose Your Operating System:** On the download page, you will see options for different operating systems (Windows, macOS, Linux, etc.). Select the one that matches your operating system.
