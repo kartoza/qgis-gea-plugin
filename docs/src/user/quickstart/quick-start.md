@@ -1,6 +1,6 @@
 # Quick Start Guide for Downloading QGIS
 
-*QGIS stands for `Quantum Geographic Information System` is free and open-source software. It is used to work on geospatial data, this data can be easily edited and analysed in the QGIS software. It is a cross-platform software so it is widely used in geographic data applications. It is written in Python, C++, and Qt language, also it can be used on different operating systems like Windows, Mac, Linux, etc.
+*QGIS, short for Quantum Geographic Information System, is a free and open-source software used for working with geospatial data. This data can be easily edited and analyzed within QGIS. As a cross-platform application, it is widely used in geographic data applications and runs on different operating systems, including Windows, Mac, and Linux. QGIS is written in Python, C++, and Qt.
 
 ## To install QGIS follow the below steps:
 
