@@ -7,11 +7,11 @@
 - **Step 1: Visit the QGIS Website:** Open your web browser and go to the QGIS official website: [QGIS Download Page](https://www.qgis.org/download/).
 ![Download QGIS](./img/quick-start-11.png)
 
-- **Step 2: Choose Your Operating System:** On the download page, you will see options for different operating systems (Windows, macOS, Linux, etc.). Select the one that matches your operating system.
+- **Step 2: Choose Your Operating System:** On the download page, you will see options for different operating systems (Windows, macOS, Linux, etc.). Select the download option that matches your operating system.
 
-    Click on the 1️⃣ `Download for Windows`. To view the versions for download.
+    Click on the 1️⃣ `Download for Windows`. To view the versions available for download.
 
-    - **Choose Your Version:** On the download page, you will see multiple versions of QGIS. Choose the version that is recommended for your needs. Generally, the Long Term Release (LTR) is recommended for most users as it is more stable. The Long Term Release for windows is (3.34 LTR) and the latest version for the windows is (3.38).
+    - **Choose Your Version:** On the download page, you will see multiple versions of QGIS. Choose the version that is recommended for your needs. Generally, the Long Term Release (LTR) is recommended for most users as it is the most stable version. Download the LTR.
 
     ![Download QGIS](./img/quick-start-12.png)
 
@@ -30,7 +30,7 @@ Once the download is complete, locate the downloaded file in your Downloads fold
 
 ![Install QGIS](./img/quick-start-14.png)
 
-- Next you will be prompted to select the install location. This is the same thing as the installation path and this is where your QGIS version will be installed. It is recommended to go with the default one that is `C:\Program Files\QGIS 3.34` for windows.
+- Next you will be prompted to select the install location. This is the same thing as the installation path and this is where your QGIS version will be installed. It is recommended to go with the default one that is `C:\Program Files\QGIS 3.34` for windows. Please note that the QGIS version number may vary based on the current LTR.
 
 - Select the components you wish to install. For a full installation, leave all options checked and click `Next`.
 
@@ -61,11 +61,11 @@ When attempting to launch QGIS for the first time on macOS, there is a chance th
 
 ## For Non-Administrators:
 
-When installing QGIS, it's essential to select an installation directory where you have write access on your computer. During the installation process, you will be prompted to choose the installation directory. To ensure successful installation without administrator privileges, specify a path within your user direstory or any location where you have the necessary write access. This Allows you to use the QGIS on your system effectively while bypassing the need for administrative permissions.
+When installing QGIS, it's essential to select an installation directory where you have write access on your computer. During the installation process, you will be prompted to choose the installation directory. To ensure successful installation without administrator privileges, specify a path within your user directory or any location where you have the necessary write access. This allows you to use the QGIS on your system effectively while bypassing the need for administrative permissions.
 
 By following these steps, you can quickly download and install QGIS on your Windows system and get started with your GIS projects.
 
-# Quick Start Guide: QGIS-GEA Plugin
+# Quick Start Guide: GEA Re-Afforestation Plugin
 
 ## Introduction
 
