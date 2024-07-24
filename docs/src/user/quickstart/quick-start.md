@@ -2,7 +2,24 @@
 
 ## Introduction
 
-This quick start guide will help you install the Planet Explorer plugin in QGIS.
+The GEA Re-Afforestation Tool consists of two main components:
+
+1. A QGIS project that contains all the data for the area of interest, such as Malawi.
+2. The GEA Re-Afforestation Plugin helps users easily view current, recent, and historical imagery of an area and conveniently draw boundaries for proposed re-afforestation projects.
+
+To use the tool, a few dependencies are required:
+
+1. QGIS: The tool runs in QGIS geographical software, which needs to be installed on the user's computer.
+2. A free Account for NICFI data: https://www.planet.com/nicfi
+3. Planet_explorer: Some data (e.g., NICFI imagery) is streamed in via the Planet plugin, so this plugin needs to be installed in QGIS.
+
+The following Quick Start documentation will guide users on how to set up the tool with its dependencies: 
+
+1. Get QGIS
+2. The project file for an area of interest
+3. Sign in for a Planet NICFI account
+4. get the Plantet_Explorer Plugin
+5. get the GEA Re-Afforestation Plugin
 
 ## Steps to Install the Plugin
 
