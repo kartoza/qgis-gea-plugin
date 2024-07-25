@@ -6,7 +6,7 @@ The following Quick Start documentation will guide users on how to set up the to
 2. The project file for an area of interest.
 3. Sign in for a Planet NICFI account.
 4. get the Plantet_Explorer Plugin.
-5. get the GEA Re-Afforestation Plugin# Quick Start Guide for Downloading QGIS.
+5. get the GEA Re-Afforestation Plugin
 
 
 ## 1. How to install QGIS:
@@ -91,7 +91,7 @@ By following these steps, you can quickly download and install QGIS on your Wind
 
 ## 3. Sign in for a Planet NICFI account:
 
-The user must sign in to the Planet NICFI account to stream the NICFI imagery. For detailed documentation on the sign-in for a Planet NICFI account click [here](../manual/sign-in.md)
+The user must sign in to the Planet NICFI account to stream the NICFI imagery. For detailed documentation on the sign-in for a Planet NICFI account click [here](../manual/login.md)
 
 
 ## 4. How to install Planet_Explorer Plugin
