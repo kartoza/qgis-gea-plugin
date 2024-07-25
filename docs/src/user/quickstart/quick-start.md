@@ -96,7 +96,7 @@ The user must sign in to the Planet NICFI account to stream the NICFI imagery. F
 
 ## 4. How to install Planet_Explorer Plugin
 
-*QGIS, short for Quantum Geographic Information System, is a free and open-source software used for working with geospatial data. This data can be easily edited and analyzed within QGIS. As a cross-platform application, it is widely used in geographic data applications and runs on different operating systems, including Windows, Mac, and Linux. QGIS is written in Python, C++, and Qt.
+*QGIS, short for Quantum Geographic Information System, is a free and open-source software used for working with geospatial data. This data can be easily edited and analysed within QGIS. As a cross-platform application, it is widely used in geographic data applications and runs on different operating systems, including Windows, Mac, and Linux. QGIS is written in Python, C++, and Qt.
 
 ### Steps to Install the Plugin
 
@@ -156,7 +156,7 @@ To use this data you need to upload it to the plugin. Click on the 1️⃣ `Uplo
 
 ### Streaming NICFI and Google Imagery
 
-Accessing Streamed Imagery: With the Planet Explorer plugin installed, the NICFI and Google imagery will be streamed into your QGIS project, allowing you to view and analyze this data alongside your locally stored Landsat images and vector data layers.
+Accessing Streamed Imagery: With the Planet Explorer plugin installed, the NICFI and Google imagery will be streamed into your QGIS project, allowing you to view and analyse this data alongside your locally stored Landsat images and vector data layers.
 
 
 ## 5. How to install GEA Re-Afforestation Plugin
@@ -210,4 +210,4 @@ After successful installation, you will see the plugin icon.
 
 ## Conclusion
 
-By following the steps outlined in this Quick Start Guide, you will be able to set up your environment for effective use of plugins, access essential project data, and install necessary plugins like Planet_Explorer. This setup will enable you to view, analyze, and manage geospatial data, including streamed imagery from NICFI and Google, as well as local data like Landsat images and vector data layers.
+By following the steps outlined in this Quick Start Guide, you will be able to set up your environment for effective use of plugins, access essential project data, and install necessary plugins like Planet_Explorer. This setup will enable you to view, analyse, and manage geospatial data, including streamed imagery from NICFI and Google, as well as local data like Landsat images and vector data layers.
