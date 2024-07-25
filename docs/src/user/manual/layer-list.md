@@ -60,25 +60,33 @@ There are four exclusion masks available for the user. The user can use these ex
 **Malawi 2 Soil Carbon Exclusion Mask**
     ![Soil Carbon](./img/layer-list-13.png)
 
+> Additional Notes on Viewing Different Imagery Layers:
+To effectively view the different imagery layers (Google Imagery, NICFI, and Landsat), you need to toggle the visibility of these layers.
+
 6. **Current Google Imagery:** Displays the most recent Google imagery. Check the relevant checkbox to view `Current Google imagery`.
 
 ![Google Imagery](./img/layer-list-14.png)
 
 7. **Recent NICFI Imagery:**
 
+- **Turn Off Google Imagery/Historical Landsat Imagery to View NICFI Imagery:** In the Layers panel, locate the Google Imagery/Historical Landsat Imagery layer. Click the checkbox next to the Google Imagery/Historical Landsat Imagery layer to turn it off. This will allow the NICFI imagery to be visible.
+
 ![NICFI Imagery](./img/layer-list-15.png)
 
-Through Norway’s International Climate & Forests Initiative (NICFI), users can now access Planet’s high-resolution, analysis-ready mosaics of the world’s tropics in order to help reduce and reverse the loss of tropical forests, combat climate change, conserve biodiversity, and facilitate sustainable development for non commercial uses.
+Through Norway’s International Climate & Forests Initiative (NICFI), users can now access Planet’s high-resolution, analysis-ready mosaics of the world’s tropics in order to help reduce and reverse the loss of tropical forests, combat climate change, conserve biodiversity, and facilitate sustainable development for non-commercial uses.
 
-To use the NICFI imagery the user must login to the Planet_Explorer plugin.
+To use the NICFI imagery the user must log in to the Planet_Explorer plugin.
 
-For detailed documentation on how to login click [here](./login.md)
+For detailed documentation on how to log in click [here](./login.md)
 
 Displays recent NICFI imagery. Check the relevant checkbox to view recent NICFI imagery.
 
 ![NICFI Imagery](./img/layer-list-16.png)
+![NICFI Imagery](./img/layer-list-18.png)
 
 8. **Historical Landsat Imagery:** Displays historical Landsat imagery. Check the relevant checkbox to view historical Landsat imagery. The user can use the historical imagery to compare the current and historical imagery differences.
+
+- **Turn Off Google Imagery/NICFI Imagery to View Landsat Imagery:** In the Layers panel, locate the Google Imagery/NICFI imagery layer. Click the checkbox next to the Google Imagery/NICFI imagery layer to turn it off. This will reveal the Landsat imagery layer below.
 
 ![Historical Landsat Imagery](./img/layer-list-17.png)
 
