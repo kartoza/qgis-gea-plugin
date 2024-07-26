@@ -46,6 +46,14 @@ class Settings(enum.Enum):
     HISTORICAL_VIEW = "historical"
     NICFI_VIEW = "nicfi"
 
+    SITE_REFERENCE = "site_reference"
+    SITE_VERSION = "site_version"
+    REPORT_AUTHOR = "report_author"
+    REPORT_COUNTRY = "report_country"
+    PROJECT_INCEPTION_DATE = "project_inception_date"
+
+    PROJECT_FOLDER = 'project_folder'
+
 
 class SettingsManager(QtCore.QObject):
     """Manages saving/loading settings for the plugin in QgsSettings."""

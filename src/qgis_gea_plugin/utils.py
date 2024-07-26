@@ -74,6 +74,34 @@ def tr(message):
     return QtCore.QCoreApplication.translate("QgisGea", message)
 
 
+def clean_filename(filename):
+    """Creates a safe filename by removing operating system
+    invalid filename characters.
+
+    :param filename: File name
+    :type filename: str
+
+    :returns A clean file name
+    :rtype str
+    """
+    characters = " %:/,\[]<>*?"
+
+    for character in characters:
+        if character in filename:
+            filename = filename.replace(character, "_")
+
+    return filename
+
+def create_dir(directory: str, log_message: str = ""):
+    """Creates new file directory if it doesn't exist"""
+    p = Path(directory)
+    if not p.exists():
+        try:
+            p.mkdir()
+        except (FileNotFoundError, OSError):
+            log(log_message)
+
+
 def animation_state_change(value):
     log(f"{value}")
     pass
