@@ -15,6 +15,7 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 **Features and Controls**
 
 ![GEA Re-Afforestation](./img/complete-gea-re-afforestation-1.png)
+
 1. **Historical Imagery (Landsat):** If checked the map canvas will display historical imagery from Landsat.
 
 2. **Current Imagery (NICFI):** If checked the map canvas will display current imagery from NICFI.
@@ -42,3 +43,38 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
     ![Current Imagery play](./img/NICFIworking.gif)
 
+5. **Drawing tool:** The user can use the drawing tool to draw polygons on the map canvas.
+        
+    ![Drawing tool](./img/complete-gea-re-afforestation-5.png)
+
+    5.1 **Draw Project Area Button:** The user can use this button to draw the polygon on the map canvas. Before using the `Draw Project Area` button, ensure that the site reference has been provided. After drawing the polygon right click. Upon clicking the pop up will open for entering the id, id should be 1.
+
+    ![Id popup](./img/complete-gea-re-afforestation-9.png)
+
+    - **Error Handling:** If any of the field is empty, an error message will be displayed for example for the site reference field the message would be: `Please add the site reference before starting drawing the project area.`
+
+        ![Error message](./img/complete-gea-re-afforestation-4.png)
+
+    - **Editing:** After drawing the polygon, you can edit it using the options available in the toolbar. The edit icon will appear in front of the project in the layer list, allowing modifications before saving.
+
+        ![Edit options](./img/complete-gea-re-afforestation-6.png)
+
+    5.2 **Project Inception Date:** To choose the project inception date, click on the field to open a calendar. Select the desired date from the calendar interface.
+
+    ![Calander](./img/complete-gea-re-afforestation-7.png)
+
+    5.3 **Site Reference:** Enter the site reference to identify the specific location or area for the project.
+
+    5.4 **Version of the Site Reference:** Add the version number corresponding to the site reference for version control and tracking.
+
+    5.5 **Author of the Site Capture:** Enter the name of the individual who captured or recorded the site details.
+
+    5.6 **Country Dropdown:** Choose the country from the dropdown list to specify the location of the project.
+    
+    5.7 **Project Folder:** Select the project folder where plugin data is stored. The shape files will be saved in the `sites` directory, which is automatically generated when you save the project.
+
+    ![Sites directory](./img/complete-gea-re-afforestation-8.png)
+
+    5.8 **Save Project Area Button:** Click the `Save Project Area` button to save the project after drawing the polygon. The shape files will be stored in the `sites` directory.
+
+    5.9 **Clear Button:** Use the `Clear` button to remove the polygon from the map. Note that the polygon must be cleared before saving the project, as shape files stored in the sites folder will not be deleted after saving.
