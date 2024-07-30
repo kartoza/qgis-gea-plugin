@@ -36,9 +36,9 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
     **Historical Imagery**
 
-    ![Historical Imagery play](./img/historical-imagery-play.webm)
+    ![Historical Imagery play](./img/Landsat-working.gif)
 
     **Current Imagery**
 
-    ![Current Imagery play](./img/nicfi-imagery-play.webm)
+    ![Current Imagery play](./img/NICFIworking.gif)
 
