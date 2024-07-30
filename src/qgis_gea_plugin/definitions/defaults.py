@@ -42,3 +42,5 @@ COUNTRY_NAMES = [
     "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
     "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ]
+
+SITE_REPORT_TEMPLATE_NAME = "site_report.qpt"
