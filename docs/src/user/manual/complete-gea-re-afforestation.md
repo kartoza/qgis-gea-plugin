@@ -1,10 +1,10 @@
-# GEA Re-Afforestation Tool User Manual
+# GEA Reforestation Tool User Manual
 
-Welcome to the GEA Re-Afforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential afforestation sites.
+Welcome to the GEA Reforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential afforestation sites.
 
 ## Overview
 
-The GEA Re-Afforestation Tool is designed to assist users in identifying and evaluating potential afforestation sites by providing access to various historical and current landscape imagery. Key features of the tool include:
+The GEA Reforestation Tool is designed to assist users in identifying and evaluating potential afforestation sites by providing access to various historical and current landscape imagery. Key features of the tool include:
 
 - Visualisation of historical imagery (Landsat)
 - Visualisation of current imagery (NICFI)
@@ -14,7 +14,7 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
 **Features and Controls**
 
-![GEA Re-Afforestation](./img/complete-gea-re-afforestation-1.png)
+![GEA Reforestation](./img/complete-gea-reforestation-1.png)
 
 1. **Historical Imagery (Landsat):** If checked the map canvas will display historical imagery from Landsat.
 
@@ -24,11 +24,11 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
     - **Historical Imagery Checkbox Checked:** The map canvas will display historical imagery from Landsat.
 
-    ![Historical Imagery](./img/complete-gea-re-afforestation-2.png)
+    ![Historical Imagery](./img/complete-gea-reforestation-2.png)
 
     - **Current Imagery Checkbox Checked:** The map canvas will display current imagery from NICFI.
 
-    ![Current Imagery](./img/complete-gea-re-afforestation-3.png)
+    ![Current Imagery](./img/complete-gea-reforestation-3.png)
 
 
     The user can use the slide bar by dragging the toggle to the next or previous increment to view the corresponding imagery on the map canvas.
@@ -45,23 +45,23 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
 5. **Drawing tool:** The user can use the drawing tool to draw polygons on the map canvas.
         
-    ![Drawing tool](./img/complete-gea-re-afforestation-5.png)
+    ![Drawing tool](./img/complete-gea-reforestation-5.png)
 
     5.1 **Draw Project Area Button:** The user can use this button to draw the polygon on the map canvas. Before using the `Draw Project Area` button, ensure that the site reference has been provided. After drawing the polygon right click. Upon clicking the pop up will open for entering the id, id should be 1.
 
-    ![Id popup](./img/complete-gea-re-afforestation-9.png)
+    ![Id popup](./img/complete-gea-reforestation-9.png)
 
     - **Error Handling:** If any of the field is empty, an error message will be displayed for example for the site reference field the message would be: `Please add the site reference before starting drawing the project area.`
 
-        ![Error message](./img/complete-gea-re-afforestation-4.png)
+        ![Error message](./img/complete-gea-reforestation-4.png)
 
     - **Editing:** After drawing the polygon, you can edit it using the options available in the toolbar. The edit icon will appear in front of the project in the layer list, allowing modifications before saving.
 
-        ![Edit options](./img/complete-gea-re-afforestation-6.png)
+        ![Edit options](./img/complete-gea-reforestation-6.png)
 
     5.2 **Project Inception Date:** To choose the project inception date, click on the field to open a calendar. Select the desired date from the calendar interface.
 
-    ![Calander](./img/complete-gea-re-afforestation-7.png)
+    ![Calander](./img/complete-gea-reforestation-7.png)
 
     5.3 **Site Reference:** Enter the site reference to identify the specific location or area for the project.
 
@@ -73,7 +73,7 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
     
     5.7 **Project Folder:** Select the project folder where plugin data is stored. The shape files will be saved in the `sites` directory, which is automatically generated when you save the project.
 
-    ![Sites directory](./img/complete-gea-re-afforestation-8.png)
+    ![Sites directory](./img/complete-gea-reforestation-8.png)
 
     5.8 **Save Project Area Button:** Click the `Save Project Area` button to save the project after drawing the polygon. The shape files will be stored in the `sites` directory.
 
