@@ -7,7 +7,7 @@ Welcome to the GEA Reforestation Tool user manual. This guide will help you navi
 The GEA Reforestation Tool is designed to assist users in identifying and evaluating potential afforestation sites by providing access to various historical and current landscape imagery. Key features of the tool include:
 
 - Visualisation of historical imagery (Landsat)
-- Visualisation of current imagery (NICFI)
+- Visualisation of recent imagery (NICFI)
 - Interactive map canvas
 - Report generation for potential afforestation sites
 
@@ -18,7 +18,7 @@ The GEA Reforestation Tool is designed to assist users in identifying and evalua
 
 1. **Historical Imagery (Landsat):** If checked the map canvas will display historical imagery from Landsat.
 
-2. **Current Imagery (NICFI):** If checked the map canvas will display current imagery from NICFI.
+2. **Recent Imagery (NICFI):** If checked the map canvas will display recent imagery from NICFI.
 
 3. **Slide Bar:** The slide bar allows users to view the selected imagery on the map canvas. The functionality of the slide bar depends on the checkbox selection:
 
@@ -26,9 +26,9 @@ The GEA Reforestation Tool is designed to assist users in identifying and evalua
 
     ![Historical Imagery](./img/complete-gea-reforestation-2.png)
 
-    - **Current Imagery Checkbox Checked:** The map canvas will display current imagery from NICFI.
+    - **Recent Imagery Checkbox Checked:** The map canvas will display recent imagery from NICFI.
 
-    ![Current Imagery](./img/complete-gea-reforestation-3.png)
+    ![Recent Imagery](./img/complete-gea-reforestation-3.png)
 
 
     The user can use the slide bar by dragging the toggle to the next or previous increment to view the corresponding imagery on the map canvas.
@@ -39,19 +39,19 @@ The GEA Reforestation Tool is designed to assist users in identifying and evalua
 
     ![Historical Imagery play](./img/Landsat-working.gif)
 
-    **Current Imagery**
+    **Recent Imagery**
 
-    ![Current Imagery play](./img/NICFIworking.gif)
+    ![Recent Imagery play](./img/NICFIworking.gif)
 
 5. **Drawing tool:** The user can use the drawing tool to draw polygons on the map canvas.
         
     ![Drawing tool](./img/complete-gea-reforestation-5.png)
 
-    5.1 **Draw Project Area Button:** The user can use this button to draw the polygon on the map canvas. Before using the `Draw Project Area` button, ensure that the site reference has been provided. After drawing the polygon right click. Upon clicking the pop up will open for entering the id, id should be 1.
+    5.1 **Draw Project Area Button:** The user can use this button to draw the polygon on the map canvas. Before using the `Draw Project Area` button, ensure that the site reference has been provided. After drawing the polygon right-click. Upon clicking the pop-up will open for entering the ID, ID should be 1.
 
     ![Id popup](./img/complete-gea-reforestation-9.png)
 
-    - **Error Handling:** If any of the field is empty, an error message will be displayed for example for the site reference field the message would be: `Please add the site reference before starting drawing the project area.`
+    - **Error Handling:** If any of the fields is empty, an error message will be displayed for example for the site reference field the message would be: `Please add the site reference before starting drawing the project area.`
 
         ![Error message](./img/complete-gea-reforestation-4.png)
 
@@ -71,10 +71,10 @@ The GEA Reforestation Tool is designed to assist users in identifying and evalua
 
     5.6 **Country Dropdown:** Choose the country from the dropdown list to specify the location of the project.
     
-    5.7 **Project Folder:** Select the project folder where plugin data is stored. The shape files will be saved in the `sites` directory, which is automatically generated when you save the project.
+    5.7 **Project Folder:** Select the project folder where plugin data is stored. The shape files will be saved in the `Sites` directory, which is automatically generated when you save the project.
 
     ![Sites directory](./img/complete-gea-reforestation-8.png)
 
-    5.8 **Save Project Area Button:** Click the `Save Project Area` button to save the project after drawing the polygon. The shape files will be stored in the `sites` directory.
+    5.8 **Save Project Area Button:** Click the `Save Project Area` button to save the project after drawing the polygon. The shape files will be stored in the `Sites` directory.
 
     5.9 **Clear Button:** Use the `Clear` button to remove the polygon from the map. Note that the polygon must be cleared before saving the project, as shape files stored in the sites folder will not be deleted after saving.
