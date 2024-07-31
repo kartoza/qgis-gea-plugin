@@ -97,6 +97,8 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             QgsInterval(1, QgsUnitTypes.TemporalIrregularStep)
         )
 
+        self.frame_rate_box.valueChanged.connect(self.frame_rate_changed)
+
         self.current_imagery_type = IMAGERY.HISTORICAL
 
         icon_pixmap = QtGui.QPixmap(PLUGIN_ICON)
@@ -142,6 +144,11 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.feature_count = 0
 
         self.iface.projectRead.connect(self.prepare_time_slider)
+
+    def frame_rate_changed(self, value):
+       self.navigation_object.setFramesPerSecond(
+            value
+        )
 
     def save_settings(self):
 
@@ -241,8 +248,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.temporal_range_la.setText(
             tr(
                 f'Current time range: '
-                f'<b>{temporal_range.begin().toString("yyyy-MM-ddTHH:mm:ss")} to '
-                f'{temporal_range.end().toString("yyyy-MM-ddTHH:mm:ss")} </b>'
+                f'<b>{temporal_range.begin().toString("yyyy-MM-ddTHH:mm:ss")}'
             ))
         self.time_slider.setValue(
             self.navigation_object.currentFrameNumber()
@@ -294,18 +300,19 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.update_layer_group(set_layer)
         self.update_layer_group(active_layer, True)
 
-        self.time_slider.setRange(0, len(values) - 1)
-        self.navigation_object.setAvailableTemporalRanges(values)
+        sorted_date_time_ranges = sorted(values, key=lambda x: x.begin())
 
-        temporal_range = values[0] if len(values) > 0 else None
+        self.time_slider.setRange(0, len(sorted_date_time_ranges) - 1)
+        self.navigation_object.setAvailableTemporalRanges(sorted_date_time_ranges)
+
+        temporal_range = sorted_date_time_ranges[0] if len(sorted_date_time_ranges) > 0 else None
 
         if temporal_range:
             self.iface.mapCanvas().setTemporalRange(temporal_range)
             self.temporal_range_la.setText(
                 tr(
                     f'Current time range: '
-                    f'<b>{temporal_range.begin().toString("yyyy-MM-ddTHH:mm:ss")} to '
-                    f'{temporal_range.end().toString("yyyy-MM-ddTHH:mm:ss")} </b>'
+                    f'<b>{temporal_range.begin().toString("yyyy-MM-ddTHH:mm:ss")}'
                 ))
 
     def update_layer_group(self, layer, show=False):
