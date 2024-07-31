@@ -1,4 +1,4 @@
-# Extra report content for GEA Tool Manuals
+# Appendix 1: Supporting information
 
 ## 1. Liabilities
 
