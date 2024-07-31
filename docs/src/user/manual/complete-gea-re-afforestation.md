@@ -1,15 +1,15 @@
-# GEA Re-Afforestation Tool User Manual
+# GEA Reforestation Tool User Manual
 
-Welcome to the GEA Re-Afforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential afforestation sites.
+Welcome to the GEA Reforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential afforestation sites.
 
 ## Overview
 
-The GEA Re-Afforestation Tool is designed to assist users in identifying and evaluating potential afforestation sites by providing access to various historical and current landscape imagery. Key features of the tool include:
+The GEA Reforestation Tool is designed to assist users in identifying and evaluating potential reforestation sites by providing access to various historical and current landscape imagery. Key features of the tool include:
 
 - Visualisation of historical imagery (Landsat)
-- Visualisation of current imagery (NICFI)
+- Visualisation of recent imagery (NICFI)
 - Interactive map canvas
-- Report generation for potential afforestation sites
+- Report generation for potential reforestation sites
 
 
 **Features and Controls**
@@ -18,7 +18,7 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
 1. **Historical Imagery (Landsat):** If checked the map canvas will display historical imagery from Landsat.
 
-2. **Current Imagery (NICFI):** If checked the map canvas will display current imagery from NICFI.
+2. **Recent Imagery (NICFI):** If checked the map canvas will display current imagery from NICFI.
 
 3. **Slide Bar:** The slide bar allows users to view the selected imagery on the map canvas. The functionality of the slide bar depends on the checkbox selection:
 
@@ -26,7 +26,7 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
     ![Historical Imagery](./img/complete-gea-re-afforestation-2.png)
 
-    - **Current Imagery Checkbox Checked:** The map canvas will display current imagery from NICFI.
+    - **Recent Imagery Checkbox Checked:** The map canvas will display current imagery from NICFI.
 
     ![Current Imagery](./img/complete-gea-re-afforestation-3.png)
 
@@ -39,7 +39,7 @@ The GEA Re-Afforestation Tool is designed to assist users in identifying and eva
 
     ![Historical Imagery play](./img/Landsat-working.gif)
 
-    **Current Imagery**
+    **Recent Imagery**
 
     ![Current Imagery play](./img/NICFIworking.gif)
 
