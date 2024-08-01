@@ -12,3 +12,7 @@ license: This program is free software; you can redistribute it and/or modify it
 # User guide
 <!-- Narrative Instructions on how to use the product/platform -->
 <!-- Replace all of the titles with relevant titles -->
+
+* **[Sign Up:](sign-up.md)** This page will show you how to `sign up` for Planet Explorer.
+
+* **[Login:](login.md)** This page will show you how to `log in` to Planet Explorer.
