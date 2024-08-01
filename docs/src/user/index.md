@@ -16,5 +16,11 @@ This is the homepage for all user-related documentation.
 The user content is divided into three sections:
 
 - The [quickstart tutorial](quickstart/index.md) aims to get you familiar with the basics of the platform in around 5 minutes.
+
 - The [user guide](guide/index.md) describes common workflows in a tutorial format.
+
 - The [user manual](manual/index.md) describes each page of the user interface and what the various options on that page do.
+
+- [Appendix1](Appendix1.md) provides the details about the liabilities, exclusion masks and imageries.
+
+- [user workflow](user-workflow.md) This document provides detailed instructions on the workflow, including how users can download and utilise project data.
