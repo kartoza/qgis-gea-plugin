@@ -46,7 +46,8 @@ nav:
                   - Running Instances: about/running-instances.md
         - User:
                   - user/index.md
-                  - Quickstart: user/quickstart/index.md
+                  - Quickstart: 
+                          - user/quickstart/quick-start.md
                   - Guide:
                           - user/guide/index.md
                   - Manual :
