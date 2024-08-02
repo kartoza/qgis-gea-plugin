@@ -21,6 +21,6 @@ The user content is divided into three sections:
 
 - The [user manual](manual/index.md) describes each page of the user interface and what the various options on that page do.
 
-- [Appendix1](./Appendix1.md) provides the details about the liabilities, exclusion masks and imageries.
-
 - [user workflow](./user-workflow.md) This document provides detailed instructions on the workflow, including how users can download and utilise project data.
+
+- [Appendix1](./Appendix1.md) provides the details about the liabilities, exclusion masks and imageries.

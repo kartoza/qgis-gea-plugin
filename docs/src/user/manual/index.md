@@ -23,3 +23,5 @@ you may prefer to work through our [user guide](../guide/index.md).
 * **[Layer List:](layer-list.md)** The Layer List is an essential tool that allows users to manage and interact with various map layers effectively. This documentation provides detailed instructions on how to use the Layer List to optimise their mapping experience.
 
 * **[Image Style:](Image-style.md)** This page will show how the user can style the image for the better experience.
+
+* **[Reports:](reports.md)** This page will show how the user can generate the reports.
