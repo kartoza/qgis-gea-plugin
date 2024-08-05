@@ -32,6 +32,7 @@ from ..definitions.defaults import (
     ANIMATION_PAUSE_ICON,
     ANIMATION_PLAY_ICON,
     COUNTRY_NAMES,
+    SITE_GROUP_NAME,
     PLUGIN_ICON
 )
 
@@ -97,7 +98,28 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             QgsInterval(1, QgsUnitTypes.TemporalIrregularStep)
         )
 
+        frame_rate = settings_manager.get_value(
+            Settings.ANIMATION_FRAME_RATE,
+            default=1.0,
+            setting_type=float
+        )
+
+        self.frame_rate_box.setValue(frame_rate) \
+            if frame_rate is not None else None
+
+        self.loop_box.setChecked(
+            settings_manager.get_value(
+                Settings.ANIMATION_LOOP,
+                default=False,
+                setting_type=bool
+            )
+        )
+        self.navigation_object.setLooping(self.loop_box.isChecked())
+        self.navigation_object.setFramesPerSecond(float(frame_rate)) \
+            if frame_rate is not None else None
+
         self.frame_rate_box.valueChanged.connect(self.frame_rate_changed)
+        self.loop_box.toggled.connect(self.animation_loop_toggled)
 
         self.current_imagery_type = IMAGERY.HISTORICAL
 
@@ -145,8 +167,12 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         self.iface.projectRead.connect(self.prepare_time_slider)
 
+    def animation_loop_toggled(self, value):
+        self.save_settings()
+        self.navigation_object.setLooping(value)
     def frame_rate_changed(self, value):
-       self.navigation_object.setFramesPerSecond(
+        self.save_settings()
+        self.navigation_object.setFramesPerSecond(
             value
         )
 
@@ -164,6 +190,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         settings_manager.set_value(Settings.REPORT_COUNTRY, self.country_cmb_box.currentText())
         settings_manager.set_value(Settings.PROJECT_FOLDER, self.project_folder.filePath())
+
+        settings_manager.set_value(Settings.ANIMATION_FRAME_RATE, self.frame_rate_box.value())
+        settings_manager.set_value(Settings.ANIMATION_LOOP, self.loop_box.isChecked())
 
     def restore_settings(self):
         self.site_reference_le.setText(settings_manager.get_value(Settings.SITE_REFERENCE))
@@ -245,11 +274,12 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         :type temporal_range: QgsDateTimeRange
         """
         self.iface.mapCanvas().setTemporalRange(temporal_range)
-        self.temporal_range_la.setText(
-            tr(
-                f'Current time range: '
-                f'<b>{temporal_range.begin().toString("yyyy-MM-ddTHH:mm:ss")}'
-            ))
+        if temporal_range and temporal_range.begin():
+            self.temporal_range_la.setText(
+                tr(
+                    f'Current time range: '
+                    f'<b>{temporal_range.begin().toString("yyyy-MM")}'
+                ))
         self.time_slider.setValue(
             self.navigation_object.currentFrameNumber()
         )
@@ -258,7 +288,11 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         if self.navigation_object.currentFrameNumber() == \
                 len(self.navigation_object.availableTemporalRanges()) - 1:
 
+            self.play_btn.setToolTip(tr("Click to play animation"))
             self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PLAY_ICON))
+        else:
+            self.play_btn.setToolTip(tr("Pause animation"))
+            self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PAUSE_ICON))
 
     def prepare_time_slider(self):
         """
@@ -276,15 +310,22 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
             self.current_imagery_type = IMAGERY.HISTORICAL
             closed_imagery = IMAGERY.NICFI
-        else:
+        elif self.nicfi_imagery.isChecked():
             settings_manager.set_value(Settings.NICFI_VIEW, True)
             settings_manager.set_value(Settings.HISTORICAL_VIEW, False)
 
             self.current_imagery_type = IMAGERY.NICFI
             closed_imagery = IMAGERY.HISTORICAL
+        else:
+            settings_manager.set_value(Settings.HISTORICAL_VIEW, False)
+            settings_manager.set_value(Settings.NICFI_VIEW, False)
 
         layers = QgsProject.instance().mapLayers()
         for path, layer in layers.items():
+            if closed_imagery is None:
+                self.update_layer_group(layer, True)
+                continue
+
             if layer.metadata().contains(
                     self.current_imagery_type.value.lower()
             ):
@@ -307,12 +348,12 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         temporal_range = sorted_date_time_ranges[0] if len(sorted_date_time_ranges) > 0 else None
 
-        if temporal_range:
+        if temporal_range and temporal_range.begin():
             self.iface.mapCanvas().setTemporalRange(temporal_range)
             self.temporal_range_la.setText(
                 tr(
                     f'Current time range: '
-                    f'<b>{temporal_range.begin().toString("yyyy-MM-ddTHH:mm:ss")}'
+                    f'<b>{temporal_range.begin().toString("yyyy-MM")}'
                 ))
 
     def update_layer_group(self, layer, show=False):
@@ -338,19 +379,19 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         if self.site_reference_le.text() is None or self.site_reference_le.text().replace(' ', '') is '':
             self.show_message(
-                tr("Please add the site reference before starting drawing the project area."),
+                tr("Please add the site reference before starting to draw the project area."),
                 Qgis.Warning
             )
             return
         if self.site_ref_version_le.text() is None or self.site_ref_version_le.text().replace(' ', '') is '':
             self.show_message(
-                tr("Please add the version of site reference before starting drawing the project area."),
+                tr("Please add the version of site reference before starting to draw the project area."),
                 Qgis.Warning
             )
             return
         if self.report_author_le.text() is None or self.report_author_le.text().replace(' ', '') is '':
             self.show_message(
-                tr("Please add the report generation author before starting drawing the project area."),
+                tr("Please add the report generation author before starting to draw the project area."),
                 Qgis.Warning
             )
             return
@@ -401,8 +442,42 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         )
         self.drawing_layer.updateFields()
 
-        # Add the layer to the project
-        QgsProject.instance().addMapLayer(self.drawing_layer)
+        # Add the layer to the site boundaries
+        QgsProject.instance().addMapLayer(self.drawing_layer, False)
+
+        # Toggle layer editing
+        self.drawing_layer.startEditing()
+
+        root = QgsProject.instance().layerTreeRoot()
+
+        # Find or create the group
+        group = None
+        for layer_group in root.findGroups():
+            if layer_group.name().lower() == SITE_GROUP_NAME.lower():
+                group = layer_group
+                break
+
+        if not group:
+            group = root.addGroup(SITE_GROUP_NAME)
+
+
+        # Add the layer to the group
+        group.addLayer(self.drawing_layer)
+
+        # Move the group to the first position in the root layer tree
+        if group.parent() == root:
+            root.insertChildNode(0, group.clone())
+            root.removeChildNode(group)
+
+        # Select/highlight the added layer for editing
+        layer_tree_layer = root.findLayer(self.drawing_layer.id())
+        if layer_tree_layer:
+            layer_tree_layer.setItemVisibilityChecked(True)
+            self.iface.setActiveLayer(self.drawing_layer)
+
+        # Toggle layer editing
+        self.drawing_layer.startEditing()
+
 
         # List of fields to disable editing on
         fields_to_disable = [
@@ -417,9 +492,6 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         # Disable editing for the specified fields
         self.update_field_editing(self.drawing_layer, fields_to_disable, False)
-
-        # Toggle layer editing
-        self.drawing_layer.startEditing()
 
         # Enable shape digitizing toolbar
         self.iface.shapeDigitizeToolBar().setVisible(True)
@@ -538,23 +610,28 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
 
     def cancel_drawing(self):
+
+        self.site_reference_le.setText(None)
+        self.site_ref_version_le.setText(None)
+        self.report_author_le.setText(None)
+        self.project_inception_date.clear()
+        self.country_cmb_box.setCurrentIndex(-1)
+
         if self.drawing_layer:
             self.drawing_layer.commitChanges()
-
             QgsProject.instance().removeMapLayer(self.drawing_layer)
-
             self.iface.mapCanvas().refresh()
 
             self.show_message(
-                tr("Cleared the project area successfully."),
+                tr("Cleared the project input fields and area successfully."),
                 Qgis.Info
             )
 
             self.drawing_layer = None
         else:
             self.show_message(
-                tr("There is no project area editing to clear!"),
-                Qgis.Warning
+                tr("Cleared the project input fields."),
+                Qgis.Info
             )
 
 

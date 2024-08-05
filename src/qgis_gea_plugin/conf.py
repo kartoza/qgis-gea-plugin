@@ -54,6 +54,9 @@ class Settings(enum.Enum):
 
     PROJECT_FOLDER = 'project_folder'
 
+    ANIMATION_FRAME_RATE = 'frame_rate'
+    ANIMATION_LOOP = 'animation_loop'
+
 
 class SettingsManager(QtCore.QObject):
     """Manages saving/loading settings for the plugin in QgsSettings."""
