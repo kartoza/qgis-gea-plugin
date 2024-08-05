@@ -6,7 +6,7 @@
 import os
 from pathlib import Path
 
-from qgis.PyQt import QtCore
+from qgis.PyQt import QtCore, QtGui
 from qgis.core import (
     Qgis,
     QgsMessageLog,
@@ -133,3 +133,20 @@ class FileUtils:
         :rtype: str
         """
         return FileUtils.report_template_path(SITE_REPORT_TEMPLATE_NAME)
+
+    @staticmethod
+    def get_icon(file_name: str) -> QtGui.QIcon:
+        """Creates an icon based on the icon name in the 'icons' folder.
+
+        :param file_name: File name which should include the extension.
+        :type file_name: str
+
+        :returns: Icon object matching the file name.
+        :rtype: QtGui.QIcon
+        """
+        icon_path = os.path.normpath(f"{FileUtils.plugin_dir()}/icons/{file_name}")
+
+        if not os.path.exists(icon_path):
+            return QtGui.QIcon()
+
+        return QtGui.QIcon(icon_path)

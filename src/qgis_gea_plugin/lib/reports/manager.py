@@ -20,9 +20,15 @@ from qgis.core import (
 from qgis.gui import QgsLayoutDesignerInterface
 from qgis.utils import iface
 
-from qgis.PyQt import QtCore
+from qgis.PyQt import QtCore, QtGui, sip
 
-from ...models.report import ReportSubmitResult, SiteMetadata, SiteReportContext
+from .generator import SiteReportReportGeneratorTask
+from ...models.report import (
+    ReportOutputResult,
+    ReportSubmitResult,
+    SiteMetadata,
+    SiteReportContext
+)
 from ...utils import clean_filename, create_dir, FileUtils, log
 
 
@@ -46,7 +52,11 @@ class ReportManager(QtCore.QObject):
 
         self.task_manager = QgsApplication.instance().taskManager()
 
-    def generate_site_report(self, metadata: SiteMetadata, project_folder: str) -> ReportSubmitResult:
+    def generate_site_report(
+            self,
+            metadata: SiteMetadata,
+            project_folder: str
+    ) -> ReportSubmitResult:
         """Initiates the site report generation process.
 
         :param metadata: Information about the site.
@@ -68,7 +78,70 @@ class ReportManager(QtCore.QObject):
             log(f"Contextual information for creating the site report could not be created.")
             return ReportSubmitResult(False, None, "-1")
 
-        return ReportSubmitResult(True, feedback, "")
+        site_report_task = SiteReportReportGeneratorTask(context)
+        task_id = self.task_manager.addTask(site_report_task)
+        if task_id == 0:
+            log(f"Site report task could be not be submitted.")
+            return ReportSubmitResult(False, None, "-1")
+
+        self._report_tasks[task_id] = site_report_task
+
+        return ReportSubmitResult(True, feedback, str(task_id))
+
+    def task_by_id(self, task_id: str) -> typing.Optional[SiteReportReportGeneratorTask]:
+        """Gets the report generator task using its identifier.
+
+        :param task_id: Task identifier.
+        :type task_id: str
+
+        :returns: The tas corresponding to the given ID or
+        None if not found.
+        :rtype: QgsTask
+        """
+        try:
+            task_id = int(task_id)
+        except ValueError:
+            return None
+
+        return self.task_manager.task(task_id)
+
+    def on_report_status_changed(self, task_id: int, status: QgsTask.TaskStatus):
+        """Slot raised when the status of a generator task has changed.
+
+        This function will emit when the report generator task has started,
+        when it has completed successfully or terminated due to an error.
+
+        :param task_id: ID of the task.
+        :type task_id: int
+
+        :param status: New task status.
+        :type status: QgsTask.TaskStatus
+        """
+        task = self.task_manager.task(task_id)
+        if not isinstance(task, SiteReportReportGeneratorTask):
+            return
+
+        if str(task_id) not in self._report_tasks:
+            return
+
+        if status == QgsTask.TaskStatus.Running:
+            self.generate_started.emit(str(task_id))
+
+        elif status == QgsTask.TaskStatus.Terminated:
+            self.remove_report_task(str(task_id))
+
+            self.generate_error.emit(str(task_id))
+
+        elif status == QgsTask.TaskStatus.Complete:
+            # Get result
+            task = self.task_manager.task(task_id)
+            result = task.result
+            if result is not None:
+                self._report_results[str(task_id)] = result
+
+            self.remove_report_task(str(task_id))
+
+            self.generate_completed.emit(str(task_id))
 
     @classmethod
     def create_site_context(
@@ -155,6 +228,10 @@ class ReportManager(QtCore.QObject):
         if report_task is None:
             return False
 
+        if sip.isdeleted(report_task):
+            _ = self._report_tasks.pop(task_id)
+            return False
+
         if (
                 report_task.status() != QgsTask.TaskStatus.Complete
                 or report_task.status() != QgsTask.TaskStatus.Terminated
@@ -164,3 +241,66 @@ class ReportManager(QtCore.QObject):
         _ = self._report_tasks.pop(task_id)
 
         return True
+
+    def get_output_result(
+            self,
+            submit_result: ReportSubmitResult
+    ) -> typing.Optional[ReportOutputResult]:
+        """Get the output result from the given submit result.
+
+        :param submit_result: Result from the request to process a report request,
+        :type submit_result: ReportSubmitResult
+
+        :returns: Returns the corresponding output result for the given submit
+        result or None if the process is still running or an error occurred.
+        :rtype: ReportOutputResult
+        """
+        if not submit_result.success:
+            return None
+
+        return self._report_results.get(submit_result.identifier, None)
+
+    def cancel(self, submit_result: ReportSubmitResult) -> bool:
+        """Cancel a report generation task.
+
+        :param submit_result: Submit result whose corresponding task is to
+        be canceled.
+        :type submit_result: ReportSubmitResult
+
+        :returns: Returns True if the task was successfully cancelled
+        else False if the task was not found or if it had already
+        completed.
+        :rtype: bool
+        """
+        if not submit_result.success:
+            return False
+
+        return self.remove_report_task(submit_result.identifier)
+
+    @classmethod
+    def view_pdf(cls, output_result: ReportOutputResult):
+        """Opens the output report in the host's default PDF viewer.
+
+        :param output_result: Result object from the report generation
+        process.
+        :type output_result: ReportResult
+
+        :returns: True if the PDF was successfully loaded, else
+        False if the result from the generation process was False.
+        :rtype: bool
+        """
+        if not output_result.success:
+            return False
+
+        pdf_path = os.path.normpath(
+            f"{output_result.output_path}/{output_result.name}.pdf"
+        )
+
+        pdf_url = QtCore.QUrl.fromLocalFile(pdf_path)
+        if pdf_url.isEmpty():
+            return False
+
+        return QtGui.QDesktopServices.openUrl(pdf_url)
+
+
+report_manager = ReportManager()
