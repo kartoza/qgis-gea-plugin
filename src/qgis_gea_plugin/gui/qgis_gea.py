@@ -91,6 +91,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.project_inception_date.dateChanged.connect(self.save_settings)
         self.country_cmb_box.currentIndexChanged.connect(self.save_settings)
 
+        self.report_btn.clicked.connect(self.on_generate_report)
 
         self.navigation_object = QgsTemporalNavigationObject(self)
         self.navigation_object.setFrameDuration(
@@ -573,5 +574,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             self.message_bar, 0, 0, 1, 1, alignment=QtCore.Qt.AlignTop
         )
         self.dock_widget_contents.layout().insertLayout(0, self.grid_layout)
+
+    def on_generate_report(self):
+        """Slot raised to initiate the generation of a site report."""
+        pass
 
 

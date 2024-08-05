@@ -66,7 +66,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../../../../../../../../../../../../../../../../../../.designer/icons/icon.png</pixmap>
+          <pixmap>../../../../../../../../.designer/icons/icon.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -383,7 +383,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="report_btn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
