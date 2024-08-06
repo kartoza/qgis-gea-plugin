@@ -1,6 +1,6 @@
 # Quick Start Documentation
 
-The following Quick Start documentation will guide users on how to set up the tool with its dependencies:  -->
+The following Quick Start documentation will guide users on how to set up the tool with its dependencies:
 
 1. Get QGIS.
 2. The project file for an area of interest.
