@@ -305,7 +305,7 @@ class ReportManager(QtCore.QObject):
             return False
 
         pdf_path = os.path.normpath(
-            f"{output_result.output_path}/{output_result.name}.pdf"
+            f"{output_result.output_path}/{clean_filename(output_result.name)}.pdf"
         )
 
         pdf_url = QtCore.QUrl.fromLocalFile(str(pdf_path))

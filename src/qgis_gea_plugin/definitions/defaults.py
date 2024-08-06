@@ -45,4 +45,4 @@ COUNTRY_NAMES = [
 
 SITE_GROUP_NAME = "Proposed site boundaries"
 
-SITE_REPORT_TEMPLATE_NAME = "site_sustainability.qpt"
+SITE_REPORT_TEMPLATE_NAME = "reforestation_site.qpt"

@@ -62,6 +62,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             f"{tr('Generating site report for')}: {context.metadata.area_name}"
         )
         self._context = context
+        self._feedback = self._context.feedback
         self._result = None
         self._layout = None
         self._project = None

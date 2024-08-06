@@ -42,20 +42,11 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
 
         self._report_manager = report_manager
 
+        self._report_running = True
+
         self._submit_result = submit_result
         self._feedback = self._submit_result.feedback
         self._feedback.progressChanged.connect(self._on_progress_changed)
-
-        self._task = None
-        if submit_result.identifier:
-            self._task = self._report_manager.task_by_id(submit_result.identifier)
-
-        if self._task is not None:
-            self._task.taskCompleted.connect(self._on_report_finished)
-            self._task.taskTerminated.connect(self._on_report_error)
-
-        if submit_result.feedback:
-            submit_result.feedback.progressChanged.connect(self.update_progress_bar)
 
         self.btn_open_pdf = self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok)
         self.btn_open_pdf.setText(tr("Open PDF"))
@@ -67,7 +58,17 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         self.btn_close.setText(tr("Cancel"))
         self.btn_close.clicked.connect(self._on_closed)
 
+        self.lbl_rule.setText(tr("Generating report..."))
+
         self.pg_bar.setValue(int(self._feedback.progress()))
+
+        self._task = None
+        if submit_result.identifier:
+            self._task = self._report_manager.task_by_id(submit_result.identifier)
+
+        if self._task is not None:
+            self._task.taskCompleted.connect(self._on_report_finished)
+            self._task.taskTerminated.connect(self._on_report_error)
 
     def _on_progress_changed(self, progress: float):
         """Slot raised when report progress has changed.
@@ -81,10 +82,14 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
     def _on_report_finished(self):
         """Slot raised when the report has successfully completed."""
         self.btn_open_pdf.setEnabled(True)
+        self._set_close_state()
+        self.lbl_rule.setText(tr("Report generation complete"))
 
     def _on_report_error(self):
         """Slot raised when an error occurred."""
         self.btn_open_pdf.setEnabled(False)
+        self._set_close_state()
+        self.lbl_rule.setText(tr("Error occurred during report generation"))
 
         log(tr("Error generating report, see logs for more info."))
 
@@ -117,10 +122,21 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         if not status:
             log(tr("Unable to open the PDF report."))
 
+    def _set_close_state(self):
+        """Set dialog to a closeable state."""
+        self._report_running = False
+        self.btn_close.setText(tr("Close"))
+
     def _on_closed(self):
         """Slot raised when the Close button has been clicked."""
-        status = self._report_manager.cancel(self._submit_result)
-        if not status:
-            log(tr("Unable to cancel report generation process."))
+        if self._report_running:
+            status = self._report_manager.cancel(self._submit_result)
+            if not status:
+                log(tr("Unable to cancel report generation process."))
+                return
 
-        self.dialog_closed.emit()
+            self._set_close_state()
+            self.lbl_rule.setText(tr("Report generation canceled"))
+        else:
+            self.dialog_closed.emit()
+            self.close()
