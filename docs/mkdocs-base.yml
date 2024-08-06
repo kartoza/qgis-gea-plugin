@@ -60,6 +60,7 @@ nav:
                           - Layer List: user/manual/layer-list.md
                           - Image Style: user/manual/image-style.md
                           - Reports: user/manual/reports.md
+                  - user/landing-page.md
                   - user/user-workflow.md
                   - user/Appendix1.md
 
