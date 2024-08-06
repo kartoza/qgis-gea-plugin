@@ -69,19 +69,22 @@ class ReportManager(QtCore.QObject):
         :rtype: ReportSubmitResult
         """
         if not Path(project_folder).exists():
-            log(f"Project folder {project_folder} does not exist.")
+            log(f"Project folder {project_folder} does not exist.", info=False)
             return ReportSubmitResult(False, None, "-1")
 
         feedback = QgsFeedback()
         context = self.create_site_context(metadata, project_folder, feedback)
         if context is None:
-            log(f"Contextual information for creating the site report could not be created.")
+            log(
+                f"Contextual information for creating the site report could not be created.",
+                info=False
+            )
             return ReportSubmitResult(False, None, "-1")
 
         site_report_task = SiteReportReportGeneratorTask(context)
         task_id = self.task_manager.addTask(site_report_task)
         if task_id == 0:
-            log(f"Site report task could be not be submitted.")
+            log(f"Site report task could be not be submitted.", info=False)
             return ReportSubmitResult(False, None, "-1")
 
         self._report_tasks[task_id] = site_report_task
@@ -170,7 +173,10 @@ class ReportManager(QtCore.QObject):
         # Check report template
         report_template_path = FileUtils.site_report_template_path()
         if not Path(report_template_path).exists():
-            log(f"Site report template {report_template_path} not found.")
+            log(
+                f"Site report template {report_template_path} not found.",
+                info=False
+            )
             return None
 
         # Create 'reports' subdirectory
@@ -179,7 +185,10 @@ class ReportManager(QtCore.QObject):
 
         # Assert that the directory was successfully created
         if not Path(report_dir).exists():
-            log(f"Reports directory could not be created in the project folder.")
+            log(
+                f"Reports directory could not be created in the project folder.",
+                info=False
+            )
             return None
 
         # Save project file
@@ -200,7 +209,10 @@ class ReportManager(QtCore.QObject):
             QgsProject.instance().setFilePathStorage(storage_type)
 
         if not result:
-            log(f"Unable to save the current project to file.")
+            log(
+                f"Unable to save the current project to file.",
+                info=False
+                )
             return None
 
         return SiteReportContext(
@@ -296,7 +308,7 @@ class ReportManager(QtCore.QObject):
             f"{output_result.output_path}/{output_result.name}.pdf"
         )
 
-        pdf_url = QtCore.QUrl.fromLocalFile(pdf_path)
+        pdf_url = QtCore.QUrl.fromLocalFile(str(pdf_path))
         if pdf_url.isEmpty():
             return False
 

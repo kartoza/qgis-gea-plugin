@@ -3,7 +3,7 @@
 """ Data models for report production."""
 
 import dataclasses
-from datetime import date
+from datetime import date, datetime
 import typing
 
 from qgis.core import QgsFeedback
@@ -33,11 +33,12 @@ class SiteMetadata:
     """Information about the site."""
 
     country: str
-    inception_date: date
+    inception_date: str
     author: str
     site_reference: str
     version: str
     area_name: str
+    capture_date: str
 
 
 @dataclasses.dataclass
