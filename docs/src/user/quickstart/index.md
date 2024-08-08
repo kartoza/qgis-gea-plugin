@@ -13,7 +13,7 @@ license: This program is free software; you can redistribute it and/or modify it
 
 The GEA Reforestation Tool consists of two main components:
 
-1. A QGIS project that contains all the data for the area of interest, such as Malawi as outlied above.
+1. A QGIS project that contains all the data for the area of interest, such as Malawi as outlined above.
 
 2. The GEA Reforestation Plugin that helps users view current, recent, and historical imagery of an area and easily draw boundaries for proposed reforestation projects.
 
@@ -75,8 +75,6 @@ Once the download is complete, locate the downloaded file in your Downloads fold
 ## Launch QGIS:
 You can now launch QGIS from your Start menu or desktop shortcut.
 
-## Additional Notes
-
 ## For MacOS Users
 
 If you are using macOS, follow the instructions provided here:
@@ -95,7 +93,7 @@ When attempting to launch QGIS for the first time on macOS, there is a chance th
 
 - **Project Folder Delivery:** You need to ask for the project folder from your head office containing all the necessary data for your project. 
 
-The QGIS project for the users area of interest will be shared via a zip folder likely from a link for download from the head office supplier. 
+The QGIS project for the user's area of interest will be shared via a zip folder likely from a link for download from the head office supplier. 
 
 Once the project has downloaded onto your computer extract the folder to a destination of your choice.
 
@@ -109,7 +107,7 @@ Open the project folder that contains the following files and folders
 
 3️⃣ The masks folder contains the exclusion masks raster data that supports the project.
 
-4️⃣ The images folder that contains the landsat images that support the project
+4️⃣ The images folder that contains the Landsat images that support the project
 
 ### Opening the GEA QGIS Project
 
