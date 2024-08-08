@@ -6,6 +6,7 @@ Manager that handles report generation.
 import datetime
 import os
 from pathlib import Path
+import shutil
 import typing
 
 from qgis.core import (
@@ -191,35 +192,43 @@ class ReportManager(QtCore.QObject):
             )
             return None
 
-        # Save project file
-        qgs_project_path = os.path.normpath(
+        # Save the project file in the current location then copy
+        # the project file for use in the report. Assumption is that the
+        # project is file-based.
+        status = QgsProject.instance().write()
+        if not status:
+            log(
+                f"Unable to save the current project.",
+                info=False
+            )
+            return None
+
+        current_qgs_project_path = QgsProject.instance().absoluteFilePath()
+        if not current_qgs_project_path:
+            log(
+                f"Unable to retrieve the file path of the current project.",
+                info=False
+            )
+            return None
+
+        # Copy project file to 'reports' folder
+        report_qgs_project_path = os.path.normpath(
             f"{report_dir}/{clean_filename(metadata.area_name)}.qgz"
         )
-
-        version = Qgis.versionInt()
-        storage_type = None
-        if version >= 32200:
-            storage_type = QgsProject.instance().filePathStorage()
-            QgsProject.instance().setFilePathStorage(Qgis.FilePathType.Absolute)
-
-        result = QgsProject.instance().write(qgs_project_path)
-
-        # Restore the original storage type
-        if version >= 32200 and storage_type is not None:
-            QgsProject.instance().setFilePathStorage(storage_type)
-
-        if not result:
+        try:
+            shutil.copy(current_qgs_project_path, report_qgs_project_path)
+        except (OSError, shutil.SameFileError):
             log(
-                f"Unable to save the current project to file.",
+                f"Unable to copy the project file in the 'reports' folder.",
                 info=False
-                )
+            )
             return None
 
         return SiteReportContext(
             metadata,
             feedback,
             project_folder,
-            qgs_project_path,
+            report_qgs_project_path,
             report_template_path
         )
 

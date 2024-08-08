@@ -308,7 +308,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         self.set_Label_value("country_label", self._metadata.country)
 
         # Area value
-        self.set_Label_value("site_area_label", self._metadata.computed_area)
+        self.set_Label_value("site_area_label", f"{self._metadata.computed_area} ha")
 
     def _set_project(self):
         """Deserialize the project from the report context."""
