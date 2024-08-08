@@ -49,19 +49,8 @@ nav:
                   - Quickstart: user/quickstart/index.md
                   - Guide:
                           - user/guide/index.md
-                          - Sign Up: user/guide/sign-up.md
-                          - Login: user/guide/login.md
-                          - Reports: user/guide/reports.md
                   - Manual :
                           - user/manual/index.md
-                          - Sign Up: user/manual/sign-up.md
-                          - Login: user/manual/login.md
-                          - Layer List: user/manual/layer-list.md
-                          - Image Style: user/manual/image-style.md
-                          - Reports: user/manual/reports.md
-                  - user/user-workflow.md
-                  - user/Appendix1.md
-
                  
         - Administrators:
                 - administrator/index.md

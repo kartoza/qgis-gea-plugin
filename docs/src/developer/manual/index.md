@@ -6,20 +6,3 @@ date: 2023-08-03
 ---
 
 # Python Reference Manual
-::: manage
-::: initialize
-::: core.context_processors
-::: core.urls
-::: core.asgi
-::: core.celery
-::: core.wsgi
-::: core.settings.contrib
-::: core.settings.utils
-::: core.settings.prod
-::: core.settings.project
-::: core.settings.base
-::: core.settings.dev
-::: frontend.urls
-::: frontend.admin
-::: frontend.views
-::: frontend.apps
