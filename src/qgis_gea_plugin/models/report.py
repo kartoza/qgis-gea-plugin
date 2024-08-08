@@ -39,6 +39,7 @@ class SiteMetadata:
     version: str
     area_name: str
     capture_date: str
+    computed_area: str
 
 
 @dataclasses.dataclass

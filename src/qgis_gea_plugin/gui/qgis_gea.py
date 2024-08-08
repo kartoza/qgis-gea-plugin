@@ -82,6 +82,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         # Date when project captured started
         self.capture_date = None
 
+        # Last captured area of the site
+        self.last_computed_area = ""
+
         self.clear_btn.clicked.connect(self.cancel_drawing)
 
         self.restore_settings()
@@ -602,6 +605,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             if geom is not None and geom.isGeosValid():
                 area = geom.area() / 10000
                 feature_area = f"{area:,.2f}"
+                log(f"Area: {feature_area}")
+                self.last_computed_area = feature_area
+
             # Set attribute values
             first_feature.setAttribute("site_ref", self.site_reference_le.text())
             first_feature.setAttribute("version", self.site_ref_version_le.text())
@@ -692,7 +698,8 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             self.site_reference_le.text(),
             self.site_ref_version_le.text(),
             self._get_area_name(),
-            self.capture_date
+            self.capture_date,
+            self.last_computed_area
         )
 
         submit_result = report_manager.generate_site_report(

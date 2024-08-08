@@ -62,6 +62,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             f"{tr('Generating site report for')}: {context.metadata.area_name}"
         )
         self._context = context
+        self._metadata = self._context.metadata
         self._feedback = self._context.feedback
         self._result = None
         self._layout = None
@@ -257,6 +258,11 @@ class SiteReportReportGeneratorTask(QgsTask):
         if self._check_feedback_cancelled_or_set_progress(45):
             return False
 
+        self._set_metadata_values()
+
+        if self._check_feedback_cancelled_or_set_progress(55):
+            return False
+
         # Save report layout in temporary file
         if not self._save_layout_to_file():
             return False
@@ -280,6 +286,29 @@ class SiteReportReportGeneratorTask(QgsTask):
         )
 
         return True
+
+    def _set_metadata_values(self):
+        """Set the site metadata values."""
+        # Inception date
+        self.set_Label_value("inception_date_label", self._metadata.inception_date)
+
+        # Site reference version
+        self.set_Label_value("site_version_label", self._metadata.version)
+
+        # Site reference
+        self.set_Label_value("site_reference_label", self._metadata.site_reference)
+
+        # Site capture date
+        self.set_Label_value("capture_date_label", self._metadata.capture_date)
+
+        # Author
+        self.set_Label_value("author_label", self._metadata.author)
+
+        # Country
+        self.set_Label_value("country_label", self._metadata.country)
+
+        # Area value
+        self.set_Label_value("site_area_label", self._metadata.computed_area)
 
     def _set_project(self):
         """Deserialize the project from the report context."""
@@ -370,6 +399,31 @@ class SiteReportReportGeneratorTask(QgsTask):
             return False
 
         return True
+
+    def set_Label_value(self, label_id: str, value: str):
+        """Sets the value of the label with the given ID.
+
+        If the label is not found in the layout, a corresponding
+        error message will be logged.
+
+        :param label_id: Label identifier in the layout.
+        :type label_id: str
+
+        :param value: Value to be set in the label.
+        :type value: str
+        """
+        if self._layout is None:
+            tr_msg = tr("Unable to set label value, layout not found.")
+            self._error_messages.append(tr_msg)
+            return
+
+        label_item = self._layout.itemById(label_id)
+        if label_item is None:
+            tr_msg = tr("not found in report template.")
+            self._error_messages.append(f"'{label_id}' {tr_msg}")
+            return
+
+        label_item.setText(value)
 
 
 def _load_layout_from_file(
