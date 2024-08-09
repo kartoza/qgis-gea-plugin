@@ -3,30 +3,16 @@
     Plugin utilities
 """
 
-import hashlib
-import json
 import os
-import uuid
-import datetime
 from pathlib import Path
 
 from qgis.PyQt import QtCore, QtGui
 from qgis.core import (
     Qgis,
-    QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
-    QgsCoordinateTransformContext,
-    QgsDistanceArea,
     QgsMessageLog,
-    QgsProcessingFeedback,
-    QgsProject,
-    QgsProcessing,
-    QgsRasterLayer,
-    QgsRectangle,
-    QgsUnitTypes,
 )
 
-
+from .definitions.defaults import SITE_REPORT_TEMPLATE_NAME
 
 
 def log(
@@ -106,3 +92,61 @@ def animation_state_change(value):
     log(f"{value}")
     pass
 
+
+class FileUtils:
+    """
+    Provides functionality for commonly used file- or dir-related
+    operations.
+    """
+
+    @staticmethod
+    def plugin_dir() -> str:
+        """Returns the root directory of the plugin.
+
+        :returns: Root directory of the plugin.
+        :rtype: str
+        """
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)))
+
+    @staticmethod
+    def report_template_path(file_name) -> str:
+        """Get the absolute path to the template file with the given name.
+        Caller needs to verify that the file actually exists.
+
+        :param file_name: Template file name including the extension.
+        :type file_name: str
+
+        :returns: The absolute path to the template file with the given name.
+        :rtype: str
+        """
+        absolute_path = f"{FileUtils.plugin_dir()}/data/report_templates/{file_name}"
+
+        return os.path.normpath(absolute_path)
+
+    @staticmethod
+    def site_report_template_path() -> str:
+        """Gets the path to the report template
+        (*.qpt) file.
+
+        :returns: Returns the absolute path to the
+        report template (*.qpt) file.
+        :rtype: str
+        """
+        return FileUtils.report_template_path(SITE_REPORT_TEMPLATE_NAME)
+
+    @staticmethod
+    def get_icon(file_name: str) -> QtGui.QIcon:
+        """Creates an icon based on the icon name in the 'icons' folder.
+
+        :param file_name: File name which should include the extension.
+        :type file_name: str
+
+        :returns: Icon object matching the file name.
+        :rtype: QtGui.QIcon
+        """
+        icon_path = os.path.normpath(f"{FileUtils.plugin_dir()}/icons/{file_name}")
+
+        if not os.path.exists(icon_path):
+            return QtGui.QIcon()
+
+        return QtGui.QIcon(icon_path)

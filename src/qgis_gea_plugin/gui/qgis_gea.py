@@ -35,8 +35,10 @@ from ..definitions.defaults import (
     SITE_GROUP_NAME,
     PLUGIN_ICON
 )
-
+from ..gui.report_progress_dialog import ReportProgressDialog
+from ..lib.reports.manager import report_manager
 from ..models.base import IMAGERY
+from ..models.report import SiteMetadata
 
 from ..resources import *
 from ..utils import animation_state_change, clean_filename, create_dir, log, tr
@@ -80,6 +82,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         # Date when project captured started
         self.capture_date = None
 
+        # Last captured area of the site
+        self.last_computed_area = ""
+
         self.clear_btn.clicked.connect(self.cancel_drawing)
 
         self.restore_settings()
@@ -92,6 +97,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.project_inception_date.dateChanged.connect(self.save_settings)
         self.country_cmb_box.currentIndexChanged.connect(self.save_settings)
 
+        self.report_btn.clicked.connect(self.on_generate_report)
 
         self.navigation_object = QgsTemporalNavigationObject(self)
         self.navigation_object.setFrameDuration(
@@ -408,10 +414,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         self.capture_date = datetime.now().strftime('%d%m%y')
 
-        area_name = (f"{self.site_reference_le.text()}_"
-                        f"{QgsProject.instance().baseName()}_"
-                        f"{self.country_cmb_box.currentText()}_"
-                        f"{self.capture_date}")
+        area_name = self._get_area_name()
 
         self.drawing_layer_path = f"{os.path.join(sites_path, clean_filename(area_name))}.shp"
 
@@ -498,6 +501,18 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         self.iface.actionAddFeature().trigger()
 
+    def _get_area_name(self):
+        """Get the area name.
+
+        :returns: Returns the area name.
+        :rtype: str
+        """
+        area_name = (f"{self.site_reference_le.text()}_"
+                     f"{QgsProject.instance().baseName()}_"
+                     f"{self.country_cmb_box.currentText()}_"
+                     f"{self.capture_date}")
+        return area_name
+
     def layer_feature_added(self, id):
         self.feature_count += 1
         if self.feature_count > 1:
@@ -525,34 +540,46 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                 config = QgsEditorWidgetSetup(setup, {})
                 layer.setEditorWidgetSetup(idx, config)
 
-    def save_area(self):
+    def is_project_info_valid(self) -> bool:
+        """Validates user input.
 
+        :returns: Returns True if the input is valid, else False.
+        :rtype: bool
+        """
         selected_date_time = self.project_inception_date.dateTime()
-
         if selected_date_time is None:
             self.show_message(
                 tr("Please add the project inception date before saving the project area"),
                 Qgis.Warning
             )
-            return
+            return False
         if self.site_reference_le.text() is None or self.site_reference_le.text().replace(' ', '') is '':
             self.show_message(
                 tr("Please add the site reference before saving the project area"),
                 Qgis.Warning
             )
-            return
+            return False
         if self.report_author_le.text() is None or self.report_author_le.text().replace(' ', '') is '':
             self.show_message(
                 tr("Please add the report generation author before saving the project area"),
                 Qgis.Warning
             )
-            return
+            return False
         if self.site_ref_version_le.text() is None or self.site_ref_version_le.text().replace(' ', '') is '':
             self.show_message(
                 tr("Please add the site reference version before saving the project area"),
                 Qgis.Warning
             )
+            return False
+
+        return True
+
+    def save_area(self):
+
+        if not self.is_project_info_valid():
             return
+
+        selected_date_time = self.project_inception_date.dateTime()
 
         # List of fields to enable editing on
         fields_to_enable = [
@@ -578,6 +605,8 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             if geom is not None and geom.isGeosValid():
                 area = geom.area() / 10000
                 feature_area = f"{area:,.2f}"
+                self.last_computed_area = feature_area
+
             # Set attribute values
             first_feature.setAttribute("site_ref", self.site_reference_le.text())
             first_feature.setAttribute("version", self.site_ref_version_le.text())
@@ -634,7 +663,6 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                 Qgis.Info
             )
 
-
     def show_message(self, message, level=Qgis.Warning):
         """Shows message on the main widget message bar.
 
@@ -647,7 +675,6 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.message_bar.clearWidgets()
         self.message_bar.pushMessage(message, level=level)
 
-
     def prepare_message_bar(self):
         """Initializes the widget message bar settings"""
         self.message_bar.setSizePolicy(
@@ -657,5 +684,36 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             self.message_bar, 0, 0, 1, 1, alignment=QtCore.Qt.AlignTop
         )
         self.dock_widget_contents.layout().insertLayout(0, self.grid_layout)
+
+    def on_generate_report(self):
+        """Slot raised to initiate the generation of a site report."""
+        if not self.is_project_info_valid():
+            return
+
+        metadata = SiteMetadata(
+            self.country_cmb_box.currentText(),
+            self.project_inception_date.dateTime().toString("MMyy"),
+            self.report_author_le.text(),
+            self.site_reference_le.text(),
+            self.site_ref_version_le.text(),
+            self._get_area_name(),
+            self.capture_date,
+            self.last_computed_area
+        )
+
+        submit_result = report_manager.generate_site_report(
+            metadata,
+            self.project_folder.filePath()
+        )
+        if not submit_result.success:
+            self.message_bar.pushWarning(
+                tr("Site Report Error"),
+                tr("Unable to submit request for report. See logs for more details.")
+            )
+            return
+
+        self.report_progress_dialog = ReportProgressDialog(submit_result)
+        self.report_progress_dialog.setModal(False)
+        self.report_progress_dialog.show()
 
 
