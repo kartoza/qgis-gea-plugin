@@ -9,40 +9,34 @@ import traceback
 import typing
 
 from qgis.core import (
-    Qgis,
-    QgsBasicNumericFormat,
-    QgsFeedback,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsFillSymbol,
-    QgsLayerTreeNode,
     QgsLayoutExporter,
-    QgsLayoutItemLabel,
-    QgsLayoutItemLegend,
-    QgsLayoutItemManualTable,
     QgsLayoutItemMap,
-    QgsLayoutItemPage,
-    QgsLayoutItemPicture,
-    QgsLayoutItemScaleBar,
-    QgsLayoutItemShape,
-    QgsLayoutPoint,
-    QgsLayoutSize,
-    QgsMapLayerLegendUtils,
-    QgsNumericFormatContext,
+    QgsMapLayer,
     QgsPrintLayout,
-    QgsProcessingFeedback,
     QgsProject,
-    QgsRasterLayer,
     QgsReadWriteContext,
-    QgsLegendRenderer,
-    QgsLegendStyle,
-    QgsScaleBarSettings,
+    QgsRectangle,
     QgsTask,
-    QgsTableCell,
-    QgsTextFormat,
-    QgsUnitTypes,
+    QgsVectorLayer
 )
 
-from qgis.PyQt import QtCore, QtGui, QtXml
+from qgis.PyQt import QtCore, QtXml
 
+from ...definitions.defaults import (
+    ADMIN_AREAS_GROUP_NAME,
+    DETAILED_ZOOM_OUT_FACTOR,
+    DISTRICTS_NAME_SEGMENT,
+    EXCLUSION_MASK_GROUP_NAME,
+    GOOGLE_LAYER_NAME,
+    MASK_NAME_SEGMENT,
+    OVERVIEW_ZOOM_OUT_FACTOR,
+    REPORT_SITE_BOUNDARY_STYLE,
+    SITE_GROUP_NAME
+)
+from ...models.base import LayerNodeSearch
 from ...models.report import (
     SiteReportContext,
     ReportOutputResult
@@ -71,6 +65,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._output_layout_path = ""
         self._base_layout_name = ""
         self._output_report_layout = None
+        self._site_layer = None
 
     @property
     def context(self) -> SiteReportContext:
@@ -162,7 +157,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             log(
                 f"Errors occurred when generating the site "
                 f"report for {self._context.metadata.area_name}."
-                f" See details: ",
+                f" See details below: ",
                 info=False,
             )
             for err in self._result.errors:
@@ -251,23 +246,34 @@ class SiteReportReportGeneratorTask(QgsTask):
         # Load report template
         if not self._load_template():
             return False
+
         # Assert template has been set
         if self._layout is None:
             return False
 
-        if self._check_feedback_cancelled_or_set_progress(45):
+        if self._check_feedback_cancelled_or_set_progress(35):
             return False
 
         self._set_metadata_values()
 
-        if self._check_feedback_cancelled_or_set_progress(55):
+        if self._check_feedback_cancelled_or_set_progress(45):
+            return False
+
+        self._set_site_layer()
+
+        if self._check_feedback_cancelled_or_set_progress(50):
+            return False
+
+        self._set_map_items_zoom_level()
+
+        if self._check_feedback_cancelled_or_set_progress(75):
             return False
 
         # Save report layout in temporary file
         if not self._save_layout_to_file():
             return False
 
-        if self._check_feedback_cancelled_or_set_progress(75):
+        if self._check_feedback_cancelled_or_set_progress(80):
             return False
 
         # Export report to PDF
@@ -282,7 +288,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             True,
             self._context.report_dir,
             self._base_layout_name,
-            tuple()
+            tuple(self._error_messages)
         )
 
         return True
@@ -290,37 +296,356 @@ class SiteReportReportGeneratorTask(QgsTask):
     def _set_metadata_values(self):
         """Set the site metadata values."""
         # Inception date
-        self.set_Label_value("inception_date_label", self._metadata.inception_date)
+        self.set_label_value("inception_date_label", self._metadata.inception_date)
 
         # Site reference version
-        self.set_Label_value("site_version_label", self._metadata.version)
+        self.set_label_value("site_version_label", self._metadata.version)
 
         # Site reference
-        self.set_Label_value("site_reference_label", self._metadata.site_reference)
+        self.set_label_value("site_reference_label", self._metadata.site_reference)
 
         # Site capture date
-        self.set_Label_value("capture_date_label", self._metadata.capture_date)
+        self.set_label_value("capture_date_label", self._metadata.capture_date)
 
         # Author
-        self.set_Label_value("author_label", self._metadata.author)
+        self.set_label_value("author_label", self._metadata.author)
 
         # Country
-        self.set_Label_value("country_label", self._metadata.country)
+        self.set_label_value("country_label", self._metadata.country)
 
         # Area value
-        self.set_Label_value("site_area_label", f"{self._metadata.computed_area} ha")
+        self.set_label_value("site_area_label", f"{self._metadata.computed_area} ha")
+
+    def _get_layer_from_node_name(
+            self,
+            node_name: str,
+            search_type: LayerNodeSearch = LayerNodeSearch.EXACT_MATCH,
+            group_name: str = ""
+    ) -> typing.Optional[QgsMapLayer]:
+        """Gets the map layer from the corresponding name of the layer
+        tree item.
+
+        :param node_name: Name of the layer tree item.
+        :type node_name: str
+
+        :param search_type: Whether to perform an exact matching
+        string or whether it contains a sub-string specified in the
+        `node_name`. Default is EXACT_MATCH
+        :type search_type: LayerNodeSearch
+
+        :param group_name: Whether to limit the search to layers in
+        the layer group with the given name.
+        :type group_name: str
+
+        :returns: Returns the first corresponding map layer or None if
+        not found.
+        :rtype: QgsMapLayer
+        """
+        root_tree = self._project.layerTreeRoot()
+
+        matching_node = None
+        for node in root_tree.findLayers():
+            if group_name:
+                if node.parent() and node.parent().name() == group_name:
+                    for child in node.parent().children():
+                        if search_type == LayerNodeSearch.EXACT_MATCH \
+                                and child.name() == node_name:
+                            matching_node = child
+                            break
+                        elif search_type == LayerNodeSearch.CONTAINS \
+                                and node_name in child.name():
+                            matching_node = child
+                            break
+            else:
+                if search_type == LayerNodeSearch.EXACT_MATCH \
+                        and node.name() == node_name:
+                    matching_node = node
+                    break
+                elif search_type == LayerNodeSearch.CONTAINS \
+                        and node_name in node.name():
+                    matching_node = node
+                    break
+
+        if matching_node is None:
+            tr_msg = tr("layer node not found.")
+            self._error_messages.append(f"{node_name} {tr_msg}")
+            return None
+
+        return matching_node.layer()
+
+    def _get_map_item_by_id(self, map_id: str) -> typing.Optional[QgsLayoutItemMap]:
+        """Gets a map item corresponding to the given identifier.
+
+        :param map_id: Map item identifier.
+        :type map_id: str
+
+        :returns: Returns the first map item matching the
+        given ID else None if not found.
+        :rtype: QgsLayoutItemMap
+        """
+        map_item = self._layout.itemById(map_id)
+        if map_item is None:
+            tr_msg = tr("not found in report template.")
+            self._error_messages.append(f"'{map_id}' {tr_msg}")
+            return None
+
+        return map_item
+
+    def _set_site_layer(self):
+        """Fetch the site boundary layer saved in the project's
+        'sites' boundary folder.
+        """
+        site_path = f"{self._context.project_dir}/sites/" \
+                    f"{clean_filename(self._metadata.area_name)}.shp"
+
+        if not os.access(site_path, os.R_OK):
+            tr_msg = tr(
+                "Current user does not have permission to read the "
+                "site boundary shapefile"
+            )
+            self._error_messages.append(tr_msg)
+            return
+
+        p = Path(site_path)
+        if not p.exists():
+            tr_msg = tr("Site boundary shapefile does not exist")
+            self._error_messages.append(f"{tr_msg} {site_path}")
+            return
+
+        site_layer = QgsVectorLayer(site_path, "Site Boundary", "ogr")
+        if not site_layer.isValid():
+            tr_msg = tr("Site boundary shapefile is invalid")
+            self._error_messages.append(tr_msg)
+            return
+
+        # We need to update the data source of the site layer in the
+        # project since it was only saved as a memory layer.
+        project_site_layer = self._get_layer_from_node_name(
+            self._metadata.area_name,
+            LayerNodeSearch.EXACT_MATCH,
+            SITE_GROUP_NAME
+        )
+        if project_site_layer is None:
+            tr_msg = tr("Reference site layer not found in the project.")
+            self._error_messages.append(tr_msg)
+            return
+
+        project_site_layer.setDataSource(
+            site_layer.source(),
+            project_site_layer.name(),
+            site_layer.providerType(),
+            site_layer.dataProvider().ProviderOptions()
+        )
+
+        site_symbol = QgsFillSymbol.createSimple(REPORT_SITE_BOUNDARY_STYLE)
+        project_site_layer.renderer().setSymbol(site_symbol)
+        project_site_layer.triggerRepaint()
+
+        self._site_layer = project_site_layer
+
+    def _set_map_items_zoom_level(self):
+        """Set zoom levels of map items."""
+        if self._site_layer is None:
+            tr_msg = tr("Site layer not found or shapefile is invalid.")
+            self._error_messages.append(tr_msg)
+            return
+
+        site_extent = self._site_layer.extent()
+
+        exclusion_layer = self._get_layer_from_node_name(
+            MASK_NAME_SEGMENT,
+            LayerNodeSearch.CONTAINS,
+            EXCLUSION_MASK_GROUP_NAME
+        )
+
+        district_layer = self._get_layer_from_node_name(
+            DISTRICTS_NAME_SEGMENT,
+            LayerNodeSearch.CONTAINS,
+            ADMIN_AREAS_GROUP_NAME
+        )
+
+        # Overview site map
+        overview_map = self._get_map_item_by_id("site_location_overview_map")
+        if overview_map:
+            # We use this to control the overview extent i.e. ensure we do
+            # not zoom out beyond the national extent.
+            district_extent = None
+            if district_layer:
+                district_extent = self._transform_extent(
+                    district_layer.extent(),
+                    district_layer.crs(),
+                    overview_map.crs()
+                )
+
+            # Transform extent
+            overview_extent = self._transform_extent(
+                site_extent,
+                self._site_layer.crs(),
+                overview_map.crs()
+            )
+            if overview_extent.isNull():
+                tr_msg = tr("Invalid extent for setting in the overview map.")
+                self._error_messages.append(tr_msg)
+            else:
+                # Zoom out by factor
+                overview_extent.scale(OVERVIEW_ZOOM_OUT_FACTOR)
+
+                if district_extent:
+                    if district_extent.contains(overview_extent):
+                        overview_map.zoomToExtent(overview_extent)
+                    else:
+                        overview_map.zoomToExtent(district_extent)
+                else:
+                    overview_map.zoomToExtent(overview_extent)
+
+                overview_map.refresh()
+
+        # Detailed site map
+        detailed_map = self._get_map_item_by_id("site_location_detailed_map")
+        detailed_extent = None
+        if detailed_map:
+            # Transform extent
+            detailed_extent = self._transform_extent(
+                site_extent,
+                self._site_layer.crs(),
+                detailed_map.crs()
+            )
+
+            if detailed_extent.isNull():
+                tr_msg = tr("Invalid extent for setting in the detailed map.")
+                self._error_messages.append(tr_msg)
+            else:
+                theme = detailed_map.followVisibilityPresetName()
+                detailed_map_layers = [self._site_layer]
+                detailed_map_layers.extend(self._get_layers_in_theme(theme))
+                detailed_map.setFollowVisibilityPreset(False)
+                detailed_map.setFollowVisibilityPresetName("")
+                detailed_map.setLayers(detailed_map_layers )
+
+                # Zoom out by factor
+                detailed_extent.scale(DETAILED_ZOOM_OUT_FACTOR)
+                detailed_map.zoomToExtent(detailed_extent)
+
+                detailed_map.refresh()
+
+        # Current imagery with mask map
+        current_mask_map = self._get_map_item_by_id("current_mask_map")
+        if current_mask_map and detailed_extent:
+            # Transform extent
+            current_imagery_extent = self._transform_extent(
+                detailed_extent,
+                self._site_layer.crs(),
+                current_mask_map.crs()
+            )
+
+            if current_imagery_extent.isNull():
+                tr_msg = tr(
+                    "Invalid extent for setting in the current imagery "
+                    "with mask map."
+                )
+                self._error_messages.append(tr_msg)
+            else:
+                theme = current_mask_map.followVisibilityPresetName()
+                current_mask_layers = [self._site_layer]
+                current_mask_layers.extend(self._get_layers_in_theme(theme))
+                current_mask_map.setFollowVisibilityPreset(False)
+                current_mask_map.setFollowVisibilityPresetName("")
+                current_mask_map.setLayers(current_mask_layers)
+                current_mask_map.zoomToExtent(current_imagery_extent)
+                current_mask_map.refresh()
+
+        # Current imagery with no-mask map
+        current_no_mask_map = self._get_map_item_by_id("current_no_mask_map")
+        if current_no_mask_map and detailed_extent:
+            # Transform extent
+            current_no_mask_imagery_extent = self._transform_extent(
+                detailed_extent,
+                self._site_layer.crs(),
+                current_no_mask_map.crs()
+            )
+
+            if current_no_mask_imagery_extent.isNull():
+                tr_msg = tr(
+                    "Invalid extent for setting in the current imagery "
+                    "with no-mask map."
+                )
+                self._error_messages.append(tr_msg)
+            else:
+                theme = current_no_mask_map.followVisibilityPresetName()
+                current_no_mask_layers = [self._site_layer]
+                current_no_mask_layers.extend(self._get_layers_in_theme(theme))
+                current_no_mask_map.setFollowVisibilityPreset(False)
+                current_no_mask_map.setFollowVisibilityPresetName("")
+                current_no_mask_map.setLayers(current_no_mask_layers)
+                current_no_mask_map.zoomToExtent(current_no_mask_imagery_extent)
+                current_no_mask_map.refresh()
+
+    def _get_layers_in_theme(self, theme_name: str) -> typing.List[QgsMapLayer]:
+        """Returns the visible map layers in the given theme.
+
+        :param theme_name: Name of the theme containing map layers.
+        :type theme_name: str
+
+        :returns: Returns the list of visible map layers or an empty list.
+        :rtype: list
+        """
+        theme_collection = self._project.mapThemeCollection()
+        theme = theme_collection.mapThemeState(theme_name)
+        if theme is None:
+            return []
+
+        return [record.layer() for record in theme.layerRecords()]
+
+    def _transform_extent(
+            self,
+            extent: QgsRectangle,
+            source_crs: QgsCoordinateReferenceSystem,
+            target_crs: QgsCoordinateReferenceSystem
+    ) -> QgsRectangle:
+        """Transform the extent from the given source CRS to the target CRS.
+
+        :param extent: Extent to be reprojected.
+        :type extent: QgsRectangle
+
+        :param source_crs: CRS of the input extent.
+        :type source_crs: QgsCoordinateReferenceSystem
+
+        :param target_crs: Target CRS of the output extent.
+        :type target_crs: QgsCoordinateReferenceSystem
+
+        :returns: Returns the reprojected extent.
+        :rtype: QgsRectangle
+        """
+        if source_crs == target_crs:
+            return extent
+
+        if source_crs is None or target_crs is None:
+            return extent
+
+        try:
+            coordinate_xform = QgsCoordinateTransform(
+                source_crs,
+                target_crs,
+                self._project
+            )
+            return coordinate_xform.transformBoundingBox(extent)
+        except Exception as e:
+            tr_msg = tr("using the default input extent")
+            self._error_messages.append(f"{e}, {tr_msg}")
+
+        return extent
 
     def _set_project(self):
         """Deserialize the project from the report context."""
         if not self._context.qgs_project_path:
-            tr_msg = tr("Project file not specified.")
+            tr_msg = tr("Project file not specified")
             self._error_messages.append(tr_msg)
             return
 
         else:
             if not os.access(self._context.qgs_project_path, os.R_OK):
                 tr_msg = tr(
-                    "Current user does not have permission to read the project file."
+                    "Current user does not have permission to read the project file"
                 )
                 self._error_messages.append(tr_msg)
                 return
@@ -328,14 +653,19 @@ class SiteReportReportGeneratorTask(QgsTask):
             p = Path(self._context.qgs_project_path)
             if not p.exists():
                 tr_msg = tr("Project file does not exist")
-                self._error_messages.append(f"{tr_msg} {self._context.qgs_project_path}.")
+                self._error_messages.append(f"{tr_msg} {self._context.qgs_project_path}")
                 return
 
         project = QgsProject()
         result = project.read(self._context.qgs_project_path)
         if not result:
             tr_msg = tr("Unable to read the project file")
-            self._error_messages.append(f"{tr_msg} {self._context.qgs_project_path}.")
+            self._error_messages.append(f"{tr_msg} {self._context.qgs_project_path}")
+            return
+
+        if project.error():
+            tr_msg = tr("Error in project file")
+            self._error_messages.append(f"{tr_msg}: {project.error()}")
             return
 
         self._project = project
@@ -400,7 +730,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         return True
 
-    def set_Label_value(self, label_id: str, value: str):
+    def set_label_value(self, label_id: str, value: str):
         """Sets the value of the label with the given ID.
 
         If the label is not found in the layout, a corresponding

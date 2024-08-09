@@ -605,7 +605,6 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             if geom is not None and geom.isGeosValid():
                 area = geom.area() / 10000
                 feature_area = f"{area:,.2f}"
-                log(f"Area: {feature_area}")
                 self.last_computed_area = feature_area
 
             # Set attribute values

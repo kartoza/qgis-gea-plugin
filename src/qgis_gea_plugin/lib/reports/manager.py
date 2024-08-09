@@ -193,8 +193,12 @@ class ReportManager(QtCore.QObject):
             return None
 
         # Save the project file in the current location then copy
-        # the project file for use in the report. Assumption is that the
-        # project is file-based.
+        # the project file for use in the report.
+        storage_type = None
+        if Qgis.versionInt() >= 32200:
+            storage_type = QgsProject.instance().filePathStorage()
+            QgsProject.instance().setFilePathStorage(Qgis.FilePathType.Absolute)
+
         status = QgsProject.instance().write()
         if not status:
             log(
@@ -223,6 +227,10 @@ class ReportManager(QtCore.QObject):
                 info=False
             )
             return None
+
+        # Reset to the original file storage type
+        if Qgis.versionInt() >= 32200 and storage_type is not None:
+            QgsProject.instance().setFilePathStorage(storage_type)
 
         return SiteReportContext(
             metadata,
