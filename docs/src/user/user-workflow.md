@@ -2,7 +2,7 @@
 
 ## Project Folder Overview
 
-![Workflow](./img/user-workflow-1.png)
+![Workflow](./img/GEA-user-workflows.png)
 
 The project folder is stored at the `Head office` and can be downloaded by the `Field Office`. The folder should contain:
 
