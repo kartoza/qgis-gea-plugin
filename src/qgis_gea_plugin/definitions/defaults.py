@@ -43,4 +43,29 @@ COUNTRY_NAMES = [
     "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
 ]
 
+ADMIN_AREAS_GROUP_NAME = "Administrative Areas"
+DISTRICTS_NAME_SEGMENT = "Districts"
+EXCLUSION_MASK_GROUP_NAME = "Exclusion Masks"
+GOOGLE_LAYER_NAME: str = "Google Satellite (latest)"
+LANDSAT_IMAGERY_GROUP_NAME = "Historical Landsat Imagery"
+LANDSAT_2013_LAYER_SEGMENT = "Landsat 2013"
+MASK_NAME_SEGMENT = "Mask"
+RECENT_IMAGERY_GROUP_NAME = "Recent Nicfi Imagery"
 SITE_GROUP_NAME = "Proposed Site Boundaries"
+
+SITE_REPORT_TEMPLATE_NAME = "reforestation_site.qpt"
+
+OVERVIEW_ZOOM_OUT_FACTOR = 13
+DETAILED_ZOOM_OUT_FACTOR = 3
+
+# Style for the site boundary polygon in the report
+REPORT_SITE_BOUNDARY_STYLE = {
+    "style": "no",
+    "outline_style": "solid",
+    "outline_color": "0,0,0,255",
+    "outline_width": "0.7",
+    "outline_width_unit": "MM",
+    "joinstyle": "round"
+}
+
+REPORT_LANDSCAPE_DESCRIPTION_SUFFIX = "with and without exclusion masks and proposed site:"
