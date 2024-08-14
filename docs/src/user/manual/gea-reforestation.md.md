@@ -2,11 +2,11 @@
 
 ![Shared folder](./img/gea-reforestation-1.png)
 
-1. **Preparing the QGIS Project:** To start using the GEA Reforestation QGIS Plugin, you need to extract the project folder shared by the Head office.
+1. **Preparing the QGIS Project:** To start using the GEA Reforestation Tool, you need to extract the project folder shared by the Head office.
 
     ![Extracted folders](./img/gea-reforestation-2.png)
 
-    After extracting the shared folder the extracted folder will shown. Click on the extracted folder to view the files/folders. The project folder should contain the following files/folders:
+    After extracting the .zip folder the extracted folder will show in the location you have specified. Click on the extracted folder to view the files/folders inside. The project folder should contain the following files/folders:
 
     * Masks: This folder contains Exclusion Masks data.
     * Images: This folder contains historical Landsat imagery data.
@@ -59,7 +59,7 @@
 
     ### 3.4 Layer List
 
-    The user can use the QGIS project with emphasis on the Layers List panel effectively. The Layers List for all of the areas of interest (`Malawi 2` shown here) includes the following :
+    The user can use the QGIS project with emphasis on the Layers List panel to contextualise and review the area of interest. The Layers List for all of the areas of interest (`Malawi 2` shown here) includes the following:
 
     ![Layers List](./img/layer-list-1.png)
 
