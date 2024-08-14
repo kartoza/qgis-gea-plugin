@@ -6,11 +6,11 @@
                 <version>0.0.17de</version>
                 <qgis_minimum_version>3.0</qgis_minimum_version>
                 <homepage><![CDATA[https://github.com/kartoza/qgis-gea-plugin]]></homepage>
-                <file_name>qgis_gea_plugin.0.0.1.zip</file_name>
+                <file_name>qgis_gea_plugin.0.0.17dev.zip</file_name>
                 <icon>icon.png</icon>
                 <author_name><![CDATA[Kartoza]]></author_name>
-                <download_url>https://github.com/kartoza/qgis-gea-plugin/releases/download/v0.0.17dev/qgis_gea_plugin.0.0.1.zip</download_url>
-                <update_date>2024-08-14 12:06:41</update_date>
+                <download_url>https://github.com/kartoza/qgis-gea-plugin/releases/download/v0.0.17dev/qgis_gea_plugin.0.0.17dev.zip</download_url>
+                <update_date>2024-08-14 12:39:02</update_date>
                 <experimental>False</experimental>
                 <deprecated>False</deprecated>
                 <tracker><![CDATA[https://github.com/kartoza/qgis-gea-plugin/issues]]></tracker>
