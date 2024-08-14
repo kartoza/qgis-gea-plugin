@@ -714,22 +714,29 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.project_inception_date.clear()
         self.country_cmb_box.setCurrentIndex(-1)
 
-        if self.drawing_layer:
-            self.drawing_layer.commitChanges()
-            QgsProject.instance().removeMapLayer(self.drawing_layer)
-            self.iface.mapCanvas().refresh()
+        try:
+            if self.drawing_layer:
+                self.drawing_layer.commitChanges()
+                QgsProject.instance().removeMapLayer(self.drawing_layer)
+                self.iface.mapCanvas().refresh()
 
+                self.show_message(
+                    tr("Cleared the project input fields and area successfully."),
+                    Qgis.Info
+                )
+
+                self.drawing_layer = None
+            else:
+                self.show_message(
+                    tr("Cleared the project input fields."),
+                    Qgis.Info
+                )
+        except RuntimeError as e:
             self.show_message(
                 tr("Cleared the project input fields and area successfully."),
                 Qgis.Info
             )
-
-            self.drawing_layer = None
-        else:
-            self.show_message(
-                tr("Cleared the project input fields."),
-                Qgis.Info
-            )
+            log(f"Encountered an error when clearing the project drawn area.")
 
     def show_message(self, message, level=Qgis.Warning):
         """Shows message on the main widget message bar.

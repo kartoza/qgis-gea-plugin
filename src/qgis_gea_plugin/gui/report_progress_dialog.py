@@ -98,12 +98,15 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         self.btn_open_pdf.setEnabled(False)
         self._set_close_state()
         tr_msg = tr(
-            "Error occurred during report generation. "
+            f"Error occurred during report generation. "
+            f"{self._task.error_messages}"
             "\nSee logs for more information"
         )
         self.lbl_message.setText(tr_msg)
 
-        log(tr("Error generating report, see logs for more info."))
+        log(tr(f"Error generating report, {self._task.error_messages} \n"))
+
+        log(tr(f"{self._task._result.errors}")) if self._task._result else None
 
     @property
     def report_result(self) -> typing.Optional[ReportOutputResult]:
