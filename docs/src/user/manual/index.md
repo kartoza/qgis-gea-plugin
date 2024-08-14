@@ -20,8 +20,8 @@ you may prefer to work through our [user guide](../guide/index.md).
 
 * **[Login:](login.md)** This page will show how the user can `log in` to Planet Explorer.
 
-* **[Layer List:](layer-list.md)** The Layer List is an essential tool that allows users to manage and interact with various map layers effectively. This documentation provides detailed instructions on how to use the Layer List to optimise their mapping experience.
+* **[GEA Reforestation:](gea-reforestation.md)** This documentation provides detailed instructions on what to do with the shared project and how to open it with QGIS also explains some useful options that users can use in the QGIS.
 
-* **[Image Style:](Image-style.md)** This page will show how the user can style the image for the better experience.
+* **[Image Style:](Image-style.md)** This page will show how the user can style the image for a better experience.
 
 * **[Reports:](reports.md)** This page will show how the user can generate the reports.
