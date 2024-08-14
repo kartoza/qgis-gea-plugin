@@ -39,7 +39,8 @@ For each project area, a series of raster-based exclusion “masks” have been 
 **4.1	Forest and Grassland Exclusion Masks**
 **4.1.2	Reference Land-Cover Datasets**
 
-Both the forest and grassland exclusion masks are derived from the time-series land-cover (LC) datasets that have been specifically generated for this project. The time-series LC datasets represent the 2003, 2013 and 2023 landscapes, and have been modelled from archival Landsat imagery. All available and suitable Landsat image acquisition dates within a target calendar year have been used, to ensure a multi-seasonal representation of landscape characteristics, and minimize any single-season interpretation bias. 
+Both the forest and grassland exclusion masks are derived from the time-series land-cover (LC) datasets that have been specifically generated for this project. The time-series LC datasets represent the 2003, 2013 and 2023 landscapes, and have been modelled from archival Landsat imagery. All available and suitable Landsat image acquisition dates within a target calendar year have been used, to ensure a multi-seasonal representation of landscape characteristics, and minimize any single-season interpretation bias.
+
 The Landsat-based time-series LC datasets have all been time-extrapolated backward and forwards using models trained on an independently generated 2019 base reference LC dataset.
 
 The 2019 base reference LC data has been generated from multi-date 20m resolution Sentinel-2 imagery, representing both the 2019 calendar year (i.e. 01-2019 to 12-2019) and the 2019 growth years (i.e. 07-2018 to 06-2019 and 07-2019 to 06-2020), in conjunction with the GLAD/GEDI 2019 global tree canopy height data. The use of both a target calendar year and overlapping growth years helps minimize any seasonal anomalies resulting from drought or excessively wet periods. The Sentinel-2 LC modelling procedure is the GeoTerraImage in-house capability that leverages cloud archive and cloud computing capabilities to enable the auto-generation of standardized land-cover characteristics, that are based on all available and suitable Sentinel image acquisition dates within the target window.
@@ -65,11 +66,27 @@ Table 1 provides definitions of each of the image-modelled LC classes contained 
 
 The final inclusion and spatial extent of each legend class in the LC classification is controlled by the temporal occurrence of that class in the landscape; with permanency thresholds being adapted to local conditions. For example, a raster cell may only become coded as water if water occurred in that cell at least 5/12 months in the target calendar year. These thresholds are adapted for each landscape, using Google Earth imagery as a visual reference guide to determining appropriate values. For all other water occurrences, alternative LC classes would be allocated, based on other LC occurrence thresholds.
 
-The Sentinel-2 2019 reference LC dataset is generated with a 20m raster resolution format, equivalent to the source imagery. All the Landsat-generated time-series LCs are generated in a standardized 25m (re-sampled) resolution format. All derived final exclusion masks are also generated as a standardized 25m equivalent raster resolution. Figure 1 is a schematic of the LC modelling process used to generate the 2019 reference LC, and the ultimate target year LC’s.
+The Sentinel-2 2019 reference LC dataset is generated with a 20m raster resolution format,
+equivalent to the source imagery. All the Landsat-generated time-series LCs are presented in a
+standardized 25m output format, which represents a re-sampling from the original 30m source data
+resolution. The 25m standard raster resolution is used as the most appropriate format to integrate
+the 20m Sentinel and 30m Landsat derived data outcomes. All derived final exclusion masks are also
+generated as a standardized 25m equivalent raster resolution. Figure 1 is a schematic of the LC
+modelling process used to generate the 2019 reference LC, and the ultimate target year LC’s.
 
 ![Figure 1](./img/figure-1.png)
 
 Figure 1. Schematic representation of the processing steps to first generate the 2019 base reference LC from multi-date Sentinel-2 imagery, and subsequently the time-series LC datasets, also from multi-date Landsat imagery.
+
+Figure 2 provides an example of the Landsat-data generated 2023 base land-cover for the Malawi-
+south Project Zone, which has been derived using training data extracted from the 2019 Sentinel-2
+based land-cover dataset. The example has been terrain shaded in order to help visualise and
+contextualise this land-cover content across the target landscape.
+
+![Figure 2](./img/figure-2.png)
+
+Figure 2. Terrain-enhanced 2023 base land-cover classification, derived from multi-seasonal Landsat
+imagery, for the Malawi-south Project Zone extent.
 
 **4.1.3	Generation of Forest & Grassland Exclusion Masks**
 
@@ -95,10 +112,10 @@ Table 3. Country-specific combinations of LC classes used to generate the Forest
 
 **4.2 Wetland Exclusion Mask Generation**
 
-The wetland exclusion mask has been constructed using terrain profiling models applied to the 30m resolution ESA Copernicus global terrain dataset. Spatial modelling is used to generate a detailed stream-flow coverage, and then derived cross-channel profiles, for all positions along all stream-flow lines. The cross-channel profile is used to derive a spatial indication of all terrain localities with the potential to support local inundation and water retention, and therefore possible wetland occurrence. The terrain-only modelling is then modified by integration with image derived land-cover content, to ensure that potential wetland extents are limited to areas of seasonally dominant low vegetation cover; and exclude tall woody vegetation and non-vegetated bare areas; and areas of permanent water. 
+The wetland exclusion mask has been constructed using terrain profiling models applied to the 30m resolution ESA Copernicus global terrain dataset. Spatial modelling is used to generate a detailed stream-flow coverage, and then derived cross-channel profiles, for all positions along all stream-flow lines. The cross-channel profile is used to derive a spatial indication of all-terrain localities with the potential to support local inundation and water retention, and therefore possible wetland occurrence. The terrain-only modelling is then modified by integration with image-derived land-cover content, to ensure that potential wetland extents are limited to areas of seasonally dominant low vegetation cover; and exclude tall woody vegetation and non-vegetated bare areas; and areas of permanent water. 
 
 **4.3 Soil Exclusion Mask Generation.**
-The soil exclusion mask represents areas of very high soil carbon content, and is a proxy for peatland occurrence. The soil mask has been constructed using open-source data from the global ISRIC soil database. Soil carbon content has been derived from the 250m resolution ISRIC soil organic carbon (dg/kg) data, using the combined content of depth profiles 0-5, 5-15 and 15-30cm. 
+The soil exclusion mask represents areas of very high soil carbon content and is a proxy for peatland occurrence. The soil mask has been constructed using open-source data from the global ISRIC soil database. Soil carbon content has been derived from the 250m resolution ISRIC soil organic carbon (dg/kg) data, using the combined content of depth profiles 0-5, 5-15 and 15-30cm. 
 
 The determination of high carbon (aka peat) soils has followed FAO guidelines: Organic soils are identified based on criteria 1 and 2, or 1 and 3 listed below (FAO 1998): (1) Thickness of organic horizon greater than or equal to 10 cm. A horizon of less than 20 cm must have 12 percent or more organic carbon when mixed to a depth of 20 cm. (2) Soils that are never saturated with water for more than a few days must contain more than 20 percent organic carbon by weight (i.e., about 35 percent organic matter), and (3) Soils are subject to water saturation episodes and has either: (i) At least 12 percent organic carbon by weight (i.e., about 20 percent organic matter) if the soil has no clay; or (ii) or at least 18 percent organic carbon by weight (i.e., about 30 percent organic matter) if the soil has 60% or more clay; or (iii) an intermediate proportional amount of organic carbon for intermediate amounts of clay. 
 
@@ -112,41 +129,54 @@ The original content format of the forest, grassland and wetland exclusion masks
 
 **4.4.1	Forest and Grassland Exclusion Mask Modifications**
 
-Both the forest and grassland exclusion masks have been content modified to align with a minimum feature area of 0.5 Ha. This 0.5 Ha area is equivalent to 8 raster cells, when raster cell resolution is equivalent to 25 x 25m. All exclusion content classified cells that are considered interconnected clusters based on shared cell edges or cell corners have been removed from the exclusion mask content. This spatially cleaning process also results in a “cleaner” exclusion area coverage, resulting from the removal of small, isolated exclusion cells, commonly referred to as “salt-and-pepper” data pattern noise. No change has been made to any potential re-afforestation areas (not covered by exclusion mask content), regardless of the areas involved.
+Both the forest and grassland exclusion masks have been content modified to align with a minimum feature area of 0.5 Ha. This 0.5 Ha area is equivalent to 8 raster cells when raster cell resolution is equivalent to 25 x 25m. All exclusion content classified cells that are considered interconnected clusters based on shared cell edges or cell corners have been removed from the exclusion mask content. This spatially cleaning process also results in a “cleaner” exclusion area coverage, resulting from the removal of small, isolated exclusion cells, commonly referred to as “salt-and-pepper” data pattern noise. No change has been made to any potential re-afforestation areas (not covered by exclusion mask content), regardless of the areas involved.
 
 Both the modified forest and grassland masks have had all overlapping areas with the wetland mask removed, so that all forest, grassland and wetland masks are all spatially exclusive against each other.
 
 **4.4.2	Wetland Exclusion Mask Modifications**
 
-The wetland exclusion mask has been content modified to better represent landscape contiguous (wetland) features, and remove model-generated “salt & pepper” data pattern noise. Specifically, this has involved the in-filling of small non-classified data “holes” within and surrounded by wetland feature areas (up to 1 ha in extent), and removal of single, isolated wetland-classified cells.  This spatially cleaning process also results in a “cleaner”, more homogenous representation of wetland areas across the project landscape.  It also excluded model generated “islands” of possible re-afforestation sites from within wetland areas.
+The wetland exclusion mask has been content modified to better represent landscape contiguous
+(wetland) features, and remove model-generated “salt &amp; pepper” data pattern noise. Specifically,
+this has involved the in-filling of small non-classified data “holes” within and surrounded by wetland
+feature areas (up to 1 ha in extent), and removal of single, isolated wetland-classified cells. This
+spatially cleaning process also results in a “cleaner”, more homogenous representation of wetland
+areas across the project landscape. It also excluded model generated “islands” of possible
+reforestation sites from within wetland areas.
+
+Figure 3 illustrates the Forest. Grassland and Wetland exclusion mask extents in the Malawi-south
+Project Zone.
+
+![Figure 3](./img/figure-3.png)
+
+Figure 3. Forest, Grassland and Wetland exclusion masks for the Malawi-south Project Zone extent,
+with close-up detail. Remaining grey background areas are available for reafforestation.
 
 Table 2. Modelling rules applied to the time-series LC data to determine the Forest and Grassland exclusion areas.
 
-| LC 2003        | LC 2013        | LC 2023        | Cropland 2003        | Cropland 2023        | Exclusion Mask               | Explanation                                                                                                                                                                      |
-|----------------|----------------|----------------|----------------------|----------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| forest         | forest         | forest         | cannot be crop if not in 2023 | no cropland         | Forest exclusion content     | Undisturbed forest exists in all years (2003, 2013 and 2023) and has never been cleared for cultivation. No re-planting.                                                         |
-| forest         | forest         | forest         | no cropland          | cropland exists      | Forest exclusion content     | 10-year forest rule applies (existence in 2013), regardless of 2023 cropping, since no cropping exists in 2003, so modelled 2013 forest likely to be forest. No re-planting.    |
-| forest         | forest         | forest         | cropland exists      | cropland exists      | Available for re-afforestation | 10-year forest rule does not apply (existence in 2013), since cropping exists in both 2003 and 2023, so modelled forest likely to be cropland.                                   |
-| other or grass | forest         | forest         | cannot be crop if not in 2023 | no cropland         | Forest exclusion content     | 10-year forest rule applies (existence in 2013), no cropping in 2003 nor 2023, so modelled 2013 forest likely to be forest. No re-planting.                                      |
-| other or grass | forest         | forest         | no cropland          | cropland exists      | Forest exclusion content     | 10-year forest rule applies (existence in 2013), regardless of 2023 cropping, since no cropping exists in 2003, so modelled 2013 forest likely to be forest. No re-planting.    |
-| other or grass | forest         | forest         | cropland exists      | cropland exists      | Available for re-afforestation | 10-year forest rule does not apply (existence in 2013), since cropping exists in both 2003 and 2023, so modelled forest likely to be cropland.                                   |
-| other or grass | other or grass | forest         | cannot be crop if not in 2023 | no cropland         | Forest exclusion content     | Forest re-growth in 2023, and no cropping exists in 2003 or 2023, so modelled 2023 forest likely to be forest. No re-planting.                                                   |
-| other or grass | other or grass | forest         | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Existence of 2023 cropland cancels single 2023 occurrence of forest in 2023, so modelled 2023 forest likely to be cropland.                                                      |
-| other only     | other only     | other only     | cannot be crop if not in 2023 | no cropland         | Available for re-afforestation | No forest in any years, no cropland in any years, so available for re-planting.                                                                                                  |
-| other only     | other only     | other only     | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | No forest in any years, regardless of 2023 cropland existence, so available for re-planting.                                                                                     |
-| forest         | other only     | other only     | cannot be crop if not in 2023 | no cropland         | Available for re-afforestation | Forest existence only in 2003, prior to 10-year rule, and no cropland in any years, so available for re-planting.                                                                |
-| forest         | other only     | other only     | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Forest existence only in 2003, prior to 10-year rule, and cropland in 2023, so available for re-planting.                                                                        |
-| other or grass | forest         | other or grass | cannot be crop if not in 2023 | no cropland         | Forest exclusion content     | 10-year forest rule applies (existence in 2013), and no cropping in 2023, so modelled 2013 forest likely to be forest. No re-planting.                                           |
-| other or grass | forest         | other or grass | no cropland          | cropland exists      | Forest exclusion content     | 10-year forest rule applies (existence in 2013), regardless of cropping in 2023, so modelled 2013 forest likely to be forest. No re-planting.                                    |
-| other or grass | forest         | other or grass | cropland exists      | cropland exists      | Available for re-afforestation | 10-year forest rule does not apply (existence in 2013), since cropping exists in both 2003 and 2023, so modelled forest likely to be cropland, so available for re-planting.     |
-| grassland      | grassland      | grassland      | cannot be crop if not in 2023 | no cropland         | Grassland exclusion content  | Undisturbed grassland exists in all years (2003, 2013 and 2023) and has never been cleared for cultivation. No re-planting.                                                      |
-| other only     | other only     | grassland      | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Cropping exists in 2023, so regardless of previous conditions, available for re-planting.                                                                                        |
-| other only     | grassland      | grassland      | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Cropping exists in 2023, so regardless of previous conditions, available for re-planting.                                                                                        |
-| grassland      | grassland      | grassland      | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Cropping exists in 2023, so regardless of previous conditions, available for re-planting.                                                                                        |
-| forest         | grassland      | grassland      | crop cover irrelevant for rule | no cropland         | Available for re-afforestation | Grassland in recent years represents a conversion/clearing from a historical forest coverage, but outside the constraints of the 10-year forest rule, so available for re-planting.|
-| other only     | grassland      | grassland      | cannot be crop if not in 2023 | no cropland         | Grassland exclusion content  | Non-grassland (and non-woody) cover characteristics in 20-year window, and grassland in all other years, could be indicative of historical drought impact on grassland cover characteristics. Since never cropped, assume it is a natural grassland. No re-planting.|
-| other only     | grassland      | grassland      | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Cropping exists in 2023, so regardless of previous conditions, available for re-planting.                                                                                        |
-| other only     | other only     | grassland      | cannot be crop if not in 2023 | no cropland         | Grassland exclusion content  | Non-grassland (and non-woody) cover characteristics in both 20 and 10-year windows, and grassland in 2023, could be indicative of historical drought impact on grassland cover characteristics. Since never cropped, assume it is a natural grassland. No re-planting.|
-| other only     | other only     | grassland      | crop cover irrelevant for rule | cropland exists     | Available for re-afforestation | Cropping exists in 2023, so regardless of previous conditions, available for re-planting.                                                                                        |
-
-**NB:** All canopy heights and percent covers are estimates only, and provided for guidance.
+Modelling Rules for Forest and Grassland Exclusion Mask Generation
+| LC 2003 | LC 2013 | LC 2023 | Cropland 2003 | Cropland 2023 | Exclusion Mask | Explanation |
+| --- | --- | --- | --- | --- | --- | --- |
+| forest | forest | forest | no | no | Forest exclusion | Undisturbed forest exists in all years (2003, 2013 and 2023) and has never been cleared for cultivation. No planting. |
+| forest | forest | forest | no | yes | Forest exclusion | 10-year forest rule applies (existence in 2013), regardless of 2023 cropping, since no cropping exists in 2003, so modelled 2013 forest likely to be forest. No planting. |
+| forest | forest | forest | yes | yes | Available for reforestation | 10-year forest rule does not apply (existence in 2013), since cropping exists in both 2003 and 2023, so modelled forest likely to be cropland. |
+| other or grass | forest | forest | no | no | Forest exclusion | 10-year forest rule applies (existence in 2013), no cropping in 2003 nor 2023, so modelled 2013 forest likely to be forest. No planting. |
+| other or grass | forest | forest | no | yes | Forest exclusion | 10-year forest rule applies (existence in 2013), regardless of 2023 cropping, since no cropping exists in 2003, so modelled 2013 forest likely to be forest. No planting. |
+| other or grass | forest | forest | yes | yes | Available for reforestation | 10-year forest rule does not apply (existence in 2013), since cropping exists in both 2003 and 2023, so modelled forest likely to be cropland. |
+| other or grass | other or grass | forest | no | no | Forest exclusion | Forest re-growth in 2023, and no cropping exists in 2003 or 2023, so modelled 2023 forest likely to be forest. No planting. |
+| other or grass | other or grass | forest | yes | yes | Available for reforestation | Existence of 2023 cropland cancels single 2023 occurrence of forest in 2023, so modelled 2023 forest likely to be cropland. |
+| other only | other only | other only | no | no | Available for planting | No forest in any years, no cropland in any years, so available for planting. |
+| other only | other only | other only | yes | yes | Available for reforestation | No forest in any years, regardless of 2023 cropland existence, so available for planting. |
+| forest | other only | other only | no | no | Available for planting | Forest existence only in 2003, prior to 10-year rule, and no cropland in any years, so available for planting. |
+| forest | other only | other only | yes | yes | Available for reforestation | Forest existence only in 2003, prior to 10-year rule, and cropland in 2023, so available for planting. |
+| other or grass | forest | other or grass | no | no | Forest exclusion | 10-year forest rule applies (existence in 2013), and no cropping in 2023, so modelled 2013 forest likely to be forest. No planting. |
+| other or grass | forest | other or grass | no | yes | Forest exclusion | 10-year forest rule applies (existence in 2013), regardless of cropping in 2023, so modelled 2013 forest likely to be forest. No re-planting. |
+| other or grass | forest | other or grass | yes | yes | Available for reforestation | 10-year forest rule does not apply (existence in 2013), since cropping exists in both 2003 and 2023, so modelled forest likely to be cropland, so available for planting. |
+| grassland | grassland | grassland | no | no | Grassland exclusion | Undisturbed grassland exists in all years (2003, 2013 and 2023) and has never been cleared for cultivation. No planting. |
+| other only | other only | grassland | yes | yes | Available for reforestation | Cropping exists in 2023, so regardless of previous conditions, available for planting. |
+| other only | grassland | grassland | yes | yes | Available for reforestation | Cropping exists in 2023, so regardless of previous conditions, available for planting. |
+| grassland | grassland | grassland | yes | yes | Available for reforestation | Cropping exists in 2023, so regardless of previous conditions, available for planting. |
+| forest | grassland | grassland | no | no | Available for planting | Grassland in recent years represents a conversion / clearing from a historical forest coverage, but outside the constraints of the 10-year forest rule, so available for planting. |
+| other only | grassland | grassland | no | no | Grassland exclusion | Non-grassland (and non-woody) cover characteristics in 20-year window, and grassland in all other years, could be indicative of historical drought impact on grassland cover characteristics. Since never cropped, assume it is a natural grassland. No planting. |
+| other only | grassland | grassland | yes | yes | Available for reforestation | Cropping exists in 2023, so regardless of previous conditions, available for planting. |
+| other only | other only | grassland | no | no | Grassland exclusion | Non-grassland (and non-woody) cover characteristics in both 20 and 10-year windows, and grassland in 2023, could be indicative of historical drought impact on grassland cover characteristics. Since never cropped, assume it is a natural grassland. No planting. |
+| other only | other only | grassland | yes | yes | Available for reforestation | Cropping exists in 2023, so regardless of previous conditions, available for planting. |
