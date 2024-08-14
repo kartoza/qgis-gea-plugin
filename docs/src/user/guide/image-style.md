@@ -4,7 +4,7 @@ This user guide will show you how to change the image styles in QGIS symbology t
 
 ## Step 1: Open QGIS and Load Your Project
 
-To get started, open QGIS and load your existing project. If you don't have a project open, you can create a new one by clicking on the `File` menu and selecting `New`.
+To get started, open QGIS and load your existing project, or simply open your QGIS project (e.g. Malawi 2) with QGIS.
 
 # Step 2: Open the Layer Properties
 
@@ -26,4 +26,4 @@ Click on the 1️⃣ `Min/Max value setting` to view more options. Choose the 2�
 
 ## Conclusion
 
-By following these steps, you can change the image styles in QGIS symbology to enhance the quality and realism of your images. Remember to experiment with different settings and have fun with the image styling options!
+By following these steps, you can change the image styles in QGIS symbology to enhance the quality and realism of your images. Remember to experiment with different settings to get the most realistic-looking or fit-for-purpose image!
