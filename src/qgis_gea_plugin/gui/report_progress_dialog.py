@@ -99,12 +99,11 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         self._set_close_state()
         tr_msg = tr(
             f"Error occurred during report generation. "
-            f"{self._task.error_messages}"
             "\nSee logs for more information"
         )
         self.lbl_message.setText(tr_msg)
 
-        log(tr(f"Error generating report, {self._task.error_messages} \n"))
+        log(tr(f"Error generating report, {self._task._error_messages} \n"))
 
         log(tr(f"{self._task._result.errors}")) if self._task._result else None
 
@@ -126,6 +125,7 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         """Slot raised to show PDF report if report generation process
         was successful.
         """
+        log("Opening pdf")
         if self.report_result is None:
             log(
                 tr("Output from the report generation process could not be determined.")

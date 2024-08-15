@@ -436,13 +436,14 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         area_name = self._get_area_name()
 
         unique_area_name = f"{area_name}_{str(uuid.uuid4())[:4]}"
+        layer_name = clean_filename(unique_area_name)
 
-        self.drawing_layer_path = f"{os.path.join(sites_path, clean_filename(unique_area_name))}.shp"
+        self.drawing_layer_path = f"{os.path.join(sites_path, layer_name)}.shp"
 
         # Create a new layer with multipolygon geometry
         self.drawing_layer = QgsVectorLayer(
             f"MultiPolygon?crs={crs_id}",
-            unique_area_name,
+            layer_name,
             "memory"
         )
 
@@ -685,7 +686,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             folder_path = self.project_folder.filePath()
             sites_path = os.path.join(folder_path, 'sites')
 
-            layer_path = f"{os.path.join(sites_path, clean_filename(area_name))}.shp"
+            layer_name =  clean_filename(area_name)
+
+            layer_path = f"{os.path.join(sites_path, layer_name)}.shp"
 
             error, error_message = QgsVectorFileWriter.writeAsVectorFormatV2(
                 self.drawing_layer, layer_path, transform_context, options
@@ -693,7 +696,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             if error == QgsVectorFileWriter.NoError:
                 saved_layer = QgsVectorLayer(
                     layer_path,
-                    area_name,
+                    layer_name,
                     "ogr"
                 )
 
@@ -809,6 +812,10 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
                 if (parent_group is not None and
                         parent_group.name() == SITE_GROUP_NAME):
+                    settings_manager.set_value(
+                        Settings.LAST_SITE_LAYER_PATH,
+                        selected_layer.dataProvider().dataSourceUri()
+                    )
                     return selected_layer
 
         sites_layer_path = settings_manager.get_value(

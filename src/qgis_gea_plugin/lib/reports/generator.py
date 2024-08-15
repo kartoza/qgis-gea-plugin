@@ -26,6 +26,7 @@ from qgis.core import (
 
 from qgis.PyQt import QtCore, QtXml
 
+from ...conf import settings_manager, Settings
 from ...definitions.defaults import (
     ADMIN_AREAS_GROUP_NAME,
     DETAILED_ZOOM_OUT_FACTOR,
@@ -380,6 +381,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         if matching_node is None:
             tr_msg = tr("layer node not found.")
+            log(f"{tr_msg}, node name {node_name}")
             self._error_messages.append(f"{node_name} {tr_msg}")
             return None
 
@@ -407,53 +409,39 @@ class SiteReportReportGeneratorTask(QgsTask):
         """Fetch the site boundary layer saved in the project's
         'sites' boundary folder.
         """
-        site_path = f"{self._context.project_dir}/sites/" \
-                    f"{clean_filename(self._metadata.area_name)}.shp"
+        site_path = settings_manager.get_value(Settings.LAST_SITE_LAYER_PATH, default="")
 
-        if not os.access(site_path, os.R_OK):
-            tr_msg = tr(
-                "Current user does not have permission to read the "
-                "site boundary shapefile"
-            )
-            self._error_messages.append(tr_msg)
-            return
-
-        p = Path(site_path)
-        if not p.exists():
+        path = Path(site_path)
+        if not path.exists():
             tr_msg = tr("Site boundary shapefile does not exist")
+            log(tr_msg)
             self._error_messages.append(f"{tr_msg} {site_path}")
             return
 
-        site_layer = QgsVectorLayer(site_path, "Site Boundary", "ogr")
+        site_layer = self.find_layer_by_name(path.stem)
+
+        if site_layer is None:
+            return
+
         if not site_layer.isValid():
             tr_msg = tr("Site boundary shapefile is invalid")
+            log(tr_msg)
             self._error_messages.append(tr_msg)
             return
-
-        # We need to update the data source of the site layer in the
-        # project since it was only saved as a memory layer.
-        project_site_layer = self._get_layer_from_node_name(
-            self._metadata.area_name,
-            LayerNodeSearch.EXACT_MATCH,
-            SITE_GROUP_NAME
-        )
-        if project_site_layer is None:
-            tr_msg = tr("Reference site layer not found in the project.")
-            self._error_messages.append(tr_msg)
-            return
-
-        project_site_layer.setDataSource(
-            site_layer.source(),
-            project_site_layer.name(),
-            site_layer.providerType(),
-            site_layer.dataProvider().ProviderOptions()
-        )
 
         site_symbol = QgsFillSymbol.createSimple(REPORT_SITE_BOUNDARY_STYLE)
-        project_site_layer.renderer().setSymbol(site_symbol)
-        project_site_layer.triggerRepaint()
+        site_layer.renderer().setSymbol(site_symbol)
+        site_layer.triggerRepaint()
 
-        self._site_layer = project_site_layer
+        self._site_layer = site_layer
+
+    def find_layer_by_name(self, layer_name):
+        layers = QgsProject.instance().mapLayers()
+
+        for layer_id, layer in layers.items():
+            if clean_filename(layer.name()) == layer_name:
+                return layer
+        return None
 
     def _set_landscape_layer(self):
         """Set the landscape layer i.e. Nicfi or Landsat depending on the
