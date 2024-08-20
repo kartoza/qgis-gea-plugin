@@ -1,6 +1,8 @@
 # GEA REFORESTATION Landing Documentation
 
-![Landing page summary](./img/GEAsummary.mp4)
+The user can refer to this video to learn how the tool works.
+
+https://www.youtube.com/watch?v=Jx8Q_MGs0no
 
 ## Layers List
 
