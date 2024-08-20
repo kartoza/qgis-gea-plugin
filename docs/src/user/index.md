@@ -21,7 +21,7 @@ The user content is divided into three sections:
 
 - The [user manual](manual/index.md) describes each page of the user interface and what the various options on that page do.
 
-- The [Landing Page](./langing-page.md) describes a quick summary of the plugin with a video.
+- The [Landing Page](./landing-page.md) describes a quick summary of the plugin with a video.
 
 - [user workflow](./user-workflow.md) This document provides detailed instructions on the workflow, including how users can download and utilise project data.
 
