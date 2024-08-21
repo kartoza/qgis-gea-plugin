@@ -1,6 +1,6 @@
 # GEA Reforestation Tool (Plugin) User Manual
 
-Welcome to the GEA Reforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential afforestation sites.
+Welcome to the GEA Reforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential reforestation sites.
 
 ![GEA reforestation](./img/gea-reforestation-tool-1.png)
 
