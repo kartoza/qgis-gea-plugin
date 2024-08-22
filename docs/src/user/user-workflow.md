@@ -17,7 +17,7 @@ The project folder is stored at the `Head office` and can be downloaded by the `
 
 2. **Working with the Plugin:** Use the downloaded data and the plugin to perform projects.
 
-### Sites Folderx
+### Sites Folder
 
 **Creation of Polygons:** When you draw and save a polygon, a folder named `Sites` is created within the project folder. Each polygon is saved in this folder following a specific naming convention. The `Sites` folder contains the (.shp) files for each polygon.
 
