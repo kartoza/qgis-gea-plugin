@@ -12,16 +12,17 @@
     * Images: This folder contains historical Landsat imagery data.
     * Malawi_2.gpkg: This is a package for vector data.
     * QGIS project file (project.qgz): This is the main file that contains the QGIS project settings.
+    * Plugin.zip: this contains the GEA reforestation tool to be loaded in QGIS
 
     ![Files/folders](./img/gea-reforestation-3.png)
 
-2. **Opening the QGIS Project:** If the user does not have QGIS installed, please refer to the complete documentation on how to [install QGIS](../quickstart/index.md). 
+3. **Opening the QGIS Project:** If the user does not have QGIS installed, please refer to the complete documentation on how to [install QGIS](../quickstart/index.md). 
 
     - Once installed, right-click on the project.qgz file and select `Open with QGIS` to open the project.
 
         ![Open with QGIS](./img/gea-reforestation-4.png)
 
-3. **Navigating the QGIS Interface:** The QGIS interface is divided into several useful areas:
+4. **Navigating the QGIS Interface:** The QGIS interface is divided into several useful areas:
 
     3.1 **Menu Toolbar**
     The menu toolbar offers many options, some of which are:
