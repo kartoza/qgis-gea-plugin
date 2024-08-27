@@ -127,7 +127,7 @@ To ensure you are able to see the NICFI imagery already included in the QGIS pro
 
 ## 3. Sign up for a Planet NICFI account:
 
-Sign up for a Planet NICFI account to stream the NICFI imagery. For detailed documentation on the sign-in for a Planet NICFI account click [here](../manual/login.md)
+Sign up for a Planet NICFI account to stream the NICFI imagery. For detailed documentation on the sign-in for a Planet NICFI account click [here](../manual/sign-up.md)
 
 ## 4. How to install Planet_Explorer Plugin
 

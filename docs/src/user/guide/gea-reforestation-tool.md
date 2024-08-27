@@ -1,6 +1,7 @@
 # GEA Reforestation Tool Plugin User Guide
 
-<!-- Welcome to this tutorial on how to install the GEA Reforestation Tool plugin for QGIS. This guide will walk you through the process step-by-step. -->
+This user guide will walk you through how you can install the plugin, how to use the time slider and how to generate the reports.
+
 ## How to install the plugin?
 
 **Prerequisites:**
