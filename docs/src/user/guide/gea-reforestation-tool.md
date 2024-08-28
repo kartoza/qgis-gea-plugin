@@ -4,6 +4,8 @@ This user guide will walk you through how you can install the plugin, how to use
 
 ## How to install the plugin?
 
+### 1. Install from the repository
+
 **Prerequisites:**
 
 - QGIS installed on your computer. If QGIS is not installed on you system you can refer to [QGIS installation](../quickstart/index.md) for detailled instruction on how to install QGIS.
@@ -42,6 +44,39 @@ You should now see that the plugin repository has been added successfully.
 After the installation is complete, you should see the plugin icon in your QGIS interface.
 
 Congratulations! You have successfully installed the GEA Reforestation Tool plugin for QGIS. You can now start using it for your reforestation projects.
+
+### 2. Install from zip
+
+This guide will walk you through the process of installing the GEA Reforestation Tool plugin using a `ZIP` file.
+
+## Prerequisites
+
+- QGIS installed on your computer
+- The plugin ZIP file in your project folder
+
+## Installation Steps
+
+**Step 1 Locate the Plugin ZIP File:**
+
+Ensure that you have received the plugin ZIP file in your project folder.
+
+**Step 2 Access the Plugins Menu:** Look at the top of the QGIS window. In the navbar section, you will see a `Plugins` option. Click on it.
+
+![Plugin](./img/gea-reforestation-tool-1.png)
+
+**Step 3 Open the Plugin Manager:** From the dropdown menu that appears, select `Manage and Install Plugins...`.
+
+![Manager](./img/gea-reforestation-tool-2.png)
+
+**Step 4: Install from ZIP:** In the Plugin Manager window, click on the 1️⃣ `Install from ZIP` tab. Click on the 2️⃣ three dots (ellipsis) button next to the file path field and navigate to your project folder and select the plugin ZIP file you received. After selecting the ZIP file, the `Install Plugin` button will become enabled, click on the `Install Plugin` button to begin the installation process.
+
+![Install from ZIP](./img/gea-reforestation-tool-14.png)
+
+**Step 5 Confirm Installation:** QGIS will process the ZIP file and install the plugin. Once installation is complete, you should see a confirmation message. The GEA Reforestation Tool should now appear in your list of installed plugins.
+
+![Plugin](./img/gea-reforestation-tool-15.png)
+
+Congratulations! You have successfully installed the GEA Reforestation Tool plugin from a ZIP file. You can now start using the tool in your QGIS projects.
 
 ## How to use the time slider?
 
