@@ -58,7 +58,9 @@ This guide will walk you through the process of installing the GEA Reforestation
 
 **Step 1 Locate the Plugin ZIP File:**
 
-Ensure that you have received the plugin ZIP file in your project folder.
+Ensure that you have received the plugin ZIP file in your project folder. You can download the project folder from the below link.
+
+https://drive.google.com/file/d/1bhqBV1aamOg_tbZI0BZGOMaSihEr6qLI/view?usp=sharing
 
 **Step 2 Access the Plugins Menu:** Look at the top of the QGIS window. In the navbar section, you will see a `Plugins` option. Click on it.
 
