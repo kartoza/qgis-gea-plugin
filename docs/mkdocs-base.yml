@@ -57,6 +57,7 @@ nav:
                           - Sign Up: user/manual/sign-up.md
                           - Login: user/manual/login.md
                           - GEA Reforestation: user/manual/gea-reforestation.md
+                          - GEA Reforestation Tool: user/manual/gea-reforestation-tool.md
                           - Image Style: user/manual/image-style.md
                           - Reports: user/manual/reports.md
                   - user/user-workflow.md
