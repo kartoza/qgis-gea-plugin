@@ -14,26 +14,31 @@ Welcome to the GEA Reforestation Tool user manual. This guide will help you navi
 
 **Slide Bar:** The slide bar allows users to view the selected imagery on the map canvas. The functionality of the slide bar depends on the checkbox selection:
 
-- **Historical Imagery Checkbox Checked:** The map canvas will display historical imagery from Landsat.
+- **Historical Imagery (Landsat) Checkbox Checked:** The map canvas will display historical imagery from Landsat.
 
 ![Historical Imagery](./img/gea-reforestation-tool-2.png)
 
-- **Recent Imagery Checkbox Checked:** The map canvas will display recent imagery from NICFI.
+- **Recent Imagery (Nicfi) Checkbox Checked:** The map canvas will display recent imagery from NICFI.
 
 ![Recent Imagery](./img/gea-reforestation-tool-3.png)
 
-
 The user can use the slide bar by dragging the toggle to the next or previous increment to view the corresponding imagery on the map canvas.
 
- **Play Button:** The play button allows users to play through the selected imagery. This feature is useful for visualising changes in the landscape over time.
+**Play Button:** The play button allows users to play through the selected imagery. This feature is useful for visualising changes in the landscape over time.
+
+**Frame Rate:** allows users to set the frame rate to a larger or smaller number to play through the images quicker or slower respectively
+
+**Loop Checbox:** This checkbox allows the user to continuously loop through the selected images.
+
+****Current Time Range:** Current time range shows the year and month of the image being shown on the map canvas.
 
 **Historical Imagery**
 
-![Historical Imagery play](./img/Landsat-working.gif)
+![Historical Imagery play](./img/HistoricalLandsat.gif)
 
 **Recent Imagery**
 
-![Recent Imagery play](./img/NICFIworking.gif)
+![Recent Imagery play](./img/Nicfi.gif)
 
 ## Drawing tool
 
