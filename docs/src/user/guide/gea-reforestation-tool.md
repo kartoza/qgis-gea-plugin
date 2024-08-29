@@ -4,6 +4,8 @@ This user guide will walk you through how you can install the plugin, how to use
 
 ## How to install the plugin?
 
+There are two ways to install the plugin 1. from the repository and 2.install from ZIP
+
 ### 1. Install from the repository
 
 **Prerequisites:**
