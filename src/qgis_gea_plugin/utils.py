@@ -12,7 +12,10 @@ from qgis.core import (
     QgsMessageLog,
 )
 
-from .definitions.defaults import SITE_REPORT_TEMPLATE_NAME
+from .definitions.defaults import (
+    PROJECT_INSTANCE_REPORT_TEMPLATE_NAME,
+    SITE_REPORT_TEMPLATE_NAME
+)
 
 
 def log(
@@ -84,13 +87,8 @@ def create_dir(directory: str, log_message: str = ""):
     if not p.exists():
         try:
             p.mkdir()
-        except (FileNotFoundError, OSError):
-            log(log_message)
-
-
-def animation_state_change(value):
-    log(f"{value}")
-    pass
+        except (FileNotFoundError, OSError) as e:
+            log(f"{log_message}, {e}")
 
 
 class FileUtils:
@@ -124,6 +122,21 @@ class FileUtils:
         return os.path.normpath(absolute_path)
 
     @staticmethod
+    def style_file_path(file_name) -> str:
+        """Get the absolute path to the style file with the given name.
+        Caller needs to verify that the file actually exists.
+
+        :param file_name: Style file name including the extension.
+        :type file_name: str
+
+        :returns: The absolute path to the style file with the given name.
+        :rtype: str
+        """
+        absolute_path = f"{FileUtils.plugin_dir()}/data/style/{file_name}"
+
+        return os.path.normpath(absolute_path)
+
+    @staticmethod
     def site_report_template_path() -> str:
         """Gets the path to the report template
         (*.qpt) file.
@@ -133,6 +146,17 @@ class FileUtils:
         :rtype: str
         """
         return FileUtils.report_template_path(SITE_REPORT_TEMPLATE_NAME)
+
+    @staticmethod
+    def project_instance_report_template_path() -> str:
+        """Gets the path to the project instance report template
+        (*.qpt) file.
+
+        :returns: Returns the absolute path to the
+        report template (*.qpt) file.
+        :rtype: str
+        """
+        return FileUtils.report_template_path(PROJECT_INSTANCE_REPORT_TEMPLATE_NAME)
 
     @staticmethod
     def get_icon(file_name: str) -> QtGui.QIcon:

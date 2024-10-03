@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>353</width>
-    <height>87</height>
+    <height>97</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Site Report Progress</string>
+   <string>Report Progress</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
