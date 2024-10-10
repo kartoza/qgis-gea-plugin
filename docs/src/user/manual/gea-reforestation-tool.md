@@ -139,16 +139,13 @@ After saving the instance, the selected instance will be added to the project in
 
     ![Generated Report](./img/gea-reforestation-tool-16.png)
 
-    1. **GEA Reforestation Site Report:** Displaying the report information.
+    1. **Area Eligibility:** Displaying the ID of the farmer.
         - **Date of Project Inception:** The date when the project started.
-        - **Version of Site Reference:** The version of the site reference.
-        - **Date of Site Capture:** The date when the site was captured.
-        - **Site Reference:** The site reference.
-        - **Author of Site Capture:** The person who captured the site.
-        - **Country Location:** The country where the project is located.
-        - **Site Area:** The area of the site.
+        - **Project:** The name of the country.
+        - **Report Author:** The person who captured the site.
+        - **Total Area:** The area of the site.
 
-    2. **Site Location Maps:** Displaying the site location on the maps.
+    2. **Project Instance Sites:** Displaying the site location on the maps.
 
     3. **Landscape Exclusion and Inclusion Areas:**  Displaying the Historical Landsat 2013 with and without exclusion masks and the
     proposed site.
