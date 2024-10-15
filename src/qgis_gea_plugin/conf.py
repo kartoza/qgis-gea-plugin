@@ -58,6 +58,7 @@ class Settings(enum.Enum):
     ANIMATION_LOOP = 'animation_loop'
 
     LAST_SITE_LAYER_PATH = 'last_site_layer_path'
+    CURRENT_PROJECT_LAYER_PATH = 'current_project_layer_path'
 
 
 class SettingsManager(QtCore.QObject):

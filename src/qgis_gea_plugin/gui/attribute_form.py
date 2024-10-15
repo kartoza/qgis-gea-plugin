@@ -82,11 +82,9 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
 
         self.layer.startEditing()
 
-        incep_date = datetime.now().strftime('%m:%Y')
-
         fields = self.layer.fields()
 
-        new_fields = ['author', 'project', 'IncepDate', 'area (ha)']
+        new_fields = ['author', 'project','area (ha)']
         attributes = []
 
         for field in new_fields:
@@ -95,7 +93,8 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
                     self,
                     tr("QGIS GEA PLUGIN"),
                     tr('Field "{}" already exists in the layer.'
-                       'Do you want to proceed and overwrite it?').format(field),
+                       'Do you want to proceed and overwrite it?').
+                    format(field),
 
                     QtWidgets.QMessageBox.Yes,
                     QtWidgets.QMessageBox.No,
@@ -106,9 +105,12 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
                     self.layer.commitChanges()
                     return
             else:
-                # If not found in the layer add it to the list of attributes that will
-                # be added to layer fields later
-                attributes.append(QgsField(field, QtCore.QVariant.String))
+                # If not found in the layer add it to the list
+                # of attributes that will be added to layer fields later
+                attributes.append(QgsField(
+                    field,
+                    QtCore.QVariant.String)
+                )
 
         provider = self.layer.dataProvider()
         provider.addAttributes(attributes)
@@ -125,16 +127,21 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
                 area = geom.area() / 10000
                 feature_area = f"{area:,.2f}"
 
-            feature.setAttribute("author", self.report_author_le.text())
-            feature.setAttribute("project", self.project_cmb_box.currentText())
-            feature.setAttribute("IncepDate", incep_date)
+            feature.setAttribute(
+                "author",
+                self.report_author_le.text()
+            )
+            feature.setAttribute(
+                "project",
+                self.project_cmb_box.currentText()
+            )
             feature.setAttribute("area (ha)", feature_area)
 
             self.layer.updateFeature(feature)
-            feature = next(features, None)  # Retrieve the next feature
+            # Retrieve the next feature
+            feature = next(features, None)
 
         self.layer.commitChanges()
-
         self.layer.setReadOnly(True)
 
         super().accept()

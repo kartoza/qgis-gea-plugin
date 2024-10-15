@@ -1,6 +1,6 @@
 {
   "general": {
-    "name" : "QGIS GEA afforestation tool",
+    "name": "QGIS GEA afforestation tool",
     "qgisMinimumVersion": 3.20,
     "qgisMaximumVersion": 3.99,
     "icon": "icon.png",
@@ -9,14 +9,20 @@
     "homepage": "https://github.com/kartoza/qgis-gea-plugin",
     "tracker": "https://github.com/kartoza/qgis-gea-plugin/issues",
     "repository": "https://github.com/kartoza/qgis-gea-plugin",
-    "tags": ["gea", "maps", "afforestation"],
-    "category": ["plugins"],
+    "tags": [
+      "gea",
+      "maps",
+      "afforestation"
+    ],
+    "category": [
+      "plugins"
+    ],
     "hasProcessingProvider": "no",
     "about": "Adds functionality inside QGIS to enable GEA afforestation visualization and analysis.",
     "author": "Kartoza",
     "email": "info@kartoza.com",
     "description": "View, browse and navigate through imagery.",
-    "version": "0.0.1",
+    "version": "1.0.1dev",
     "changelog": ""
   }
 }

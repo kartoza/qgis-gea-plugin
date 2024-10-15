@@ -35,18 +35,17 @@ from ...definitions.defaults import (
     LANDSAT_2013_LAYER_SEGMENT,
     LANDSAT_IMAGERY_GROUP_NAME,
     OVERVIEW_ZOOM_OUT_FACTOR,
-    RECENT_IMAGERY_GROUP_NAME,
-    REPORT_LANDSCAPE_DESCRIPTION_SUFFIX,
     REPORT_SITE_BOUNDARY_STYLE,
-    SITE_GROUP_NAME
+    PROJECT_INSTANCE_STYLE
 )
-from ...models.base import IMAGERY, LayerNodeSearch
+from ...models.base import LayerNodeSearch
 from ...models.report import (
     SiteReportContext,
-    ReportOutputResult
+    ReportOutputResult, SiteMetadata, ProjectMetadata
 )
 from ...utils import (
     clean_filename,
+    FileUtils,
     log,
     tr,
 )
@@ -56,9 +55,7 @@ class SiteReportReportGeneratorTask(QgsTask):
     """Class for generating the site report."""
 
     def __init__(self, context: SiteReportContext):
-        super().__init__(
-            f"{tr('Generating site report for')}: {context.metadata.area_name}"
-        )
+        super().__init__()
         self._context = context
         self._metadata = self._context.metadata
         self._feedback = self._context.feedback
@@ -71,6 +68,11 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._output_report_layout = None
         self._site_layer = None
         self._landscape_layer = None
+
+        self.report_name = context.metadata.area_name \
+        if isinstance(context.metadata, SiteMetadata) else f"Farmer ID {context.metadata.farmer_id}"
+
+        self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
 
     @property
     def context(self) -> SiteReportContext:
@@ -158,10 +160,10 @@ class SiteReportReportGeneratorTask(QgsTask):
         else False.
         :type result: bool
         """
-        if len(self._result.errors) > 0:
+        if self._result and len(self._result.errors) > 0:
             log(
-                f"Errors occurred when generating the site "
-                f"report for {self._context.metadata.area_name}."
+                f"Errors occurred when generating the "
+                f"report for {self.report_name}."
                 f" See details below: ",
                 info=False,
             )
@@ -172,15 +174,25 @@ class SiteReportReportGeneratorTask(QgsTask):
         if result:
             # Load layout
             project = QgsProject.instance()
-            self._output_report_layout = _load_layout_from_file(self._output_layout_path, project)
+            self._output_report_layout = _load_layout_from_file(
+                self._output_layout_path,
+                project
+            )
             if self._output_report_layout is None:
                 log("Could not load output report from file.", info=False)
                 return
 
+            layout_name = self._output_report_layout.name()
+
+            for layout in project.layoutManager().printLayouts():
+                if layout.name() == layout_name:
+                    project.layoutManager().removeLayout(layout)
+                    break
+
             project.layoutManager().addLayout(self._output_report_layout)
             log(
-                f"Successfully generated the site report for "
-                f"{self._context.metadata.area_name}."
+                f"Successfully generated the report for "
+                f"{self.report_name}."
             )
 
     def _check_feedback_cancelled_or_set_progress(self, value: float) -> bool:
@@ -191,7 +203,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :rtype: bool
         """
         if self._feedback.isCanceled():
-            tr_msg = tr("Generation of site report cancelled.")
+            tr_msg = tr("Generation of report has been cancelled.")
             self._error_messages.append(tr_msg)
 
             return True
@@ -205,7 +217,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         return ReportOutputResult(
             False,
             "",
-            self._context.metadata.area_name,
+            self.report_name,
             tuple(self._error_messages)
         )
 
@@ -223,6 +235,8 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         exporter = QgsLayoutExporter(self._layout)
         pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
+        log(f"Path when exporting pdf {pdf_path}")
+
         result = exporter.exportToPdf(pdf_path, QgsLayoutExporter.PdfExportSettings())
         if result == QgsLayoutExporter.ExportResult.Success:
             return True
@@ -235,7 +249,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             return False
 
     def _generate_report(self) -> bool:
-        """Generate site report.
+        """Generate report.
 
         :returns: Returns True if the process succeeded, else False.
         :rtype: bool
@@ -307,27 +321,23 @@ class SiteReportReportGeneratorTask(QgsTask):
         return True
 
     def _set_metadata_values(self):
-        """Set the site metadata values."""
-        # Inception date
-        self.set_label_value("inception_date_label", self._metadata.inception_date)
+        """Set the report metadata values."""
 
-        # Site reference version
-        self.set_label_value("site_version_label", self._metadata.version)
+        if isinstance(self._metadata, SiteMetadata):
+            self.set_label_value("inception_date_label", self._metadata.inception_date)
+            self.set_label_value("site_version_label", self._metadata.version)
+            self.set_label_value("site_reference_label", self._metadata.site_reference)
+            self.set_label_value("capture_date_label", self._metadata.capture_date)
+            self.set_label_value("author_label", self._metadata.author)
+            self.set_label_value("country_label", self._metadata.country)
+            self.set_label_value("site_area_label", f"{self._metadata.computed_area} ha")
+        elif isinstance(self._metadata, ProjectMetadata):
+            self.set_label_value("farmer_id_label", f"Area Eligibility - {self._metadata.farmer_id}")
+            self.set_label_value("report_author_label", self._metadata.author)
+            self.set_label_value("project_label", self._metadata.project)
+            self.set_label_value("inception_date_label", self._metadata.inception_date)
+            self.set_label_value("area_label", f"{self._metadata.total_area} ha")
 
-        # Site reference
-        self.set_label_value("site_reference_label", self._metadata.site_reference)
-
-        # Site capture date
-        self.set_label_value("capture_date_label", self._metadata.capture_date)
-
-        # Author
-        self.set_label_value("author_label", self._metadata.author)
-
-        # Country
-        self.set_label_value("country_label", self._metadata.country)
-
-        # Area value
-        self.set_label_value("site_area_label", f"{self._metadata.computed_area} ha")
 
     def _get_layer_from_node_name(
             self,
@@ -406,14 +416,22 @@ class SiteReportReportGeneratorTask(QgsTask):
         return map_item
 
     def _set_site_layer(self):
-        """Fetch the site boundary layer saved in the project's
-        'sites' boundary folder.
+        """Fetch the project boundary layer.
         """
-        site_path = settings_manager.get_value(Settings.LAST_SITE_LAYER_PATH, default="")
+
+        site_path = settings_manager.get_value(
+            Settings.LAST_SITE_LAYER_PATH,
+            default=""
+        ) \
+            if isinstance(self._context.metadata, SiteMetadata) else \
+            settings_manager.get_value(
+                Settings.CURRENT_PROJECT_LAYER_PATH,
+                default=""
+            )
 
         path = Path(site_path)
         if not path.exists():
-            tr_msg = tr("Site boundary shapefile does not exist")
+            tr_msg = tr("Report layer shapefile does not exist")
             log(tr_msg)
             self._error_messages.append(f"{tr_msg} {site_path}")
             return
@@ -424,14 +442,25 @@ class SiteReportReportGeneratorTask(QgsTask):
             return
 
         if not site_layer.isValid():
-            tr_msg = tr("Site boundary shapefile is invalid")
+            tr_msg = tr("Report layer shapefile is invalid")
             log(tr_msg)
             self._error_messages.append(tr_msg)
             return
 
-        site_symbol = QgsFillSymbol.createSimple(REPORT_SITE_BOUNDARY_STYLE)
-        site_layer.renderer().setSymbol(site_symbol)
-        site_layer.triggerRepaint()
+        if isinstance(self._context.metadata, SiteMetadata):
+            site_symbol = QgsFillSymbol.createSimple(REPORT_SITE_BOUNDARY_STYLE)
+            site_layer.renderer().setSymbol(site_symbol)
+            site_layer.triggerRepaint()
+        else:
+            style_file = FileUtils.style_file_path(PROJECT_INSTANCE_STYLE)
+            site_layer.loadNamedStyle(style_file)
+            site_layer.triggerRepaint()
+
+            site_layer.setSubsetString(
+                f"\"FarmerID\" = '{self._context.metadata.farmer_id}'"
+            )
+
+            site_layer.triggerRepaint()
 
         self._site_layer = site_layer
 
@@ -502,7 +531,7 @@ class SiteReportReportGeneratorTask(QgsTask):
     def _configure_map_items_zoom_level(self):
         """Set layers and zoom levels of map items."""
         if self._site_layer is None:
-            tr_msg = tr("Site layer not found or shapefile is invalid")
+            tr_msg = tr("Project layer not found or shapefile is invalid")
             self._error_messages.append(tr_msg)
             return
 
@@ -883,16 +912,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         # Check if there is another layout in the project
         # with the same name.
-        base_report_name = self._context.metadata.area_name
-        layout = self._project.layoutManager().layoutByName(base_report_name)
-        if layout:
-            counter = 2
-            while True:
-                base_report_name = f"{base_report_name}_{counter!s}"
-                layout = self._project.layoutManager().layoutByName(base_report_name)
-                if layout is None:
-                    break
-                counter += 1
+        base_report_name = self.report_name
 
         self._base_layout_name = base_report_name
 

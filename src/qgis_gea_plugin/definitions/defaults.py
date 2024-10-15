@@ -8,6 +8,7 @@ PLUGIN_ICON = ":/plugins/qgis_gea_plugin/icon.png"
 ANIMATION_PLAY_ICON = ":/images/themes/default/mActionPlay.svg"
 ANIMATION_PAUSE_ICON = ":/images/themes/default/temporal_navigation/pause.svg"
 
+
 COUNTRY_NAMES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
     "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas",
@@ -64,6 +65,10 @@ SITE_GROUP_NAME = "Proposed Site Boundaries"
 PROJECT_INSTANCES_GROUP_NAME = "Project Instances"
 
 SITE_REPORT_TEMPLATE_NAME = "reforestation_site.qpt"
+PROJECT_INSTANCE_REPORT_TEMPLATE_NAME = "project_instance.qpt"
+
+PROJECT_INSTANCE_STYLE = "project_instances_style.qml"
+
 
 FARMER_ID_FIELD = "FarmerID"
 
@@ -78,22 +83,6 @@ REPORT_SITE_BOUNDARY_STYLE = {
     "outline_width": "0.7",
     "outline_width_unit": "MM",
     "joinstyle": "round"
-}
-
-# Style for the project instances in the map and report
-
-PROJECT_INSTANCE_BOUNDARY_STYLE = {
-    'border_width_map_unit_scale': '3x:0,0,0,0,0,0',
-    'color': '243,166,178,0,rgb:0.95294117647058818,0.65098039215686276,0.69803921568627447,0',
-    'joinstyle': 'bevel',
-    'offset': '0,0',
-    'offset_map_unit_scale': '3x:0,0,0,0,0,0',
-    'offset_unit': 'MM',
-    'outline_color': '59,255,59,255',
-    'outline_style': 'solid',
-    'outline_width': '0.3',
-    'outline_width_unit': 'MM',
-    'style': 'no'
 }
 
 REPORT_LANDSCAPE_DESCRIPTION_SUFFIX = "with and without exclusion masks and proposed site:"

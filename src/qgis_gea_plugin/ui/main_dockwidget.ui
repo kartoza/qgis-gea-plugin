@@ -208,7 +208,10 @@
      </spacer>
     </item>
     <item>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="drawing_box">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="title">
        <string>Drawing tool</string>
       </property>
@@ -230,12 +233,18 @@
          </item>
          <item>
           <widget class="QPushButton" name="draw_area_btn">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to start digitizing a project area polygon.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>Draw project area</string>
            </property>
+           <attribute name="buttonGroup">
+            <string notr="true">project_buttons</string>
+           </attribute>
           </widget>
          </item>
          <item>
@@ -243,126 +252,153 @@
            <property name="text">
             <string>Import project instance</string>
            </property>
+           <attribute name="buttonGroup">
+            <string notr="true">project_buttons</string>
+           </attribute>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="4" column="1">
-          <widget class="QComboBox" name="project_cmb_box"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Country where the project was conducted.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Project</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QgsDateTimeEdit" name="project_inception_date">
-           <property name="displayFormat">
-            <string>MMyy</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="site_reference_le"/>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Directory where all the corresponding sites layers will be saved.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Project folder</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Slack-Lato','Slack-Fractions','appleLogo','sans-serif'; font-size:15px; color:#1d1c1d; background-color:#f8f8f8;&quot;&gt;Allows a user to track any updates to an already defined site boundary, and save the new boundary as a same-name, but with version 2,3,4 etc.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Version of the site reference</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Slack-Lato','Slack-Fractions','appleLogo','sans-serif'; font-size:15px; color:#1d1c1d; background-color:#f8f8f8;&quot;&gt;The unique location / name of the user-defined polygon that represents a possible re-afforestation site&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Site reference</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The tool-user who created the site polygon and saved the site details.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Author of site capture</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="report_author_le"/>
-         </item>
-         <item row="5" column="1">
-          <widget class="QgsFileWidget" name="project_folder">
-           <property name="storageMode">
-            <enum>QgsFileWidget::GetDirectory</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Refers to a fixed point in time, representing the inception date of the whole re-afforestation project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Project inception date</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="site_ref_version_le"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="save_area_btn">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saved the polygon after finishing drawing the area.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Save project area</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QFrame" name="drawing_frame">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="4" column="1">
+             <widget class="QComboBox" name="project_cmb_box"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Country where the project was conducted.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Project</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QgsDateTimeEdit" name="project_inception_date">
+              <property name="displayFormat">
+               <string>MMyy</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="site_reference_le"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Directory where all the corresponding sites layers will be saved.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Project folder</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Slack-Lato','Slack-Fractions','appleLogo','sans-serif'; font-size:15px; color:#1d1c1d; background-color:#f8f8f8;&quot;&gt;Allows a user to track any updates to an already defined site boundary, and save the new boundary as a same-name, but with version 2,3,4 etc.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Version of the site reference</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Slack-Lato','Slack-Fractions','appleLogo','sans-serif'; font-size:15px; color:#1d1c1d; background-color:#f8f8f8;&quot;&gt;The unique location / name of the user-defined polygon that represents a possible re-afforestation site&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Site reference</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The tool-user who created the site polygon and saved the site details.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Author of site capture</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="report_author_le"/>
+            </item>
+            <item row="5" column="1">
+             <widget class="QgsFileWidget" name="project_folder">
+              <property name="storageMode">
+               <enum>QgsFileWidget::GetDirectory</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Refers to a fixed point in time, representing the inception date of the whole re-afforestation project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Project inception date</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="site_ref_version_le"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="save_area_btn">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saved the polygon after finishing drawing the area.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Save project area</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -393,6 +429,9 @@
            <property name="text">
             <string>Clear</string>
            </property>
+           <attribute name="buttonGroup">
+            <string notr="true">project_buttons</string>
+           </attribute>
           </widget>
          </item>
         </layout>
@@ -476,4 +515,11 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="project_buttons">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
+ </buttongroups>
 </ui>
