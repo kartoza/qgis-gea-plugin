@@ -52,11 +52,15 @@ license: the reforestation tool is made available to Global Evergreening Global 
 
     The map navigation toolbar offers many options, some of which are:
 
-    1. **Pan:** Allows the user to pan the map to a specific location.
-    2. **Zoom in:** Zooms in on the map to show more detail.
-    3. **Zoom out:** Zooms out of the map to show a wider area.
-    4. **Full zoom:** Zooms in or out to the maximum extent.
-    5. **Show map tips:** Displays additional information about the map, such as coordinates and scale.
+    **1. Pan:** Allows the user to pan the map to a specific location.
+
+    **2. Zoom in:** Zooms in on the map to show more detail.
+
+    **3. Zoom out:** Zooms out of the map to show a wider area.
+
+    **4. Full zoom:** Zooms in or out to the maximum extent.
+
+    **5. Show map tips:** Displays additional information about the map, such as coordinates and scale.
 
     3.3 **Digitising Toolbar:**
 
@@ -64,10 +68,13 @@ license: the reforestation tool is made available to Global Evergreening Global 
 
     The digitising toolbar offers many options, some of which are:
 
-    1. **Current edits:** Displays the current editing state of the layer.
-    2. **Toggle editing:** Toggles the editing mode on or off.
-    3. **Save layer edits:** Saves any changes made to the layer.
-    4. **Add polygon feature:** Creates a new polygon feature on the map.
+    **1. Current edits:** Displays the current editing state of the layer.
+
+    **2. Toggle editing:** Toggles the editing mode on or off.
+
+    **3. Save layer edits:** Saves any changes made to the layer.
+
+    **4. Add polygon feature:** Creates a new polygon feature on the map.
 
     ### 3.4 Layer List
 
@@ -75,29 +82,35 @@ license: the reforestation tool is made available to Global Evergreening Global 
 
     ![Layers List](./img/layer-list-1.png)
 
-    - Malawi 2 Area of Interest
+    - Project Instances
     - Malawi 2 Buffer
+    - Malawi 2 Area of Interest
     - Proposed Site Boundaries
-    - Gea Afforestation Tool-Malawi 2
     - Administrative Areas
     - Exclusion Masks
     - Current Google Imagery
     - Recent NICFI Imagery
     - Historical Landsat Imagery
 
-    1. **Malawi 2 Area of Interest:** Check the `Malawi 2 Area of Interest` checkbox to visualise the area of interest, it will be shown on the map canvas with a black line.
+    **1. Project Instances:** This layer contains all the project instances the user has drawn on the canvas, including the imported ones.
 
-    ![Area of interest](./img/layer-list-2.png)
+    - Check the instance `checkbox` to visualise the instance on the map.
 
-    2. **Malawi 2 Buffer:** Check the `Malawi 2 Buffer` checkbox to visualise the buffer area, it will be shown on the map canvas with a yellow line.
+    ![Project Instances](./img/layer-list-19.png)
+
+    **2. Malawi 2 Buffer:** Check the `Malawi 2 Buffer` checkbox to visualise the buffer area, it will be shown on the map canvas with a yellow line.
 
     ![Buffer](./img/layer-list-3.png)
 
-    3. **Proposed Site Boundaries:** Displays the proposed boundaries created by the user for the project. Check the `Proposed Site Boundaries` checkbox and the proposed boundaries will be shown on the map canvas with a red line.
+    **3. Malawi 2 Area of Interest:** Check the `Malawi 2 Area of Interest` checkbox to visualise the area of interest, it will be shown on the map canvas with a black line.
+
+    ![Area of interest](./img/layer-list-2.png)
+
+    **4. Proposed Site Boundaries:** Displays the proposed boundaries created by the user for the project. Check the `Proposed Site Boundaries` checkbox and the proposed boundaries will be shown on the map canvas with a red line.
 
     ![Proposed boundaries](./img/layer-list-4.png)
 
-    4. **Administrative Areas:** This includes three options with checkboxes that allow users to visualise different administrative areas on the map canvas.
+    **5. Administrative Areas:** This includes three options with checkboxes that allow users to visualise different administrative areas on the map canvas.
 
     ![Administrative areas](./img/layer-list-5.png)
 
@@ -113,7 +126,7 @@ license: the reforestation tool is made available to Global Evergreening Global 
 
         ![sub-divisional administrative units areas](./img/layer-list-8.png)
 
-    5. **Exclusion Masks:**
+    **6. Exclusion Masks:**
 
     ![Exclusion Masks](./img/layer-list-9.png)
 
@@ -134,11 +147,11 @@ license: the reforestation tool is made available to Global Evergreening Global 
     > Additional Notes on Viewing Different Imagery Layers:
     To effectively view the different imagery layers (Google Imagery, NICFI, and Landsat), you need to toggle the visibility of these layers.
 
-    6. **Current Google Imagery:** Displays the most recent Google imagery. Check the relevant checkbox to view `Current Google imagery`.
+    **7. Current Google Imagery:** Displays the most recent Google imagery. Check the relevant checkbox to view `Current Google imagery`.
 
     ![Google Imagery](./img/layer-list-14.png)
 
-    7. **Recent NICFI Imagery:**
+    **8. Recent NICFI Imagery:**
 
     - **Turn Off Google Imagery/Historical Landsat Imagery to View NICFI Imagery:** In the Layers panel, locate the Google Imagery/Historical Landsat Imagery layer. Click the checkbox next to the Google Imagery/Historical Landsat Imagery layer to turn it off. This will allow the NICFI imagery to be visible.
 
@@ -155,7 +168,7 @@ license: the reforestation tool is made available to Global Evergreening Global 
     ![NICFI Imagery](./img/layer-list-16.png)
     ![NICFI Imagery](./img/layer-list-18.png)
 
-    8. **Historical Landsat Imagery:** Displays historical Landsat imagery. Check the relevant checkbox to view historical Landsat imagery. The user can use the historical imagery to compare the current and historical imagery differences.
+    **9. Historical Landsat Imagery:** Displays historical Landsat imagery. Check the relevant checkbox to view historical Landsat imagery. The user can use the historical imagery to compare the current and historical imagery differences.
 
     - **Turn Off Google Imagery/NICFI Imagery to View Landsat Imagery:** In the Layers panel, locate the Google Imagery/NICFI imagery layer. Click the checkbox next to the Google Imagery/NICFI imagery layer to turn it off. This will reveal the Landsat imagery layer below.
 

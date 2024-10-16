@@ -115,9 +115,36 @@ After selecting the desired project instance user will click on the `open` butto
 * **No:**  Cancel the process.
 * **Yes:** Overwrite names.
 
-After saving the instance, the selected instance will be added to the project instances in the layer section.
+## Project Instances 
+
+After importing the project instances or drawing them manually, they will be added to the `Project Instances` group within the `Layers` section.
 
 ![Qgis Interface](./img/gea-reforestation-tool-12.png)
+
+
+### Attribute Table
+
+The attribute table contains information about the project instances, including the farmer's ID and other relevant details associated with the land. This table provides an organized view of all the data linked to each farmer and their land.
+
+* To open the attribute table right click on the project instance and choose 1️⃣ `Open Attribute Table` from the menu.
+
+    ![Attribute table](./img/gea-reforestation-tool-18.png)
+
+* The attribute table will look like this.
+
+    ![Attribute Table Details](./img/gea-reforestation-tool-19.png)
+
+* These are the major details in the attribute table, associated with each farmer's ID.
+
+    ![Major Elements of Table](./img/gea-reforestation-tool-20.png)
+
+    **1. author:** ID of the associated author.
+
+    **2. project:** Country of the project.
+
+    **3. IncepDate:**  Date when the project started.
+    
+    **4. area(ha):** Area of the land in hectares (rounded to 2 decimal places).
 
 ## Automated Report
 
@@ -125,27 +152,33 @@ After saving the instance, the selected instance will be added to the project in
 
 1. **Generate Report:** Click on the `Generate Report` button to generate an automated report.
 
-    After clicking the `Generate Report` button **Site Report Progress** pop-up window will appear displaying the status of the report.
+    After clicking on the 1️⃣ `Generate Report`, a `Report Progress` pop-up window will appear, showing the current status of the report generation process.
 
     ![Site Report Progress](./img/gea-reforestation-tool-15.png)
 
     * **Progress Bar:** Displaying the current status of the process.
-    * **Close:** Cancel the process.
-    * **Open PDF:** Open the PDF in a new pop-up window.
+    * **cancel:** Cancel the process.
+    * **Open reports folder:** Open the folder that contains all the generated reports along with the file which contains land location.
 
-    ## Generated Report
+         ![Report Folder](./img/gea-reforestation-tool-17.png)
 
-    This is the report generated after completing the process.
+* The report will be generated based on the farmer's ID. If there are multiple farmers, the system will generate individual reports for each farmer.
 
-    ![Generated Report](./img/gea-reforestation-tool-16.png)
+* Double-click on any report to open it.
 
-    1. **Area Eligibility:** Displaying the ID of the farmer.
-        - **Date of Project Inception:** The date when the project started.
-        - **Project:** The name of the country.
-        - **Report Author:** The person who captured the site.
-        - **Total Area:** The area of the site.
+## Generated Report
 
-    2. **Project Instance Sites:** Displaying the site location on the maps.
+This is the report generated after completing the process.
 
-    3. **Landscape Exclusion and Inclusion Areas:**  Displaying the Historical Landsat 2013 with and without exclusion masks and the
-    proposed site.
+![Generated Report](./img/gea-reforestation-tool-16.png)
+
+1. **Area Eligibility:** Displaying the ID of the farmer.
+    - **Date of Project Inception:** The date when the project started.
+    - **Project:** The name of the country.
+    - **Report Author:** The person who captured the site.
+    - **Total Area:** The area of the site.
+
+2. **Project Instance Sites:** Displaying the site location on the map.
+
+3. **Landscape Exclusion and Inclusion Areas:**  Displaying the Historical Landsat 2013 with and without exclusion masks and the proposed site.
+

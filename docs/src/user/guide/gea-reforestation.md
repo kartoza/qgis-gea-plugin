@@ -83,8 +83,9 @@ The folder should contain the following components:
 
 You can use the `Layers` panel to visualise and interact with the various layers in the project. In the Layers panel, you will see the following layers listed:
 
-- Malawi 2 Area of Interest
+- Project Instances
 - Malawi 2 Buffer
+- Malawi 2 Area of Interest
 - Proposed Site Boundaries
 - Administrative Areas (Malawi 2 Country, Malawi 2 District, Malawi 2 Sub-divisional Administrative Unit)
 - Exclusion Masks (Grass, Wetland, Forest, Soil Carbon)
@@ -96,13 +97,21 @@ You can use the `Layers` panel to visualise and interact with the various layers
 
 ![Malavi 2](./img/gea-reforestation-9.png)
 
-**Malawi 2 Area of Interest:**
+**Project Instances:**
 
-- Check the `Malawi 2 Area of Interest` checkbox to visualise the area of interest on the map canvas. You will see a black line outlining the area.
+- `Project Instances` This layer contains all the project instances the user has drawn on the canvas, including the imported ones.
+
+- Check the instance checkbox to visualise the instance on the map.
+
+![Project Instances](./img/gea-reforestation-14.png)
 
 **Malawi 2 Buffer:**
 
 - Check the `Malawi 2 Buffer` checkbox to visualise the buffer area around the Malawi 2 area of interest. You will see a yellow line on the map canvas.
+
+**Malawi 2 Area of Interest:**
+
+- Check the `Malawi 2 Area of Interest` checkbox to visualise the area of interest on the map canvas. You will see a black line outlining the area.
 
 **Proposed Site Boundaries:**
 
