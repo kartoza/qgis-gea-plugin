@@ -176,15 +176,17 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
             if os.path.exists(str(self.report_output_dir)):
                 current_os = platform.system()
 
-                if current_os == "Windows":
-                    os.startfile(self.report_output_dir)
-                elif current_os == "Darwin":  # macOS
-                    subprocess.run(['open', self.report_output_dir])
-                elif current_os == "Linux":
-                    subprocess.run(['xdg-open', self.report_output_dir])
-                else:
-                    log(f"Unsupported OS: {current_os}")
-                subprocess.run(['xdg-open', self.report_output_dir])
+                try:
+                    if current_os == "Windows":
+                        os.startfile(self.report_output_dir)
+                    elif current_os == "Darwin":  # macOS
+                        subprocess.run(['open', self.report_output_dir])
+                    elif current_os == "Linux":
+                        subprocess.run(['xdg-open', self.report_output_dir])
+                    else:
+                        log(f"Unsupported OS: {current_os}")
+                except Exception as e:
+                    log(f"Exception occurred when opening pdf folder, {e}")
             else:
                 log("Folder path doesn't exist")
         else:
