@@ -50,20 +50,20 @@ nav:
                 - Quickstart: user/quickstart/index.md
                 - Guide:
                         - user/guide/index.md
-                        - GEA Reforestation: user/guide/gea-reforestation.md
+                        - GEA Project: user/guide/gea-reforestation.md
                         - GEA Reforestation Tool (Plugin): user/guide/gea-reforestation-tool.md
                         - NICFI Imagery: user/guide/nicfi-imagery.md
                         - Sign Up: user/guide/sign-up.md
                         - Login: user/guide/login.md
                 - Manual :
                         - user/manual/index.md
-                        - GEA Reforestation: user/manual/gea-reforestation.md
+                        - GEA Project: user/manual/gea-reforestation.md
                         - GEA Reforestation Tool (Plugin): user/manual/gea-reforestation-tool.md
                         - NICFI Imagery: user/manual/nicfi-imagery.md
                         - Sign Up: user/manual/sign-up.md
                         - Login: user/manual/login.md
-                - user/user-workflow.md
-                - user/Appendix1.md
+                - User-Workflow: user/user-workflow.md
+                - Appendix 1: user/Appendix1.md
 
                  
         - Administrators:
