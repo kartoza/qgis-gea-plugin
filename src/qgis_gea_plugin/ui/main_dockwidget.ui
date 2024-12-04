@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GEA Afforestation tool</string>
+   <string>EPAL - Eligible Project Area Locator</string>
   </property>
   <widget class="QWidget" name="dock_widget_contents">
    <layout class="QVBoxLayout" name="verticalLayout">

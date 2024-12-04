@@ -90,7 +90,7 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
             if fields.indexFromName(field) != -1:
                 reply = QtWidgets.QMessageBox.warning(
                     self,
-                    tr("QGIS GEA PLUGIN"),
+                    tr("QGIS EPAL PLUGIN"),
                     tr('Field "{}" already exists in the layer.'
                        'Do you want to proceed and overwrite it?').
                     format(field),

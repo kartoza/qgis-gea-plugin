@@ -38,10 +38,10 @@ class QgisGea:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr("&QGIS GEA Afforestation tool")
+        self.menu = self.tr("&EPAL - Eligible Project Area Locator.")
         self.pluginIsActive = False
-        self.toolbar = self.iface.addToolBar("Open QGIS GEA Afforestation tool")
-        self.toolbar.setObjectName("QGIS GEA Afforestation tool")
+        self.toolbar = self.iface.addToolBar("Open EPAL - Eligible Project Area Locator")
+        self.toolbar.setObjectName("EPAL - Eligible Project Area Locator.")
 
         self.main_widget = QgisGeaPlugin(
             iface=self.iface, parent=self.iface.mainWindow()
@@ -57,7 +57,7 @@ class QgisGea:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate("QGIS GEA plugin", message)
+        return QCoreApplication.translate("EPAL - Eligible Project Area Locator", message)
 
     def add_action(
         self,
@@ -141,7 +141,7 @@ class QgisGea:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        icon_path = ":/plugins/qgis_gea_plugin/icon.png"
+        icon_path = ":/plugins/qgis_gea_plugin/icon.svg"
         self.add_action(
             icon_path,
             text=self.tr("Open Plugin"),
@@ -157,8 +157,8 @@ class QgisGea:
         """Removes the plugin menu item and icon from QGIS GUI."""
         try:
             for action in self.actions:
-                self.iface.removePluginMenu(self.tr("&QGIS GEA Afforestation tool"), action)
-                self.iface.removePluginWebMenu(self.tr("&QGIS GEA Afforestation tool"), action)
+                self.iface.removePluginMenu(self.tr("&EPAL - Eligible Project Area Locator."), action)
+                self.iface.removePluginWebMenu(self.tr("&EPAL - Eligible Project Area Locator."), action)
                 self.iface.removeToolBarIcon(action)
 
         except Exception as e:

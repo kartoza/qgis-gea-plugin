@@ -3,7 +3,7 @@
 /***************************************************************************
  QgisGea
 
- A QGIS plugin that enables usage of the GEA afforestation data visualization.
+ A QGIS plugin that enables usage of the EPAL afforestation data visualization.
                              -------------------
         begin                : 2024-06-27
         copyright            : (C) 2024 by Kartoza
