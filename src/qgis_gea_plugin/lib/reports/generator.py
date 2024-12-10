@@ -570,7 +570,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             self._error_messages.append(tr_msg)
 
         # landscape layer with mask map
-        historic_mask_map = self._get_map_item_by_id("historic_mask_map")
+        historic_mask_map = self._get_map_item_by_id("2013_historic_mask_map")
         if historic_mask_map and detailed_extent:
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
@@ -597,7 +597,62 @@ class SiteReportReportGeneratorTask(QgsTask):
                 historic_mask_map.refresh()
 
         # Landscape with no-mask map
-        landscape_no_mask_map = self._get_map_item_by_id("historic_no_mask_map")
+        landscape_no_mask_map = self._get_map_item_by_id("2013_historic_no_mask_map")
+        if landscape_no_mask_map and detailed_extent:
+            # Transform extent
+            landscape_no_mask_extent = self._transform_extent(
+                detailed_extent,
+                self._site_layer.crs(),
+                landscape_no_mask_map.crs()
+            )
+
+            if landscape_no_mask_extent.isNull():
+                tr_msg = tr(
+                    "Invalid extent for setting in the landscape imagery "
+                    "with no-mask map"
+                )
+                self._error_messages.append(tr_msg)
+            else:
+                landscape_no_mask_layers = [self._site_layer]
+                if self._landscape_layer is not None:
+                    landscape_no_mask_layers.append(self._landscape_layer)
+
+                landscape_no_mask_map.setFollowVisibilityPreset(False)
+                landscape_no_mask_map.setFollowVisibilityPresetName("")
+                landscape_no_mask_map.setLayers(landscape_no_mask_layers)
+                landscape_no_mask_map.zoomToExtent(landscape_no_mask_extent)
+                landscape_no_mask_map.refresh()
+
+
+        # landscape layer with mask map
+        historic_mask_map = self._get_map_item_by_id("2018_historic_mask_map")
+        if historic_mask_map and detailed_extent:
+            # Transform extent
+            landscape_imagery_extent = self._transform_extent(
+                detailed_extent,
+                self._site_layer.crs(),
+                historic_mask_map.crs()
+            )
+
+            if landscape_imagery_extent.isNull():
+                tr_msg = tr(
+                    "Invalid extent for setting in the current imagery "
+                    "with mask map"
+                )
+                self._error_messages.append(tr_msg)
+            else:
+                landscape_mask_layers = [self._site_layer]
+                landscape_mask_layers.extend(mask_layers)
+                if self._landscape_layer is not None:
+                    landscape_mask_layers.append(self._landscape_layer)
+                historic_mask_map.setFollowVisibilityPreset(False)
+                historic_mask_map.setFollowVisibilityPresetName("")
+                historic_mask_map.setLayers(landscape_mask_layers)
+                historic_mask_map.zoomToExtent(landscape_imagery_extent)
+                historic_mask_map.refresh()
+
+        # Landscape with no-mask map
+        landscape_no_mask_map = self._get_map_item_by_id("2018_historic_no_mask_map")
         if landscape_no_mask_map and detailed_extent:
             # Transform extent
             landscape_no_mask_extent = self._transform_extent(
