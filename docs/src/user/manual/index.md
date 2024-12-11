@@ -16,7 +16,7 @@ what the various components of that page do. The manual is intended to function
 as a reference for the application. For narrative / workflow based tutorials,
 you may prefer to work through our [user guide](../guide/index.md).
 
-* **[GEA Reforestation:](gea-reforestation.md)** This documentation provides detailed instructions on what to do with the shared project and how to open it with QGIS also explains the steps to prepare and open a QGIS project for using the GEA Reforestation Tool, navigate the QGIS interface, and customise the visualisation of different layers to gain valuable insights for a reforestation project.
+* **[GEA Project:](gea-reforestation.md)** This documentation provides detailed instructions on what to do with the shared project and how to open it with QGIS also explains the steps to prepare and open a QGIS project for using the GEA Reforestation Tool, navigate the QGIS interface, and customise the visualisation of different layers to gain valuable insights for a reforestation project.
 
 * **[GEA Reforestation Tool:](gea-reforestation-tool.md)** This manual explains the usage of the GEA Reforestation Tool, a plugin for QGIS, which allows users to visualise historical imagery, access different landscape maps, and generate reports for potential reforestation sites. The manual covers the Time Slider feature, which enables users to view selected imagery on the map canvas, and the Drawing Tool, which allows users to draw polygons on the map canvas to identify potential reforestation sites. Additionally, the manual explains the automated report generation feature, which provides users with a detailed report on the project area.
 

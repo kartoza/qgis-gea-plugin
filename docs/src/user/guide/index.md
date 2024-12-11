@@ -11,7 +11,7 @@ license: the reforestation tool is made available to Global Evergreening Global 
 
 # GEA Reforestation user guide
 
-* **[GEA Reforestation:](gea-reforestation.md)** A comprehensive guide to the GEA Reforestation QGIS Project. It covers project setup, QGIS interface navigation, and detailed explanations of project layers including administrative boundaries, exclusion masks, and various imagery sources (Google, NICFI, Landsat). The guide also includes instructions for image enhancement techniques.
+* **[GEA Project:](gea-reforestation.md)** A comprehensive guide to the GEA Reforestation QGIS Project. It covers project setup, QGIS interface navigation, and detailed explanations of project layers including administrative boundaries, exclusion masks, and various imagery sources (Google, NICFI, Landsat). The guide also includes instructions for image enhancement techniques.
 
 * **[GEA Reforestation Tool (Plugin):](gea-reforestation-tool.md)** This guide details the installation and use of the GEA Reforestation Tool Plugin for QGIS. It covers plugin installation, using the time slider for historical imagery, the Drawing Tool for creating project areas, and generating automated reports. Step-by-step instructions with screenshots are provided throughout.
 
