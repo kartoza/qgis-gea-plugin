@@ -1,19 +1,19 @@
 ---
-title: GEA Reforestation
+title: EPAL-Eligible Project Area Locator
 summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
 copyright: Copyright 2024
 contact: marketing@geoterra360.pt
-license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
+license: the reforestation tool is made available to Eligible Project Area Locator (EPAL) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows EPAL to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by EPAL. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
-# GEA Reforestation QGIS Plugin User Manual
+# EPAL-Eligible Project Area Locator QGIS Plugin User Manual
 
 ![Shared folder](./img/gea-reforestation-1.png)
 
-1. **Preparing the QGIS Project:** To start using the GEA Reforestation Tool, you need to extract the project folder shared by the Head office.
+1. **Preparing the QGIS Project:** To start using the EPAL-Eligible Project Area Locator Tool, you need to extract the project folder shared by the Head office.
 
     ![Extracted folders](./img/gea-reforestation-2.png)
 
@@ -23,7 +23,7 @@ license: the reforestation tool is made available to Global Evergreening Global 
     * Images: This folder contains historical Landsat imagery data.
     * Malawi_2.gpkg: This is a package for vector data.
     * QGIS project file (project.qgz): This is the main file that contains the QGIS project settings.
-    * Plugin.zip: this contains the GEA reforestation tool to be loaded in QGIS
+    * Plugin.zip: this contains the EPAL-Eligible Project Area Locator tool to be loaded in QGIS
 
     ![Files/folders](./img/gea-reforestation-3.png)
 
@@ -185,7 +185,7 @@ license: the reforestation tool is made available to Global Evergreening Global 
     * Identify features on the map using the identify tool.
     * Add new features to the map using the vector toolbar.
 
-    By following these steps and using the various tools and options in the QGIS interface, the user can effectively use the GEA Reforestation QGIS Plugin to manage and analyse your reforestation project data.
+    By following these steps and using the various tools and options in the QGIS interface, the user can effectively use the EPAL-Eligible Project Area Locator QGIS Plugin to manage and analyse your reforestation project data.
 
 ### How to change the image styles in QGIS symbology
 

@@ -1,15 +1,15 @@
 ---
-title: GEA Reforestation
+title: EPAL-Eligible Project Area Locator
 summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
 copyright: Copyright 2024
 contact: marketing@geoterra360.pt
-license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
+license: the reforestation tool is made available to Eligible Project Area Locator (EPAL) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows EPAL to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by EPAL. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
-# GEA Reforestation Tool Plugin User Guide
+# EPAL-Eligible Project Area Locator Tool Plugin User Guide
 
 This user guide will walk you through how you can install the plugin, how to use the time slider and how to generate the reports.
 
@@ -48,7 +48,7 @@ You should now see that the plugin repository has been added successfully.
 
 ![Plugin](./img/gea-reforestation-tool-5.png)
 
-**Step 5 Install the GEA Reforestation Tool Plugin:** In the Plugin Manager, click on the 1️⃣ `All` tab and use the 2️⃣ `search bar`, type `QGIS GEA afforestation tool`. You should see the plugin in the list. Click on the 3️⃣ its name to select it. With the plugin selected, the 4️⃣ `Install` button should become active. Click on it to start the installation.
+**Step 5 Install the EPAL-Eligible Project Area Locator Tool Plugin:** In the Plugin Manager, click on the 1️⃣ `All` tab and use the 2️⃣ `search bar`, type `QGIS GEA afforestation tool`. You should see the plugin in the list. Click on the 3️⃣ its name to select it. With the plugin selected, the 4️⃣ `Install` button should become active. Click on it to start the installation.
 
 ![Install plugin](./img/gea-reforestation-tool-6.png)
 
@@ -56,11 +56,11 @@ You should now see that the plugin repository has been added successfully.
 
 After the installation is complete, you should see the plugin icon in your QGIS interface.
 
-Congratulations! You have successfully installed the GEA Reforestation Tool plugin for QGIS. You can now start using it for your reforestation projects.
+Congratulations! You have successfully installed the EPAL-Eligible Project Area Locator Tool plugin for QGIS. You can now start using it for your reforestation projects.
 
 ### 2. Install from zip
 
-This guide will walk you through the process of installing the GEA Reforestation Tool plugin using a `ZIP` file.
+This guide will walk you through the process of installing the EPAL-Eligible Project Area Locator Tool plugin using a `ZIP` file.
 
 ## Prerequisites
 
@@ -87,11 +87,11 @@ https://drive.google.com/file/d/1bhqBV1aamOg_tbZI0BZGOMaSihEr6qLI/view?usp=shari
 
 ![Install from ZIP](./img/gea-reforestation-tool-14.png)
 
-**Step 5 Confirm Installation:** QGIS will process the ZIP file and install the plugin. Once installation is complete, you should see a confirmation message. The GEA Reforestation Tool should now appear in your list of installed plugins.
+**Step 5 Confirm Installation:** QGIS will process the ZIP file and install the plugin. Once installation is complete, you should see a confirmation message. The EPAL-Eligible Project Area Locator Tool should now appear in your list of installed plugins.
 
 ![Plugin](./img/gea-reforestation-tool-15.png)
 
-Congratulations! You have successfully installed the GEA Reforestation Tool plugin from a ZIP file. You can now start using the tool in your QGIS projects.
+Congratulations! You have successfully installed the EPAL-Eligible Project Area Locator Tool plugin from a ZIP file. You can now start using the tool in your QGIS projects.
 
 ## How to use the time slider?
 
@@ -141,9 +141,7 @@ This tutorial will walk you through using the `Drawing Tool` to create project a
 
     ![Error](./img/gea-reforestation-tool-9.png)
 
-**Draw the polygon:** After clicking on the `Draw Project Area` button. Click on the map to create vertices of your polygon. Once you complete the drawing right-click to finish drawing after that the pop-up window will open, enter the ID (should be 1).
-
-![Polygon](./img/gea-reforestation-tool-10.png)
+**Draw the polygon:** After clicking on the `Draw Project Area` button. Click on the map to create vertices of your polygon.
 
 **Editing the polygon:** After drawing, editing options will appear in the toolbar. The edit icon will show up next to the project in the layer list. Make any necessary modifications before saving.
 
@@ -172,6 +170,16 @@ This tutorial will walk you through using the `Drawing Tool` to create project a
 **Clearing the Project Area:** Use the `Clear` button to remove the polygon from the map.
 
    - Important: Clear the polygon before saving a new project, as existing shape files in the Sites folder won't be automatically deleted.
+
+## How to copy coordinates
+
+You can copy coordinates by right-clicking anywhere on the map, which opens the 1️⃣ `Copy Coordinates` tab. Hover over the tab to view available options and click on any option to copy the coordinates. You can also create your custom CRS(Coordinate Reference System) by clicking on the last option `Set Custom CRS`.
+
+![Copy Coordinates](./img/gea-reforestation-tool-26.png)
+
+This is the window you will receive when you click on the `Set Custom CRS`.
+
+![Custom CRS](./img/gea-reforestation-tool-27.png)
 
 ## How to import project instance
 
@@ -236,7 +244,8 @@ The attribute table contains information about the project instances, including 
 
 * Double-click on any report to open it.
 
-    ![Report PDF](./img/gea-reforestation-tool-22.png)
+    ![Report PDF 1](./img/gea-reforestation-tool-22.png)
+    
+    ![Report PDF 2](./img/gea-reforestation-tool-28.png)
 
-By following these steps, you will be able to effectively use the Drawing Tool to define your project areas and generate automated reports for the GEA Reforestation project.
-
+By following these steps, you will be able to effectively use the Drawing Tool to define your project areas and generate automated reports for the EPAL-Eligible Project Area Locator project.

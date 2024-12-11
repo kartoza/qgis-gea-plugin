@@ -1,25 +1,25 @@
 ---
-title: GEA Reforestation
+title: EPAL-Eligible Project Area Locator
 summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
 copyright: Copyright 2024
 contact: marketing@geoterra360.pt
-license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
+license: the reforestation tool is made available to Eligible Project Area Locator (EPAL) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows EPAL to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by EPAL. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
-# GEA Reforestation Tool (Plugin) User Manual
+# EPAL-Eligible Project Area Locator Tool (Plugin) User Manual
 
-Welcome to the GEA Reforestation Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential reforestation sites.
+Welcome to the EPAL-Eligible Project Area Locator Tool user manual. This guide will help you navigate and utilise the tool to visualise historical imagery, access different landscape maps, and generate reports for potential reforestation sites.
 
-![GEA reforestation](./img/gea-reforestation-tool-1.png)
+![EPAL-Eligible Project Area Locator](./img/gea-reforestation-tool-1.png)
 
 1. **Time Slider:** Allows users to view selected imagery on the map canvas. Users can drag the toggle to the next or previous increment to view the corresponding imagery
 
-2. **Drawing Tool:** Allows users to draw polygons on the map canvas. Users can use the `Draw Project Area` button to draw a polygon. Users must provide site reference, project inception date, site reference version, author of site capture, and country before drawing the polygon.
+2. **Drawing Tool:** Allows users to draw polygons on the map canvas. Users can use the `Draw Project Area` button to draw a polygon. Users must provide site reference, project inception date, site reference version, author of site capture, and country before drawing the polygon. Additionally, users can generate a report by clicking the `Generate Report` button
 
-3. **Generate Report:** Click on the generate report button to generate an automated report.
+<!-- 3. **Generate Report:** Click on the generate report button to generate an automated report. -->
 
 ## Time Slider 
 
@@ -27,11 +27,11 @@ Welcome to the GEA Reforestation Tool user manual. This guide will help you navi
 
 - **Historical Imagery (Landsat) Checkbox Checked:** The map canvas will display historical imagery from Landsat.
 
-![Historical Imagery](./img/gea-reforestation-tool-2.png)
+    ![Historical Imagery](./img/gea-reforestation-tool-2.png)
 
 - **Recent Imagery (NICFI) Checkbox Checked:** The map canvas will display recent imagery from NICFI.
 
-![Recent Imagery](./img/gea-reforestation-tool-3.png)
+    ![Recent Imagery](./img/gea-reforestation-tool-3.png)
 
 The user can use the slide bar by dragging the toggle to the next or previous increment to view the corresponding imagery on the map canvas.
 
@@ -52,16 +52,14 @@ The user can use the slide bar by dragging the toggle to the next or previous in
 ![Recent Imagery play](./img/Nicfi.gif)
 
 ## Drawing tool
-
+    
 The user can use the drawing tool to draw polygons on the map canvas.
     
 ![Drawing tool](./img/gea-reforestation-tool-5.png)
 
-**Draw Project Area Button:** The user can use this button to draw the polygon on the map canvas. Before using the `Draw Project Area` button, ensure that the site reference has been provided. After drawing the polygon right-click. Upon clicking the pop-up will open for entering the ID, ID should be 1.
+**Draw Project Area Button:** The user can use this button to draw the polygon on the map canvas. Before using the `Draw Project Area` button, ensure that the site reference has been provided.
 
-![Id popup](./img/gea-reforestation-tool-9.png)
-
-* **Error Handling:** If any of the fields is empty, an error message will be displayed for example for the site reference field the message would be: `Please add the site reference before starting drawing the project area.`
+* **Error Handling:** If any of the fields is empty, an error message will be displayed for example trying to draw polygon before filling in any details: `Please complete the attributes form before drawing the site polygon. This ensures all necessary details are captured accurately`.
 
     ![Error message](./img/gea-reforestation-tool-4.png)
 
@@ -71,7 +69,7 @@ The user can use the drawing tool to draw polygons on the map canvas.
 
 * **Project Inception Date:** To choose the project inception date, click on the field to open a calendar. Select the desired date from the calendar interface.
 
-![Calander](./img/gea-reforestation-tool-7.png)
+    ![Calander](./img/gea-reforestation-tool-7.png)
 
 * **Site Reference:** Enter the site reference to identify the specific location or area for the project.
 
@@ -83,7 +81,7 @@ The user can use the drawing tool to draw polygons on the map canvas.
 
 * **Project Folder:** Select the project folder where plugin data is stored. The shape files will be saved in the `Sites` directory, which is automatically generated when you save the project.
 
-![Sites directory](./img/gea-reforestation-tool-8.png)
+    ![Sites directory](./img/gea-reforestation-tool-8.png)
 
 * **Save Project Area Button:** Click the `Save Project Area` button to save the project after drawing the polygon. The shape files will be stored in the `Sites` directory.
 
@@ -115,12 +113,25 @@ After selecting the desired project instance user will click on the `open` butto
 * **No:**  Cancel the process.
 * **Yes:** Overwrite names.
 
+## Coordinate
+
+![Coordinates](./img/gea-reforestation-tool-21.png) 
+
+1. **Copy Coordinate:** Users can copy coordinates by right-clicking anywhere on the map, which opens the Copy Coordinates tab. Hovering over this tab provides various options for copying the coordinates users can copy coordinates by clicking on any option.
+
+* **Map CRS:** Map CRS (Coordinate Reference System) defines how geographic coordinates (latitude and longitude) are mapped onto a flat surface, ensuring accurate spatial representation and measurements.
+
+* **ESPG:** EPSG (European Petroleum Survey Group) codes are numerical identifiers for specific Coordinate Reference Systems (CRS) used to standardise geographic and spatial data. For example, EPSG:4326 represents the WGS84 system, commonly used for global mapping.
+
+* **Set Custom CRS:** Users can create custom CRS (Coordinate Reference System).
+
+    ![Custom CRS](./img/gea-reforestation-tool-22.png)
+
 ## Project Instances 
 
 After importing the project instances or drawing them manually, they will be added to the `Project Instances` group within the `Layers` section.
 
 ![Qgis Interface](./img/gea-reforestation-tool-12.png)
-
 
 ### Attribute Table
 
@@ -170,7 +181,9 @@ The attribute table contains information about the project instances, including 
 
 This is the report generated after completing the process.
 
-![Generated Report](./img/gea-reforestation-tool-16.png)
+### Report for imported instances
+
+![Generated Report 1](./img/gea-reforestation-tool-16.png)
 
 1. **Area Eligibility:** Displaying the ID of the farmer.
     - **Date of Project Inception:** The date when the project started.
@@ -182,3 +195,23 @@ This is the report generated after completing the process.
 
 3. **Landscape Exclusion and Inclusion Areas:**  Displaying the Historical Landsat 2013 with and without exclusion masks and the proposed site.
 
+![Generated Report 2](./img/gea-reforestation-tool-23.png)
+
+### Report for drawing instances
+
+![Generated Report 3](./img/gea-reforestation-tool-24.png)
+
+1. **GEA Reforestation Site Report:** Contains the information about the site.
+    - **Date of Project Inception:** The date when the project started.
+    - **Version of Site Reference:** Version of the site reference.
+    - **Date of Site Capture:** The date when the site was captured.
+    - **Site Reference:** Name of the site reference.
+    - **Author of Site Capture:** Name of the person who captured the site.
+    - **Country Location:** Name of the country.
+    - **Site Area:** The area of the site.
+
+2. **Project Instance Sites:** Displaying the site location on the map.
+
+3. **Landscape Exclusion and Inclusion Areas:**  Displaying the Historical Landsat 2013 with and without exclusion masks and the proposed site.
+
+![Generated Report 1](./img/gea-reforestation-tool-25.png)

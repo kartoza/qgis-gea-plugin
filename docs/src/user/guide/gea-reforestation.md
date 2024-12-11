@@ -1,21 +1,21 @@
 ---
-title: GEA Reforestation
+title: EPAL-Eligible Project Area Locator
 summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
 copyright: Copyright 2024
 contact: marketing@geoterra360.pt
-license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
+license: the reforestation tool is made available to Eligible Project Area Locator (EPAL) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows EPAL to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by EPAL. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
-# The GEA Reforestation QGIS Project User Guide
+# The EPAL-Eligible Project Area Locator QGIS Project User Guide
 
 ## Introduction
 
-Welcome to the user guide tutorial for the GEA Reforestation project using QGIS. This guide will walk you through the steps to get started with the project and how to use the various tools and features available.
+Welcome to the user guide tutorial for the EPAL-Eligible Project Area Locator project using QGIS. This guide will walk you through the steps to get started with the project and how to use the various tools and features available.
 
-The GEA Reforestation project is a collaborative effort between the Head Office and Field Office to track and manage reforestation activities. This project leverages the power of QGIS, a free and open-source geographic information system (GIS) software, to provide a comprehensive solution for the reforestation process.
+The EPAL-Eligible Project Area Locator project is a collaborative effort between the Head Office and Field Office to track and manage reforestation activities. This project leverages the power of QGIS, a free and open-source geographic information system (GIS) software, to provide a comprehensive solution for the reforestation process.
 
 ## Getting Started:
 
@@ -43,7 +43,7 @@ The folder should contain the following components:
 
 **Launching QGIS:** If you don't have QGIS installed on your system, refer to the [Quickstart Guide](../quickstart/index.md) for detailed instructions on how to install the QGIS.
 
-**Opening the Project File:** Right-click on the 1️⃣ `project.qgz` file and select 2️⃣ `Open with QGIS`. This will launch the QGIS application and open the GEA Reforestation project.
+**Opening the Project File:** Right-click on the 1️⃣ `project.qgz` file and select 2️⃣ `Open with QGIS`. This will launch the QGIS application and open the EPAL-Eligible Project Area Locator project.
 
 ## Exploring the QGIS Interface:
 
@@ -156,9 +156,9 @@ Check the respective checkboxes to visualise the exclusion masks on the map canv
 
 ![Historical Landsat](./img/gea-reforestation-13.png)
 
-By selectively toggling the visibility of the different layers, you can customise the map view and gain valuable insights for the GEA Reforestation Project.
+By selectively toggling the visibility of the different layers, you can customise the map view and gain valuable insights for the EPAL-Eligible Project Area Locator Project.
 
-With the GEA Reforestation QGIS project opened and the basic navigation tools explored, you are now ready to dive deeper into the project and start working on the reforestation activities. 
+With the EPAL-Eligible Project Area Locator QGIS project opened and the basic navigation tools explored, you are now ready to dive deeper into the project and start working on the reforestation activities. 
 
 ## How to style an image for better visualisation?
 

@@ -1,21 +1,21 @@
 ---
-title: GEA Reforestation
-summary: Visualize historical imagery, access different landscape maps and generate reports for potential afforestation sites.
+title: EPAL-Eligible Project Area Locator
+summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
 copyright: Copyright 2024
 contact: marketing@geoterra360.pt
-license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
+license: the reforestation tool is made available to Eligible Project Area Locator (EPAL) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows EPAL to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by EPAL. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
 # Quick Start Documentation
 
-The GEA Reforestation Tool consists of two main components:
+The EPAL-Eligible Project Area Locator Tool consists of two main components:
 
 1. A QGIS project that contains all the data for the area of interest, such as Malawi as outlined above.
 
-2. The GEA Reforestation Plugin that helps users view current, recent, and historical imagery of an area and easily draw boundaries for proposed reforestation projects.
+2. The EPAL-Eligible Project Area Locator Plugin that helps users view current, recent, and historical imagery of an area and easily draw boundaries for proposed reforestation projects.
 
 To use the tool, a few dependencies are required:
 
@@ -29,7 +29,7 @@ The following Quick Start documentation will guide users on how to set up the to
 2. The project file for an area of interest.
 3. Sign in for a Planet NICFI account.
 4. Install the Plantet_Explorer Plugin.
-5. Install the GEA Reforestation Plugin.
+5. Install the EPAL-Eligible Project Area Locator Plugin.
 
 ## 1. How to install QGIS:
 
@@ -109,7 +109,7 @@ Open the project folder that contains the following files and folders
 
 4️⃣ The images folder that contains the Landsat images that support the project
 
-### Opening the GEA QGIS Project
+### Opening the EPAL QGIS Project
 
 To open the QGIS `project` right click on the project file that ends in .qgz and choose to open it with QGIS
 
@@ -131,7 +131,7 @@ Sign up for a Planet NICFI account to stream the NICFI imagery. For detailed doc
 
 ## 4. How to install Planet_Explorer Plugin
 
-In the open GEA QGIS project. 
+In the open EPAL QGIS project. 
 
 ![Plugins option](./img/quick-start-1.png)
 
@@ -168,7 +168,7 @@ In the Planet Explorer panel, click on the login button and login to the Planet 
 ![Planet imagery](./img/quick-start-7.png)
 
 
-## 5. How to Install GEA Reforestation Tool
+## 5. How to Install EPAL-Eligible Project Area Locator Tool
 
 
 You need to have the plugin URL. To get the plugin URL, visit to the [Plugins GitHub Repository](https://github.com/kartoza/qgis-gea-plugin)
@@ -201,7 +201,7 @@ You will see the plugin is added successfully.
 
 ![Plugin](./img/quick-start-19.png)
 
-- **Install Plugin:** To install the plugin click on the 1️⃣ `All` option and search for the  2️⃣ `QGIS GEA reforestation tool` plugin. Click on the 3️⃣ `Plugin` name, to enable the install button and then click on the 4️⃣ `Install` button, to install the plugin.
+- **Install Plugin:** To install the plugin click on the 1️⃣ `All` option and search for the  2️⃣ `QGIS EPAL-Eligible Project Area Locator tool` plugin. Click on the 3️⃣ `Plugin` name, to enable the install button and then click on the 4️⃣ `Install` button, to install the plugin.
 
 ![Install Plugin](./img/quick-start-21.png)
 
