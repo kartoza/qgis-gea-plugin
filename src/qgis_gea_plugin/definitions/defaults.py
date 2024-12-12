@@ -64,6 +64,8 @@ RECENT_IMAGERY_GROUP_NAME = "Recent Nicfi Imagery"
 SITE_GROUP_NAME = "Drawn Areas of Interest"
 PROJECT_INSTANCES_GROUP_NAME = "Project Instances"
 
+NICFI_2018_LAYER_NAME = 'PS Tropical Visual Biannual Archive - December 2018'
+
 SITE_REPORT_TEMPLATE_NAME = "reforestation_site.qpt"
 PROJECT_INSTANCE_REPORT_TEMPLATE_NAME = "project_instance.qpt"
 
