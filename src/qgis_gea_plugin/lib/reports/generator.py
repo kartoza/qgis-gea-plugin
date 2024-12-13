@@ -650,8 +650,9 @@ class SiteReportReportGeneratorTask(QgsTask):
                 )
                 QgsProject.instance().addMapLayers([nicfi_tile_layer])
 
-                landscape_mask_layers = [self._site_layer, nicfi_tile_layer]
+                landscape_mask_layers = [self._site_layer]
                 landscape_mask_layers.extend(mask_layers)
+                landscape_mask_layers.append(nicfi_tile_layer)
 
                 if self._landscape_layer is not None:
                     landscape_mask_layers.append(self._landscape_layer)
