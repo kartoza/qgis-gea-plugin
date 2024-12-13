@@ -1,6 +1,7 @@
 
 # Configuration
 theme:
+  logo: img/logo-1.png
   name: material
   language: en
   direction: ltr
