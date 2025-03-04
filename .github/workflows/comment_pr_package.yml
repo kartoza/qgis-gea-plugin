@@ -1,0 +1,57 @@
+name: Add package comment on a pull request
+# Based on work from https://github.com/orgs/community/discussions/51403#discussioncomment-5535167
+on:
+  workflow_run:
+    types:
+      - completed
+    workflows:
+      - 'Creating plugin package in the PR'
+
+jobs:
+  comment:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download workflow artifact
+        uses: dawidd6/action-download-artifact@v2.11.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: peek_icons.yml
+          run_id: ${{ github.event.workflow_run.id }}
+
+      - name: Read the artifact url
+        id: artifact_url_reader
+        uses: juliangruber/read-file-action@v1.0.0
+        with:
+          path: ./artifact_url/artifact_url.txt
+
+      - name: Read the PR number file
+        id: pr_number_reader
+        uses: juliangruber/read-file-action@v1.0.0
+        with:
+          path: ./pr_number/pr_number.txt
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v2
+        id: find-comment
+        with:
+          issue-number: ${{ steps.pr_number_reader.outputs.content }}
+          comment-author: 'github-actions[bot]'
+      - name: Update Comment
+        env:
+          ARTIFACT_URL: "${{ steps.artifact_url_reader.outputs.content }}"
+          HEAD_SHA: "${{ github.event.head_sha }}"
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ github.token }}
+          issue-number:  ${{ steps.pr_number_reader.outputs.content }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |-
+            ![badge]
+            
+            Plugin zip package for the changes in this PR has been successfully built!.
+            
+            Download the plugin zip file here ${{ env.ARTIFACT_URL }}
+            
+            [badge]: https://img.shields.io/badge/package_build-success-green
