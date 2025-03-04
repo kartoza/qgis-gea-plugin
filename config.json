@@ -9,7 +9,7 @@
     "homepage": "https://github.com/kartoza/qgis-gea-plugin",
     "tracker": "https://github.com/kartoza/qgis-gea-plugin/issues",
     "repository": "https://github.com/kartoza/qgis-gea-plugin",
-    "tags": ["epal", "maps", "afforestation"],
+    "tags": [ s"epal", "maps", "afforestation"],
     "category": ["plugins"],
     "hasProcessingProvider": "no",
     "about": "Adds functionality inside QGIS to enable EPAL afforestation visualization and analysis.",
