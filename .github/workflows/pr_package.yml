@@ -1,4 +1,4 @@
-name: Creating plugin package and comment in the PR
+name: Creating plugin package in the PR
 
 on:
   pull_request:
