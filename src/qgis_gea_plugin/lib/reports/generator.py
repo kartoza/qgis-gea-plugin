@@ -667,13 +667,13 @@ class SiteReportReportGeneratorTask(QgsTask):
                     QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
         # Landscape with no-mask map
-        landscape_no_mask_map = self._get_map_item_by_id("2018_historic_no_mask_map")
-        if landscape_no_mask_map and detailed_extent:
+        landscape_no_mask_map_2018 = self._get_map_item_by_id("2018_historic_no_mask_map")
+        if landscape_no_mask_map_2018 and detailed_extent:
             # Transform extent
             landscape_no_mask_extent = self._transform_extent(
                 detailed_extent,
                 self._site_layer.crs(),
-                landscape_no_mask_map.crs()
+                landscape_no_mask_map_2018.crs()
             )
 
             if landscape_no_mask_extent.isNull():
@@ -728,11 +728,11 @@ class SiteReportReportGeneratorTask(QgsTask):
                     if self._landscape_layer is not None:
                         landscape_no_mask_layers.append(self._landscape_layer)
 
-                    landscape_no_mask_map.setFollowVisibilityPreset(False)
-                    landscape_no_mask_map.setFollowVisibilityPresetName("")
-                    landscape_no_mask_map.setLayers(landscape_no_mask_layers)
-                    landscape_no_mask_map.zoomToExtent(landscape_no_mask_extent)
-                    landscape_no_mask_map.refresh()
+                    landscape_no_mask_map_2018.setFollowVisibilityPreset(False)
+                    landscape_no_mask_map_2018.setFollowVisibilityPresetName("")
+                    landscape_no_mask_map_2018.setLayers(landscape_no_mask_layers)
+                    landscape_no_mask_map_2018.zoomToExtent(landscape_no_mask_extent)
+                    landscape_no_mask_map_2018.refresh()
 
                     QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
