@@ -1,4 +1,4 @@
-name: Add package comment on a pull request
+name: Add comment on a pull request about the plugin package
 # Based on work from https://github.com/orgs/community/discussions/51403#discussioncomment-5535167
 on:
   workflow_run:
