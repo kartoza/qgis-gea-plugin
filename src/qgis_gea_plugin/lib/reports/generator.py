@@ -704,38 +704,37 @@ class SiteReportReportGeneratorTask(QgsTask):
                 )
 
                 if nicfi_2018_layer:
+                    nicfi_source = nicfi_2018_layer.source()
+                    source = nicfi_source
 
-                nicfi_source = nicfi_2018_layer.source()
-                source = nicfi_source
+                    if "api_key%3D&" in nicfi_source:
+                        source = nicfi_source.replace(
+                            "api_key%3D",
+                            f"api_key={api_key}"
+                        )
 
-                if "api_key%3D&" in nicfi_source:
-                    source = nicfi_source.replace(
-                        "api_key%3D",
-                        f"api_key={api_key}"
+                    nicfi_tile_layer = QgsRasterLayer(
+                        f"{source}",
+                        "Planet Mosaic 2018",
+                        "wms"
                     )
+                    QgsProject.instance().addMapLayers([nicfi_tile_layer])
 
-                nicfi_tile_layer = QgsRasterLayer(
-                    f"{source}",
-                    "Planet Mosaic 2018",
-                    "wms"
-                )
-                QgsProject.instance().addMapLayers([nicfi_tile_layer])
+                    landscape_no_mask_layers = [
+                        self._site_layer,
+                        nicfi_tile_layer
+                    ]
 
-                landscape_no_mask_layers = [
-                    self._site_layer,
-                    nicfi_tile_layer
-                ]
+                    if self._landscape_layer is not None:
+                        landscape_no_mask_layers.append(self._landscape_layer)
 
-                if self._landscape_layer is not None:
-                    landscape_no_mask_layers.append(self._landscape_layer)
+                    landscape_no_mask_map.setFollowVisibilityPreset(False)
+                    landscape_no_mask_map.setFollowVisibilityPresetName("")
+                    landscape_no_mask_map.setLayers(landscape_no_mask_layers)
+                    landscape_no_mask_map.zoomToExtent(landscape_no_mask_extent)
+                    landscape_no_mask_map.refresh()
 
-                landscape_no_mask_map.setFollowVisibilityPreset(False)
-                landscape_no_mask_map.setFollowVisibilityPresetName("")
-                landscape_no_mask_map.setLayers(landscape_no_mask_layers)
-                landscape_no_mask_map.zoomToExtent(landscape_no_mask_extent)
-                landscape_no_mask_map.refresh()
-
-                QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
+                    QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
 
     def _configure_current_maps(
