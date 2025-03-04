@@ -12,32 +12,46 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Read the artifact url
-        id: artifact_url_reader
-        uses: juliangruber/read-file-action@v1.0.0
+      - name: Download PR number artifact
+        uses: actions/download-artifact@v4
         with:
-          path: ./artifact_url/artifact_url.txt
+          name: pr_number
+          path: ./pr_number
 
-      - name: Read the PR number file
-        id: pr_number_reader
-        uses: juliangruber/read-file-action@v1.0.0
+      - name: Download artifact URL
+        uses: actions/download-artifact@v4
         with:
-          path: ./pr_number/pr_number.txt
+          name: artifact_url
+          path: ./artifact_url
+
+      - name: Read the pr number artifact
+        id: pr_number_reader
+        run: |
+          PR_NUMBER=$(cat ./pr_number/pr_number.txt)
+          echo "PR number: $PR_NUMBER"
+          echo "::set-output name=pr_number::$PR_NUMBER"
+
+      - name: Read the artifact URL
+        id: artifact_url_reader
+        run: |
+          ARTIFACT_URL=$(cat ./artifact_url/artifact_url.txt)
+          echo "Artifact URL: $ARTIFACT_URL"
+          echo "::set-output name=artifact_url::$ARTIFACT_URL"
 
       - name: Find Comment
         uses: peter-evans/find-comment@v2
         id: find-comment
         with:
-          issue-number: ${{ steps.pr_number_reader.outputs.content }}
+          issue-number: ${{ steps.pr_number_reader.outputs.pr_number }}
           comment-author: 'github-actions[bot]'
       - name: Update Comment
         env:
-          ARTIFACT_URL: "${{ steps.artifact_url_reader.outputs.content }}"
+          ARTIFACT_URL: "${{ steps.artifact_url_reader.outputs.artifact_url }}"
           HEAD_SHA: "${{ github.event.head_sha }}"
         uses: peter-evans/create-or-update-comment@v3
         with:
           token: ${{ github.token }}
-          issue-number:  ${{ steps.pr_number_reader.outputs.content }}
+          issue-number:  ${{ steps.pr_number_reader.outputs.pr_number }}
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
           body: |-
@@ -45,6 +59,6 @@ jobs:
             
             Plugin zip package for the changes in this PR has been successfully built!.
             
-            Download the plugin zip file here ${{ env.ARTIFACT_URL }}
+            Download the plugin zip file from here ${{ env.ARTIFACT_URL }}
             
             [badge]: https://img.shields.io/badge/package_build-success-green
