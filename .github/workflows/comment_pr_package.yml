@@ -12,6 +12,30 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for 10 seconds
+        run: sleep 10
+
+      - name: List all available artifact names
+        run: |
+          echo "Listing all artifacts for the current workflow run..."
+
+          # Get the current workflow run ID
+          run_id=${{ github.run_id }}
+          repo=${{ github.repository }}
+
+          # Make a GitHub API call to list artifacts
+          response=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/samweli/qgis-gea-plugin/actions/runs/$run_id/artifacts")
+
+          # Extract artifact names from the response
+          artifact_names=$(echo "$response" | jq -r '.artifacts[].name')
+
+          # Display the artifact names
+          echo "Artifacts:"
+          echo "$artifact_names"
+
       - name: Download PR number artifact
         uses: actions/download-artifact@v4
         with:
