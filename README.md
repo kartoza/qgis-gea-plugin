@@ -83,7 +83,7 @@ pip install virtualenvwrapper
  1. Create virtual environment
 
     ```
-    mkvirtualenv env
+    mkvirtualenv venv
     ```
 
 2. Using the pip, install plugin development dependencies by running 
