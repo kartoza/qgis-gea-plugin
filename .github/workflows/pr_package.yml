@@ -10,6 +10,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   create-package:
     runs-on: ubuntu-22.04
@@ -47,28 +51,30 @@ jobs:
           echo "::set-output name=ZIP_NAME::$(ls docs/plugin/package)"
 
       - name: Uploading plugin build
+        id: artifact-upload-step
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.get-zip-details.outputs.ZIP_NAME }}
           path: ${{ steps.get-zip-details.outputs.ZIP_PATH }}
 
-      - name: Save the PR number and plugin folder name into artifacts
+
+      - name: Save the artifact url
         shell: bash
         env:
           PR_NUMBER: ${{ github.event.number }}
-          ZIP_FILE_NAME: ${{ steps.get-zip-details.outputs.ZIP_NAME }}
+          ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
+          echo $ARTIFACT_URL > artifact_url.txt
           echo $PR_NUMBER > pr_number.txt
-          echo $ZIP_FILE_NAME > zip_file_name.txt
+
+      - name: Upload the artifact url
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_url
+          path: ./artifact_url.txt
 
       - name: Upload the PR number
         uses: actions/upload-artifact@v4
         with:
           name: pr_number
           path: ./pr_number.txt
-
-      - name: Upload the zip file name
-        uses: actions/upload-artifact@v4
-        with:
-          name: zip_file_name
-          path: ./zip_file_name.txt
