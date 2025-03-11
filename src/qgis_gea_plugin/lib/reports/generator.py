@@ -732,6 +732,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                     landscape_no_mask_map_2018.setFollowVisibilityPresetName("")
                     landscape_no_mask_map_2018.setLayers(landscape_no_mask_layers)
                     landscape_no_mask_map_2018.zoomToExtent(landscape_no_mask_extent)
+                    landscape_no_mask_map_2018.refresh()
 
                     QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
