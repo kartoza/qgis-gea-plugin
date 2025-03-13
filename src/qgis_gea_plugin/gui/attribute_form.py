@@ -120,20 +120,19 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
         feature = next(features, None)
         while feature is not None:
             # Set attribute values
-            feature_area = "-"
+            area = 0
             geom = feature.geometry()
 
             if geom is None or not geom.isGeosValid():
                 self.parent.show_message(
                     tr(
-                        "Skipped a feature with "
+                        "Skipped area calculation for a feature with "
                         "an invalid geometry."
                     )
                 )
-                feature = next(features, None)
-                continue
+            else:
+                area = geom.area() / 10000
 
-            area = geom.area() / 10000
             feature_area = f"{area:,.2f}"
 
             feature.setAttribute(
