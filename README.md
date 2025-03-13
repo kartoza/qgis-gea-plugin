@@ -1,7 +1,6 @@
-# QGIS GEA plugin
+# QGIS EPAL plugin
 
-![icon.png](resources/icon.png)
-
+<img src="resources/icon.svg" alt="icon" width="100" height="100">
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kartoza/qgis-gea-plugin/ci.yml?branch=main)
 ![GitHub](https://img.shields.io/github/license/kartoza/qgis-gea-plugin)
@@ -14,8 +13,7 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/kartoza/qgis-gea-plugin/total?logo=github&label=github-downloads)
 
 
-Adds functionality inside QGIS to enable GEA afforestation visualization and analysis.
-
+Adds functionality inside QGIS to enable EPAL (Eligible Project Area Locator) visualization and analysis.
 ### Installation
 
 During the development phase the plugin is available to install via 
