@@ -1262,43 +1262,44 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         )
 
         if group == PROJECT_INSTANCES_GROUP_NAME:
-            site_feature = next(site_layer.getFeatures(), None)
             project_folder = os.path.dirname(
                 site_layer.dataProvider().dataSourceUri()
             )
 
-            farmer_ids = []
+            farmer_map = {}
+
+            for site_feature in site_layer.getFeatures():
+                farmer_id = site_feature[FARMER_ID_FIELD]
+                area = float(site_feature['area (ha)'])
+
+                if farmer_id in farmer_map:
+                    farmer_map[farmer_id]['area'] += area
+                else:
+                    farmer_map[farmer_id] = {}
+                    farmer_map[farmer_id]['area'] = area
+                    farmer_map[farmer_id]['incep_date'] = (
+                        site_feature['IncepDate'])
+                    farmer_map[farmer_id]['author'] = (
+                        site_feature['author'])
+                    farmer_map[farmer_id]['project'] = (
+                        site_feature['project'])
+
+
             project_instances = []
 
-            for site_feature in list(site_layer.getFeatures()):
-
-                farmer_ids.append(site_feature[FARMER_ID_FIELD]) \
-                    if site_feature[FARMER_ID_FIELD] not in farmer_ids else None
-
-            total_area = 0
-            for farmer_id in farmer_ids:
-                total_area += 0
-
-                inception_date = site_feature['IncepDate']
-                author = site_feature['author']
-                project = site_feature['project']
-                #
-                for site_feature in site_layer.getFeatures():
-                    if site_feature[FARMER_ID_FIELD] == farmer_id:
-                        area = float(site_feature['area (ha)'])
-                        total_area += area
+            for farmer_id, farmer_map_items in farmer_map.items():
 
                 metadata = ProjectMetadata(
                     farmer_id=farmer_id,
-                    inception_date=inception_date,
-                    author=author,
-                    project=project,
-                    total_area=f"{total_area:,.2f}",
+                    inception_date=farmer_map_items['incep_date'],
+                    author=farmer_map_items['author'],
+                    project=farmer_map_items['project'],
+                    total_area=f"{farmer_map_items['area']:,.2f}",
                 )
 
                 project_instances.append(metadata)
-            tasks = []
 
+            tasks = []
             main_task = QgsTask.fromFunction(
                 'Report task',
                 self.main_report_task,
@@ -1309,12 +1310,12 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
             main_task.progressChanged.connect(self.report_progress_changed)
             main_task.taskTerminated.connect(self.report_terminated)
-
             task_counter = 0
 
             self.project_dir = project_folder
 
             for metadata in project_instances:
+
                 submit_result = report_manager.generate_site_report(
                     metadata,
                     project_folder,
@@ -1352,7 +1353,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             )
 
             progress_message = tr(
-                f"Generating {len(farmer_ids)} report(s) ...")
+                f"Generating {len(project_instances)} report(s) ...")
             self.report_progress_dialog = ReportProgressDialog(
                 result,
                 project_folder,

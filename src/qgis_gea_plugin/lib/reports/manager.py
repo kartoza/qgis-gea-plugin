@@ -225,14 +225,6 @@ class ReportManager(QtCore.QObject):
             storage_type = QgsProject.instance().filePathStorage()
             QgsProject.instance().setFilePathStorage(Qgis.FilePathType.Absolute)
 
-        status = QgsProject.instance().write()
-        if not status:
-            log(
-                f"Unable to save the current project.",
-                info=False
-            )
-            return None
-
         current_qgs_project_path = QgsProject.instance().absoluteFilePath()
         if not current_qgs_project_path:
             log(
