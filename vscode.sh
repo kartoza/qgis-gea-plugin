@@ -74,7 +74,7 @@ cat "$SETTINGS_FILE"
 
 # Install required extensions
 code --user-data-dir='.vscode' \
---profile='geest' \
+--profile='gea' \
 --extensions-dir='.vscode-extensions' . \
 code --extensions-dir=.vscode-extensions --install-extension batisteo.vscode-django@1.15.0 \
 code --extensions-dir=.vscode-extensions --install-extension donjayamanne.python-environment-manager@1.2.7 \
@@ -99,5 +99,5 @@ code --extensions-dir=.vscode-extensions --install-extension visualstudioexpttea
 code --extensions-dir=.vscode-extensions --install-extension wholroyd.jinja@0.0.8
 # Launch VSCode with the sandboxed environment
 code --user-data-dir='.vscode' \
---profile='geest' \
+--profile='gea' \
 --extensions-dir='.vscode-extensions' .
