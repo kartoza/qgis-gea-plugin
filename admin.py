@@ -41,8 +41,13 @@ class GithubRelease:
     published_at: dt.datetime
 
 
-@app.callback()
-def main(context: typer.Context, verbose: bool = False, qgis_profile: str = "default"):
+@app.callback(invoke_without_command=True)
+def main(
+    context: typer.Context,
+    verbose: bool = False,
+    qgis_profile: str = "default",
+    help: bool = False,
+):
     """Performs various development-oriented tasks for this plugin
 
     :param context: Application context
@@ -55,7 +60,43 @@ def main(context: typer.Context, verbose: bool = False, qgis_profile: str = "def
             QGIS application
     :type qgis_profile: str
 
+    :param help: Boolean flag to display usage instructions and available subcommands
+    :type help: bool
+
+    Usage:
+        To call this command with the options provided, use the following syntax:
+
+        python admin.py --verbose --qgis-profile <profile_name>
+
+        Examples:
+        - Enable verbose mode and use the default QGIS profile:
+          python admin.py --verbose
+
+        - Enable verbose mode and specify a custom QGIS profile:
+          python admin.py --verbose --qgis-profile custom_profile
+
+        - Use the default QGIS profile without verbose mode:
+          python admin.py
+
+        - Display help information:
+          python admin.py --help
     """
+    # Show help if help flag is set or if no subcommand is specified
+    if help or context.invoked_subcommand is None:
+        typer.echo(main.__doc__)
+        typer.echo("\nAvailable subcommands:")
+        for command in app.registered_commands:
+            # Get command name from callback function name
+            cmd_name = command.callback.__name__
+            # Get first line of docstring for help text
+            cmd_help = (
+                command.callback.__doc__.split("\n")[0].strip()
+                if command.callback.__doc__
+                else "No help available"
+            )
+            typer.echo(f"  - {cmd_name}: {cmd_help}")
+        raise typer.Exit()
+
     context.obj = {
         "verbose": verbose,
         "qgis_profile": qgis_profile,
@@ -122,7 +163,12 @@ def symlink(context: typer.Context):
     )
 
     destination_path = root_directory / "python/plugins" / SRC_NAME
-
+    # ensure the destination path exists
+    destination_path.parent.mkdir(parents=True, exist_ok=True)
+    # remove any existing symlink
+    if destination_path.is_symlink():
+        destination_path.unlink()
+    # create a new symlink
     if not os.path.islink(destination_path):
         os.symlink(build_path, destination_path)
     else:
