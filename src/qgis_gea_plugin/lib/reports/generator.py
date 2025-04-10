@@ -21,7 +21,7 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsTask,
-    QgsVectorLayer
+    QgsVectorLayer,
 )
 
 from qgis.PyQt import QtCore, QtXml
@@ -38,12 +38,14 @@ from ...definitions.defaults import (
     REPORT_SITE_BOUNDARY_STYLE,
     PROJECT_INSTANCE_STYLE,
     RECENT_IMAGERY_GROUP_NAME,
-    NICFI_2018_LAYER_NAME
+    NICFI_2018_LAYER_NAME,
 )
 from ...models.base import LayerNodeSearch
 from ...models.report import (
     SiteReportContext,
-    ReportOutputResult, SiteMetadata, ProjectMetadata
+    ReportOutputResult,
+    SiteMetadata,
+    ProjectMetadata,
 )
 from ...utils import (
     clean_filename,
@@ -55,10 +57,8 @@ from ...utils import (
 try:
     from planet_explorer.planet_api import PlanetClient
 except ImportError:
-    log(
-        f"Couldn't import planet api. "
-        f"Check if planet plugin has been installed."
-    )
+    log(f"Couldn't import planet api. " f"Check if planet plugin has been installed.")
+
 
 class SiteReportReportGeneratorTask(QgsTask):
     """Class for generating the site report."""
@@ -78,8 +78,11 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._site_layer = None
         self._landscape_layer = None
 
-        self.report_name = context.metadata.area_name \
-        if isinstance(context.metadata, SiteMetadata) else f"Farmer ID {context.metadata.farmer_id}"
+        self.report_name = (
+            context.metadata.area_name
+            if isinstance(context.metadata, SiteMetadata)
+            else f"Farmer ID {context.metadata.farmer_id}"
+        )
 
         self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
 
@@ -184,8 +187,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             # Load layout
             project = QgsProject.instance()
             self._output_report_layout = _load_layout_from_file(
-                self._output_layout_path,
-                project
+                self._output_layout_path, project
             )
             if self._output_report_layout is None:
                 log("Could not load output report from file.", info=False)
@@ -199,10 +201,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                     break
 
             project.layoutManager().addLayout(self._output_report_layout)
-            log(
-                f"Successfully generated the report for "
-                f"{self.report_name}."
-            )
+            log(f"Successfully generated the report for " f"{self.report_name}.")
 
     def _check_feedback_cancelled_or_set_progress(self, value: float) -> bool:
         """Check if there is a request to cancel the process, else
@@ -224,10 +223,7 @@ class SiteReportReportGeneratorTask(QgsTask):
     def _get_failed_result(self) -> ReportOutputResult:
         """Creates the report result object."""
         return ReportOutputResult(
-            False,
-            "",
-            self.report_name,
-            tuple(self._error_messages)
+            False, "", self.report_name, tuple(self._error_messages)
         )
 
     def _export_to_pdf(self) -> bool:
@@ -324,7 +320,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             True,
             self._context.report_dir,
             self._base_layout_name,
-            tuple(self._error_messages)
+            tuple(self._error_messages),
         )
 
         return True
@@ -339,20 +335,23 @@ class SiteReportReportGeneratorTask(QgsTask):
             self.set_label_value("capture_date_label", self._metadata.capture_date)
             self.set_label_value("author_label", self._metadata.author)
             self.set_label_value("country_label", self._metadata.country)
-            self.set_label_value("site_area_label", f"{self._metadata.computed_area} ha")
+            self.set_label_value(
+                "site_area_label", f"{self._metadata.computed_area} ha"
+            )
         elif isinstance(self._metadata, ProjectMetadata):
-            self.set_label_value("farmer_id_label", f"Area Eligibility - {self._metadata.farmer_id}")
+            self.set_label_value(
+                "farmer_id_label", f"Area Eligibility - {self._metadata.farmer_id}"
+            )
             self.set_label_value("report_author_label", self._metadata.author)
             self.set_label_value("project_label", self._metadata.project)
             self.set_label_value("inception_date_label", self._metadata.inception_date)
             self.set_label_value("area_label", f"{self._metadata.total_area} ha")
 
-
     def _get_layer_from_node_name(
-            self,
-            node_name: str,
-            search_type: LayerNodeSearch = LayerNodeSearch.EXACT_MATCH,
-            group_name: str = ""
+        self,
+        node_name: str,
+        search_type: LayerNodeSearch = LayerNodeSearch.EXACT_MATCH,
+        group_name: str = "",
     ) -> typing.Optional[QgsMapLayer]:
         """Gets the map layer from the corresponding name of the layer
         tree item.
@@ -380,21 +379,28 @@ class SiteReportReportGeneratorTask(QgsTask):
             if group_name:
                 if node.parent() and node.parent().name() == group_name:
                     for child in node.parent().children():
-                        if search_type == LayerNodeSearch.EXACT_MATCH \
-                                and child.name() == node_name:
+                        if (
+                            search_type == LayerNodeSearch.EXACT_MATCH
+                            and child.name() == node_name
+                        ):
                             matching_node = child
                             break
-                        elif search_type == LayerNodeSearch.CONTAINS \
-                                and node_name in child.name():
+                        elif (
+                            search_type == LayerNodeSearch.CONTAINS
+                            and node_name in child.name()
+                        ):
                             matching_node = child
                             break
             else:
-                if search_type == LayerNodeSearch.EXACT_MATCH \
-                        and node.name() == node_name:
+                if (
+                    search_type == LayerNodeSearch.EXACT_MATCH
+                    and node.name() == node_name
+                ):
                     matching_node = node
                     break
-                elif search_type == LayerNodeSearch.CONTAINS \
-                        and node_name in node.name():
+                elif (
+                    search_type == LayerNodeSearch.CONTAINS and node_name in node.name()
+                ):
                     matching_node = node
                     break
 
@@ -425,18 +431,15 @@ class SiteReportReportGeneratorTask(QgsTask):
         return map_item
 
     def _set_site_layer(self):
-        """Fetch the project boundary layer.
-        """
+        """Fetch the project boundary layer."""
 
-        site_path = settings_manager.get_value(
-            Settings.LAST_SITE_LAYER_PATH,
-            default=""
-        ) \
-            if isinstance(self._context.metadata, SiteMetadata) else \
-            settings_manager.get_value(
-                Settings.CURRENT_PROJECT_LAYER_PATH,
-                default=""
+        site_path = (
+            settings_manager.get_value(Settings.LAST_SITE_LAYER_PATH, default="")
+            if isinstance(self._context.metadata, SiteMetadata)
+            else settings_manager.get_value(
+                Settings.CURRENT_PROJECT_LAYER_PATH, default=""
             )
+        )
 
         path = Path(site_path)
         if not path.exists():
@@ -489,16 +492,14 @@ class SiteReportReportGeneratorTask(QgsTask):
         landsat_2013_layer = self._get_layer_from_node_name(
             LANDSAT_2013_LAYER_SEGMENT,
             LayerNodeSearch.CONTAINS,
-            LANDSAT_IMAGERY_GROUP_NAME
+            LANDSAT_IMAGERY_GROUP_NAME,
         )
         if landsat_2013_layer is not None:
             self._landscape_layer = landsat_2013_layer
 
         if self._landscape_layer is None:
             tr_msg = tr("Landscape layer not found")
-            self._error_messages.append(
-                f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}"
-            )
+            self._error_messages.append(f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}")
 
     def _configure_map_items_zoom_level(self):
         """Set layers and zoom levels of map items."""
@@ -520,9 +521,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._configure_current_maps(detailed_extent, mask_layers)
 
     def _configure_landscape_maps(
-            self,
-            detailed_extent: QgsRectangle,
-            mask_layers: typing.List[QgsMapLayer]
+        self, detailed_extent: QgsRectangle, mask_layers: typing.List[QgsMapLayer]
     ):
         """Set the zoom level and layers for the landscape exclusion
         and inclusion maps.
@@ -548,15 +547,12 @@ class SiteReportReportGeneratorTask(QgsTask):
         if historic_mask_map and detailed_extent:
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
-                detailed_extent,
-                self._site_layer.crs(),
-                historic_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), historic_mask_map.crs()
             )
 
             if landscape_imagery_extent.isNull():
                 tr_msg = tr(
-                    "Invalid extent for setting in the current imagery "
-                    "with mask map"
+                    "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
             else:
@@ -575,9 +571,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         if landscape_no_mask_map and detailed_extent:
             # Transform extent
             landscape_no_mask_extent = self._transform_extent(
-                detailed_extent,
-                self._site_layer.crs(),
-                landscape_no_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), landscape_no_mask_map.crs()
             )
 
             if landscape_no_mask_extent.isNull():
@@ -602,15 +596,12 @@ class SiteReportReportGeneratorTask(QgsTask):
         if historic_mask_map and detailed_extent:
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
-                detailed_extent,
-                self._site_layer.crs(),
-                historic_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), historic_mask_map.crs()
             )
 
             if landscape_imagery_extent.isNull():
                 tr_msg = tr(
-                    "Invalid extent for setting in the current imagery "
-                    "with mask map"
+                    "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
             else:
@@ -628,11 +619,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                         f"contain background imagery."
                     )
 
-                api_key = (
-                    PlanetClient.getInstance().api_key()
-                    if has_api_key
-                    else ''
-                )
+                api_key = PlanetClient.getInstance().api_key() if has_api_key else ""
 
                 if nicfi_2018_layer:
                     nicfi_source = nicfi_2018_layer.source()
@@ -640,14 +627,11 @@ class SiteReportReportGeneratorTask(QgsTask):
 
                     if "api_key%3D&" in nicfi_source:
                         source = nicfi_source.replace(
-                            "api_key%3D",
-                            f"api_key={api_key}"
+                            "api_key%3D", f"api_key={api_key}"
                         )
 
                     nicfi_tile_layer = QgsRasterLayer(
-                        f"{source}",
-                        "Planet Mosaic 2018",
-                        "wms"
+                        f"{source}", "Planet Mosaic 2018", "wms"
                     )
                     QgsProject.instance().addMapLayers([nicfi_tile_layer])
 
@@ -667,13 +651,15 @@ class SiteReportReportGeneratorTask(QgsTask):
                     QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
         # Landscape with no-mask map
-        landscape_no_mask_map_2018 = self._get_map_item_by_id("2018_historic_no_mask_map")
+        landscape_no_mask_map_2018 = self._get_map_item_by_id(
+            "2018_historic_no_mask_map"
+        )
         if landscape_no_mask_map_2018 and detailed_extent:
             # Transform extent
             landscape_no_mask_extent = self._transform_extent(
                 detailed_extent,
                 self._site_layer.crs(),
-                landscape_no_mask_map_2018.crs()
+                landscape_no_mask_map_2018.crs(),
             )
 
             if landscape_no_mask_extent.isNull():
@@ -697,11 +683,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                         f"contain background imagery."
                     )
 
-                api_key = (
-                    PlanetClient.getInstance().api_key()
-                    if has_api_key
-                    else ''
-                )
+                api_key = PlanetClient.getInstance().api_key() if has_api_key else ""
 
                 if nicfi_2018_layer:
                     nicfi_source = nicfi_2018_layer.source()
@@ -709,21 +691,15 @@ class SiteReportReportGeneratorTask(QgsTask):
 
                     if "api_key%3D&" in nicfi_source:
                         source = nicfi_source.replace(
-                            "api_key%3D",
-                            f"api_key={api_key}"
+                            "api_key%3D", f"api_key={api_key}"
                         )
 
                     nicfi_tile_layer = QgsRasterLayer(
-                        f"{source}",
-                        "Planet Mosaic 2018",
-                        "wms"
+                        f"{source}", "Planet Mosaic 2018", "wms"
                     )
                     QgsProject.instance().addMapLayers([nicfi_tile_layer])
 
-                    landscape_no_mask_layers = [
-                        self._site_layer,
-                        nicfi_tile_layer
-                    ]
+                    landscape_no_mask_layers = [self._site_layer, nicfi_tile_layer]
 
                     if self._landscape_layer is not None:
                         landscape_no_mask_layers.append(self._landscape_layer)
@@ -735,11 +711,8 @@ class SiteReportReportGeneratorTask(QgsTask):
 
                     QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
-
     def _configure_current_maps(
-            self,
-            detailed_extent: QgsRectangle,
-            mask_layers: typing.List[QgsMapLayer]
+        self, detailed_extent: QgsRectangle, mask_layers: typing.List[QgsMapLayer]
     ):
         """Set the zoom level and layers for the current imagery maps.
 
@@ -750,8 +723,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :type mask_layers: list
         """
         google_layer = self._get_layer_from_node_name(
-            GOOGLE_LAYER_NAME,
-            LayerNodeSearch.EXACT_MATCH
+            GOOGLE_LAYER_NAME, LayerNodeSearch.EXACT_MATCH
         )
 
         # Current imagery with mask map
@@ -759,9 +731,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         if current_mask_map and detailed_extent:
             # Transform extent
             current_imagery_extent = self._transform_extent(
-                detailed_extent,
-                self._site_layer.crs(),
-                current_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), current_mask_map.crs()
             )
 
             if current_imagery_extent.isNull():
@@ -785,9 +755,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         if current_no_mask_map and detailed_extent:
             # Transform extent
             current_no_mask_imagery_extent = self._transform_extent(
-                detailed_extent,
-                self._site_layer.crs(),
-                current_no_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), current_no_mask_map.crs()
             )
 
             if current_no_mask_imagery_extent.isNull():
@@ -813,8 +781,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         site_extent = self._site_layer.extent()
 
         google_layer = self._get_layer_from_node_name(
-            GOOGLE_LAYER_NAME,
-            LayerNodeSearch.EXACT_MATCH
+            GOOGLE_LAYER_NAME, LayerNodeSearch.EXACT_MATCH
         )
 
         map_item_layers = [self._site_layer]
@@ -837,16 +804,12 @@ class SiteReportReportGeneratorTask(QgsTask):
             admin_extent = None
             if ref_admin_layer:
                 admin_extent = self._transform_extent(
-                    ref_admin_layer.extent(),
-                    ref_admin_layer.crs(),
-                    overview_map.crs()
+                    ref_admin_layer.extent(), ref_admin_layer.crs(), overview_map.crs()
                 )
 
             # Transform extent
             overview_extent = self._transform_extent(
-                site_extent,
-                self._site_layer.crs(),
-                overview_map.crs()
+                site_extent, self._site_layer.crs(), overview_map.crs()
             )
             if overview_extent.isNull():
                 tr_msg = tr("Invalid extent for setting in the overview map.")
@@ -874,9 +837,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         if detailed_map:
             # Transform extent
             detailed_extent = self._transform_extent(
-                site_extent,
-                self._site_layer.crs(),
-                detailed_map.crs()
+                site_extent, self._site_layer.crs(), detailed_map.crs()
             )
 
             if detailed_extent.isNull():
@@ -930,10 +891,10 @@ class SiteReportReportGeneratorTask(QgsTask):
         return [tree_layer.layer() for tree_layer in search_group.findLayers()]
 
     def _transform_extent(
-            self,
-            extent: QgsRectangle,
-            source_crs: QgsCoordinateReferenceSystem,
-            target_crs: QgsCoordinateReferenceSystem
+        self,
+        extent: QgsRectangle,
+        source_crs: QgsCoordinateReferenceSystem,
+        target_crs: QgsCoordinateReferenceSystem,
     ) -> QgsRectangle:
         """Transform the extent from the given source CRS to the target CRS.
 
@@ -957,9 +918,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         try:
             coordinate_xform = QgsCoordinateTransform(
-                source_crs,
-                target_crs,
-                self._project
+                source_crs, target_crs, self._project
             )
             return coordinate_xform.transformBoundingBox(extent)
         except Exception as e:
@@ -986,7 +945,9 @@ class SiteReportReportGeneratorTask(QgsTask):
             p = Path(self._context.qgs_project_path)
             if not p.exists():
                 tr_msg = tr("Project file does not exist")
-                self._error_messages.append(f"{tr_msg} {self._context.qgs_project_path}")
+                self._error_messages.append(
+                    f"{tr_msg} {self._context.qgs_project_path}"
+                )
                 return
 
         project = QgsProject()

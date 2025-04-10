@@ -220,6 +220,7 @@ def build(
     generate_metadata(context, output_directory)
     return output_directory
 
+
 @app.command()
 def copy_icon(
     output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "build/temp",

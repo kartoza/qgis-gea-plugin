@@ -27,7 +27,7 @@ from ...models.report import (
     ReportSubmitResult,
     SiteMetadata,
     SiteReportContext,
-    ProjectMetadata
+    ProjectMetadata,
 )
 from ...utils import clean_filename, create_dir, FileUtils, log
 
@@ -53,10 +53,10 @@ class ReportManager(QtCore.QObject):
         self.task_manager = QgsApplication.instance().taskManager()
 
     def generate_site_report(
-            self,
-            metadata: typing.Union[SiteMetadata, ProjectMetadata],
-            project_folder: str,
-            temporal_info: MapTemporalInfo
+        self,
+        metadata: typing.Union[SiteMetadata, ProjectMetadata],
+        project_folder: str,
+        temporal_info: MapTemporalInfo,
     ) -> ReportSubmitResult:
         """Initiates the site report generation process.
 
@@ -77,22 +77,21 @@ class ReportManager(QtCore.QObject):
 
         feedback = QgsFeedback()
         context = self.create_site_context(
-            metadata,
-            project_folder,
-            feedback,
-            temporal_info
+            metadata, project_folder, feedback, temporal_info
         )
         if context is None:
             log(
                 f"Contextual information for creating the site report could not be created.",
-                info=False
+                info=False,
             )
             return ReportSubmitResult(False, None, "-1")
 
         site_report_task = SiteReportReportGeneratorTask(context)
-        return ReportSubmitResult(True, feedback, None, site_report_task )
+        return ReportSubmitResult(True, feedback, None, site_report_task)
 
-    def task_by_id(self, task_id: str) -> typing.Optional[SiteReportReportGeneratorTask]:
+    def task_by_id(
+        self, task_id: str
+    ) -> typing.Optional[SiteReportReportGeneratorTask]:
         """Gets the report generator task using its identifier.
 
         :param task_id: Task identifier.
@@ -149,11 +148,11 @@ class ReportManager(QtCore.QObject):
 
     @classmethod
     def create_site_context(
-            cls,
-            metadata: typing.Union[SiteMetadata, ProjectMetadata],
-            project_folder: str,
-            feedback: QgsFeedback,
-            temporal_info: MapTemporalInfo
+        cls,
+        metadata: typing.Union[SiteMetadata, ProjectMetadata],
+        project_folder: str,
+        feedback: QgsFeedback,
+        temporal_info: MapTemporalInfo,
     ) -> typing.Optional[SiteReportContext]:
         """Creates the contextual information required for generating the report.
 
@@ -177,15 +176,14 @@ class ReportManager(QtCore.QObject):
         """
         # Check report template
 
-        report_template_path = FileUtils.site_report_template_path() \
-            if isinstance(metadata, SiteMetadata) \
+        report_template_path = (
+            FileUtils.site_report_template_path()
+            if isinstance(metadata, SiteMetadata)
             else FileUtils.project_instance_report_template_path()
+        )
 
         if not Path(report_template_path).exists():
-            log(
-                f"Report template {report_template_path} not found.",
-                info=False
-            )
+            log(f"Report template {report_template_path} not found.", info=False)
             return None
 
         # Ensure if the main reports directory exists,
@@ -195,26 +193,22 @@ class ReportManager(QtCore.QObject):
         create_dir(main_reports_dir)
 
         if not Path(main_reports_dir).exists():
-            log(
-                f"Reports directory does not exist.",
-                info=False
-            )
+            log(f"Reports directory does not exist.", info=False)
             return None
 
         # Create 'reports' subdirectory
-        report_dir = os.path.normpath(f"{project_folder}/reports/sites") \
-        if isinstance(metadata, SiteMetadata) \
-            else (
-            main_reports_dir
+        report_dir = (
+            os.path.normpath(f"{project_folder}/reports/sites")
+            if isinstance(metadata, SiteMetadata)
+            else (main_reports_dir)
         )
         create_dir(report_dir)
 
         # Assert that the directory was successfully created
         if not Path(report_dir).exists():
             log(
-                f"Reports directory could not be"
-                f" created in the project folder.",
-                info=False
+                f"Reports directory could not be" f" created in the project folder.",
+                info=False,
             )
             return None
 
@@ -227,25 +221,21 @@ class ReportManager(QtCore.QObject):
 
         current_qgs_project_path = QgsProject.instance().absoluteFilePath()
         if not current_qgs_project_path:
-            log(
-                f"Unable to retrieve the file path of the current project.",
-                info=False
-            )
+            log(f"Unable to retrieve the file path of the current project.", info=False)
             return None
 
         # Copy project file to 'reports' folder
-        report_qgs_project_path = os.path.normpath(
-            f"{report_dir}/{clean_filename(metadata.area_name)}.qgz"
-        ) if isinstance(metadata, SiteMetadata) else \
-            os.path.normpath(
-                f"{report_dir}/{clean_filename(metadata.farmer_id)}.qgz")
+        report_qgs_project_path = (
+            os.path.normpath(f"{report_dir}/{clean_filename(metadata.area_name)}.qgz")
+            if isinstance(metadata, SiteMetadata)
+            else os.path.normpath(
+                f"{report_dir}/{clean_filename(metadata.farmer_id)}.qgz"
+            )
+        )
         try:
             shutil.copy(current_qgs_project_path, report_qgs_project_path)
         except (OSError, shutil.SameFileError):
-            log(
-                f"Unable to copy the project file in the 'reports' folder.",
-                info=False
-            )
+            log(f"Unable to copy the project file in the 'reports' folder.", info=False)
             return None
 
         # Reset to the original file storage type
@@ -258,7 +248,7 @@ class ReportManager(QtCore.QObject):
             project_folder,
             report_qgs_project_path,
             report_template_path,
-            temporal_info
+            temporal_info,
         )
 
     def remove_report_task(self, task_id: str) -> bool:
@@ -283,8 +273,8 @@ class ReportManager(QtCore.QObject):
             return False
 
         if (
-                report_task.status() != QgsTask.TaskStatus.Complete
-                or report_task.status() != QgsTask.TaskStatus.Terminated
+            report_task.status() != QgsTask.TaskStatus.Complete
+            or report_task.status() != QgsTask.TaskStatus.Terminated
         ):
             report_task.cancel()
 
@@ -293,8 +283,7 @@ class ReportManager(QtCore.QObject):
         return True
 
     def get_output_result(
-            self,
-            submit_result: ReportSubmitResult
+        self, submit_result: ReportSubmitResult
     ) -> typing.Optional[ReportOutputResult]:
         """Get the output result from the given submit result.
 

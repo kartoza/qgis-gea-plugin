@@ -54,13 +54,13 @@ class Settings(enum.Enum):
 
     SAVED_ATTRIBUTE = "saved_attributes"
 
-    PROJECT_FOLDER = 'project_folder'
+    PROJECT_FOLDER = "project_folder"
 
-    ANIMATION_FRAME_RATE = 'frame_rate'
-    ANIMATION_LOOP = 'animation_loop'
+    ANIMATION_FRAME_RATE = "frame_rate"
+    ANIMATION_LOOP = "animation_loop"
 
-    LAST_SITE_LAYER_PATH = 'last_site_layer_path'
-    CURRENT_PROJECT_LAYER_PATH = 'current_project_layer_path'
+    LAST_SITE_LAYER_PATH = "last_site_layer_path"
+    CURRENT_PROJECT_LAYER_PATH = "current_project_layer_path"
 
 
 class SettingsManager(QtCore.QObject):
