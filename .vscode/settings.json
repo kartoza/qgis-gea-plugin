@@ -8,5 +8,8 @@
   "terminal.integrated.env.linux": {
     "PYTHONPATH": "/nix/store/4iyh9pym7a4galzywzrch564rgimzccl-qgis-3.38.3/share/qgis/python"
   },
-  "git.enableCommitSigning": true
+  "git.enableCommitSigning": true,
+  "workbench.startupEditor": "none",
+  "keyboard.dispatch": "keyCode",
+  "extensions.ignoreRecommendations": false
 }

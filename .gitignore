@@ -125,9 +125,6 @@ venv.bak/
 dmypy.json
 
 # PyInstaller
-*.**`.gitignore` continued:**
-```plaintext
-# PyInstaller
 *.manifest
 *.spec
 
@@ -161,7 +158,6 @@ nix-result/
 data
 .~lock.*
 
-
 .shell.nix.swp
 gitlog.txt
 test/output
@@ -171,3 +167,9 @@ core
 
 # Don't ignore directories named 'core'
 !core/
+
+# VSCode files to include (override any existing .vscode ignores)
+!.vscode/tasks.json
+!.vscode/keybindings.json
+!.vscode/extensions.js
+!.vscode/settings.json
