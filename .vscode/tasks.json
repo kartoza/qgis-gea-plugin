@@ -1,0 +1,77 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Install Plugin",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/admin.py", "install"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Symlink Plugin",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/admin.py", "symlink"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Uninstall Plugin",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/admin.py", "uninstall"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Generate ZIP",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/admin.py", "generate_zip"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Plugin",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/admin.py", "build"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Generate Plugin Repo XML",
+            "type": "shell", 
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/admin.py", "generate_plugin_repo_xml"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
