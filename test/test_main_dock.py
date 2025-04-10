@@ -24,6 +24,7 @@ from utilities_for_testing import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
+
 class TestQgisGeaPlugin(unittest.TestCase):
     """
     Unit tests for QgisGeaPlugin class.
@@ -35,10 +36,7 @@ class TestQgisGeaPlugin(unittest.TestCase):
         Set up the QGIS GEA Plugin dock instance for testing.
         """
         cls.plugin_dock = QgisGeaPlugin(iface)
-        iface.mainWindow().addDockWidget(
-            Qt.RightDockWidgetArea,
-            cls.plugin_dock
-        )
+        iface.mainWindow().addDockWidget(Qt.RightDockWidgetArea, cls.plugin_dock)
 
     def test_slider_value_changed(self):
         """
@@ -48,10 +46,12 @@ class TestQgisGeaPlugin(unittest.TestCase):
         ranges = [
             QgsDateTimeRange(
                 QDateTime.fromString("2020-01-01T00:00:00", Qt.ISODate),
-                QDateTime.fromString("2020-01-01T00:00:00", Qt.ISODate)),
+                QDateTime.fromString("2020-01-01T00:00:00", Qt.ISODate),
+            ),
             QgsDateTimeRange(
                 QDateTime.fromString("2020-01-01T00:00:00", Qt.ISODate),
-                QDateTime.fromString("2020-01-01T00:00:00", Qt.ISODate))
+                QDateTime.fromString("2020-01-01T00:00:00", Qt.ISODate),
+            ),
         ]
         self.plugin_dock.navigation_object.setFrameDuration(
             QgsInterval(1, QgsUnitTypes.TemporalIrregularStep)
@@ -66,8 +66,7 @@ class TestQgisGeaPlugin(unittest.TestCase):
 
         # Check if navigation object's current frame number is set correctly
         self.assertEqual(
-            self.plugin_dock.navigation_object.currentFrameNumber(),
-            slider_value
+            self.plugin_dock.navigation_object.currentFrameNumber(), slider_value
         )
 
     def test_animate_layers(self):
@@ -76,14 +75,14 @@ class TestQgisGeaPlugin(unittest.TestCase):
         """
         self.assertEqual(
             self.plugin_dock.navigation_object.animationState(),
-            QgsTemporalNavigationObject.AnimationState.Idle
+            QgsTemporalNavigationObject.AnimationState.Idle,
         )
         # Simulate clicking on the play button
         QTest.mouseClick(self.plugin_dock.play_btn, Qt.LeftButton)
 
         self.assertEqual(
             self.plugin_dock.navigation_object.animationState(),
-            QgsTemporalNavigationObject.AnimationState.Forward
+            QgsTemporalNavigationObject.AnimationState.Forward,
         )
 
         # Simulate clicking on the play button again
@@ -91,7 +90,7 @@ class TestQgisGeaPlugin(unittest.TestCase):
 
         self.assertEqual(
             self.plugin_dock.navigation_object.animationState(),
-            QgsTemporalNavigationObject.AnimationState.Idle
+            QgsTemporalNavigationObject.AnimationState.Idle,
         )
 
     def test_prepare_time_slider(self):

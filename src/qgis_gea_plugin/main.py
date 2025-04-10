@@ -29,7 +29,9 @@ class QgisGea:
         self.iface = iface
         self.plugin_dir = os.path.dirname(__file__)
         locale = QgsSettings().value("locale/userLocale")[0:2]
-        locale_path = os.path.join(self.plugin_dir, "i18n", "QgisGeaPlugin{}.qm".format(locale))
+        locale_path = os.path.join(
+            self.plugin_dir, "i18n", "QgisGeaPlugin{}.qm".format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -40,7 +42,9 @@ class QgisGea:
         self.actions = []
         self.menu = self.tr("&EPAL - Eligible Project Area Locator.")
         self.pluginIsActive = False
-        self.toolbar = self.iface.addToolBar("Open EPAL - Eligible Project Area Locator")
+        self.toolbar = self.iface.addToolBar(
+            "Open EPAL - Eligible Project Area Locator"
+        )
         self.toolbar.setObjectName("EPAL - Eligible Project Area Locator.")
 
         self.main_widget = QgisGeaPlugin(
@@ -57,7 +61,9 @@ class QgisGea:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate("EPAL - Eligible Project Area Locator", message)
+        return QCoreApplication.translate(
+            "EPAL - Eligible Project Area Locator", message
+        )
 
     def add_action(
         self,
@@ -157,8 +163,12 @@ class QgisGea:
         """Removes the plugin menu item and icon from QGIS GUI."""
         try:
             for action in self.actions:
-                self.iface.removePluginMenu(self.tr("&EPAL - Eligible Project Area Locator."), action)
-                self.iface.removePluginWebMenu(self.tr("&EPAL - Eligible Project Area Locator."), action)
+                self.iface.removePluginMenu(
+                    self.tr("&EPAL - Eligible Project Area Locator."), action
+                )
+                self.iface.removePluginWebMenu(
+                    self.tr("&EPAL - Eligible Project Area Locator."), action
+                )
                 self.iface.removeToolBarIcon(action)
 
         except Exception as e:

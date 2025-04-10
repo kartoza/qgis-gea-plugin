@@ -37,11 +37,10 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         project_dir=None,
         show_pdf_folder=False,
         message=None,
-        parent=None
+        parent=None,
     ):
         super().__init__(
-            parent,
-            QtCore.Qt.WindowMinimizeButtonHint | QtCore.Qt.WindowCloseButtonHint
+            parent, QtCore.Qt.WindowMinimizeButtonHint | QtCore.Qt.WindowCloseButtonHint
         )
         self.setupUi(self)
 
@@ -103,10 +102,7 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         if self.report_result and len(self.report_result.errors) == 0:
             self.lbl_message.setText(tr("Report generation complete"))
         elif self.show_pdf_folder:
-            self.report_output_dir = os.path.join(
-                f"{self.project_dir}",
-                "reports"
-            )
+            self.report_output_dir = os.path.join(f"{self.project_dir}", "reports")
         else:
             tr_msg = tr(
                 "Report generation complete however there were errors "
@@ -131,7 +127,6 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         else:
             log(f"Probem running task {self._task.status}")
 
-
     @property
     def report_result(self) -> typing.Optional[ReportOutputResult]:
         """Gets the report result.
@@ -141,9 +136,7 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
         task is not complete or an error occurred.
         :rtype: ReportResult
         """
-        if (self._task is None or
-                isinstance(self._task, QgsTaskWrapper)
-        ):
+        if self._task is None or isinstance(self._task, QgsTaskWrapper):
             return None
 
         return self._task.result
@@ -180,9 +173,9 @@ class ReportProgressDialog(QtWidgets.QDialog, WidgetUi):
                     if current_os == "Windows":
                         os.startfile(self.report_output_dir)
                     elif current_os == "Darwin":  # macOS
-                        subprocess.run(['open', self.report_output_dir])
+                        subprocess.run(["open", self.report_output_dir])
                     elif current_os == "Linux":
-                        subprocess.run(['xdg-open', self.report_output_dir])
+                        subprocess.run(["xdg-open", self.report_output_dir])
                     else:
                         log(f"Unsupported OS: {current_os}")
                 except Exception as e:

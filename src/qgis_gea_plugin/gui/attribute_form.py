@@ -23,7 +23,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorFileWriter,
     QgsVectorLayer,
-    QgsVectorLayerSimpleLabeling
+    QgsVectorLayerSimpleLabeling,
 )
 
 from ..utils import tr
@@ -38,14 +38,9 @@ WidgetUi, _ = loadUiType(
 class AttributeForm(QtWidgets.QDialog, WidgetUi):
     """Dialog for showing the attribute form."""
 
-    def __init__(
-        self,
-        layer,
-        parent=None
-    ):
+    def __init__(self, layer, parent=None):
         super().__init__(
-            parent,
-            QtCore.Qt.WindowMinimizeButtonHint | QtCore.Qt.WindowCloseButtonHint
+            parent, QtCore.Qt.WindowMinimizeButtonHint | QtCore.Qt.WindowCloseButtonHint
         )
         self.setupUi(self)
         self.parent = parent
@@ -55,9 +50,7 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
 
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setText("Save")
 
-        self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.Ok
-        ).setEnabled(False)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(False)
 
         ok_signals = [
             self.report_author_le.textChanged,
@@ -66,16 +59,15 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
         for signal in ok_signals:
             signal.connect(self.update_ok_buttons)
 
-
     def update_ok_buttons(self):
-        """ Responsible for changing the state of the
-         attribute form dialog OK button.
+        """Responsible for changing the state of the
+        attribute form dialog OK button.
         """
-        enabled_state = self.report_author_le.text() != "" and \
-                        self.project_cmb_box.currentText() != ""
-        self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.Ok).setEnabled(enabled_state)
-
+        enabled_state = (
+            self.report_author_le.text() != ""
+            and self.project_cmb_box.currentText() != ""
+        )
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(enabled_state)
 
     def accept(self):
 
@@ -83,7 +75,7 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
 
         fields = self.layer.fields()
 
-        new_fields = ['author', 'project','area (ha)']
+        new_fields = ["author", "project", "area (ha)"]
         attributes = []
 
         for field in new_fields:
@@ -91,10 +83,10 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
                 reply = QtWidgets.QMessageBox.warning(
                     self,
                     tr("QGIS EPAL PLUGIN"),
-                    tr('Field "{}" already exists in the layer.'
-                       'Do you want to proceed and overwrite it?').
-                    format(field),
-
+                    tr(
+                        'Field "{}" already exists in the layer.'
+                        "Do you want to proceed and overwrite it?"
+                    ).format(field),
                     QtWidgets.QMessageBox.Yes,
                     QtWidgets.QMessageBox.No,
                 )
@@ -106,10 +98,7 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
             else:
                 # If not found in the layer add it to the list
                 # of attributes that will be added to layer fields later
-                attributes.append(QgsField(
-                    field,
-                    QtCore.QVariant.String)
-                )
+                attributes.append(QgsField(field, QtCore.QVariant.String))
 
         provider = self.layer.dataProvider()
         provider.addAttributes(attributes)
@@ -135,18 +124,9 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
 
             feature_area = f"{area:,.2f}"
 
-            feature.setAttribute(
-                "author",
-                self.report_author_le.text()
-            )
-            feature.setAttribute(
-                "project",
-                self.project_cmb_box.currentText()
-            )
-            feature.setAttribute(
-                "area (ha)",
-                feature_area
-            )
+            feature.setAttribute("author", self.report_author_le.text())
+            feature.setAttribute("project", self.project_cmb_box.currentText())
+            feature.setAttribute("area (ha)", feature_area)
 
             self.layer.updateFeature(feature)
             # Retrieve the next feature
@@ -156,4 +136,3 @@ class AttributeForm(QtWidgets.QDialog, WidgetUi):
         self.layer.setReadOnly(True)
 
         super().accept()
-

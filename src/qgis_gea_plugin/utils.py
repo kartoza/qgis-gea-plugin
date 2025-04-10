@@ -14,7 +14,7 @@ from qgis.core import (
 
 from .definitions.defaults import (
     PROJECT_INSTANCE_REPORT_TEMPLATE_NAME,
-    SITE_REPORT_TEMPLATE_NAME
+    SITE_REPORT_TEMPLATE_NAME,
 )
 
 
@@ -49,6 +49,7 @@ def log(
         notifyUser=notify,
     )
 
+
 def tr(message):
     """Get the translation for a string using Qt translation API.
     We implement this ourselves since we do not inherit QObject.
@@ -80,6 +81,7 @@ def clean_filename(filename):
             filename = filename.replace(character, "_")
 
     return filename
+
 
 def create_dir(directory: str, log_message: str = ""):
     """Creates new file directory if it doesn't exist"""

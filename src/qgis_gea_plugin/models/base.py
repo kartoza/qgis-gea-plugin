@@ -17,6 +17,7 @@ class IMAGERY(Enum):
 
 class LayerNodeSearch(IntEnum):
     """Mechanism type for searching layer tree nodes."""
+
     EXACT_MATCH = 0
     CONTAINS = 1
 
