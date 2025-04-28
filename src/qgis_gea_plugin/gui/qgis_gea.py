@@ -1152,15 +1152,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             log(message=tr_msg, info=False)
             return
 
-        if not self.historical_imagery.isChecked():
-            self.show_message(
-                tr("Please select the imagery " "type under the Time Slider section."),
-                Qgis.Warning,
-            )
-            return
-
-        if self.historical_imagery.isChecked():
-            imagery_type = IMAGERY.HISTORICAL
+        imagery_type = IMAGERY.HISTORICAL
 
         temporal_info = MapTemporalInfo(
             imagery_type, self.iface.mapCanvas().temporalRange()
