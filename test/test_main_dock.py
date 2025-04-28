@@ -97,21 +97,16 @@ class TestQgisGeaPlugin(unittest.TestCase):
         """
         Test preparation of time slider UI components.
         """
-        self.plugin_dock.historical_imagery.setChecked(True)
-        self.plugin_dock.nicfi_imagery.setChecked(False)
 
         self.plugin_dock.prepare_time_slider()
 
         # Check if the current imagery type is set correctly
         self.assertEqual(self.plugin_dock.current_imagery_type, IMAGERY.HISTORICAL)
 
-        self.plugin_dock.nicfi_imagery.setChecked(True)
-        self.plugin_dock.historical_imagery.setChecked(False)
-
         self.plugin_dock.prepare_time_slider()
 
         # Check if the current imagery type is set correctly
-        self.assertEqual(self.plugin_dock.current_imagery_type, IMAGERY.NICFI)
+        self.assertEqual(self.plugin_dock.current_imagery_type, IMAGERY.HISTORICAL)
 
     # def test_get_site_layer(self):
     #     """

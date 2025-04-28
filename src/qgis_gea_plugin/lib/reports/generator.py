@@ -37,8 +37,6 @@ from ...definitions.defaults import (
     OVERVIEW_ZOOM_OUT_FACTOR,
     REPORT_SITE_BOUNDARY_STYLE,
     PROJECT_INSTANCE_STYLE,
-    RECENT_IMAGERY_GROUP_NAME,
-    NICFI_2018_LAYER_NAME,
 )
 from ...models.base import LayerNodeSearch
 from ...models.report import (
@@ -53,11 +51,6 @@ from ...utils import (
     log,
     tr,
 )
-
-try:
-    from planet_explorer.planet_api import PlanetClient
-except ImportError:
-    log(f"Couldn't import planet api. " f"Check if planet plugin has been installed.")
 
 
 class SiteReportReportGeneratorTask(QgsTask):
@@ -485,7 +478,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         return None
 
     def _set_landscape_layer(self):
-        """Set the landscape layer i.e. Nicfi or Landsat depending on the
+        """Set the landscape layer i.e. Landsat depending on the
         information in the TemporalInfo object.
         """
 
@@ -539,8 +532,6 @@ class SiteReportReportGeneratorTask(QgsTask):
                 "be rendered correctly."
             )
             self._error_messages.append(tr_msg)
-
-        nicifi_imagery_layers = self._get_layers_in_group(RECENT_IMAGERY_GROUP_NAME)
 
         # landscape layer with mask map
         historic_mask_map = self._get_map_item_by_id("2013_historic_mask_map")
@@ -604,51 +595,6 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
-            else:
-                nicfi_2018_layer = None
-                for layer in nicifi_imagery_layers:
-                    if layer.name() == NICFI_2018_LAYER_NAME:
-                        nicfi_2018_layer = layer
-                        break
-
-                has_api_key = PlanetClient.getInstance().has_api_key()
-                if not has_api_key:
-                    log(
-                        f"Warning user not logged in a Planet account. "
-                        f"Some of the layout maps won't "
-                        f"contain background imagery."
-                    )
-
-                api_key = PlanetClient.getInstance().api_key() if has_api_key else ""
-
-                if nicfi_2018_layer:
-                    nicfi_source = nicfi_2018_layer.source()
-                    source = nicfi_source
-
-                    if "api_key%3D&" in nicfi_source:
-                        source = nicfi_source.replace(
-                            "api_key%3D", f"api_key={api_key}"
-                        )
-
-                    nicfi_tile_layer = QgsRasterLayer(
-                        f"{source}", "Planet Mosaic 2018", "wms"
-                    )
-                    QgsProject.instance().addMapLayers([nicfi_tile_layer])
-
-                    landscape_mask_layers = [self._site_layer]
-                    landscape_mask_layers.extend(mask_layers)
-                    landscape_mask_layers.append(nicfi_tile_layer)
-
-                    if self._landscape_layer is not None:
-                        landscape_mask_layers.append(self._landscape_layer)
-
-                    historic_mask_map.setFollowVisibilityPreset(False)
-                    historic_mask_map.setFollowVisibilityPresetName("")
-                    historic_mask_map.setLayers(landscape_mask_layers)
-                    historic_mask_map.zoomToExtent(landscape_imagery_extent)
-                    historic_mask_map.refresh()
-
-                    QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
         # Landscape with no-mask map
         landscape_no_mask_map_2018 = self._get_map_item_by_id(
@@ -668,48 +614,6 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "with no-mask map"
                 )
                 self._error_messages.append(tr_msg)
-            else:
-                nicfi_2018_layer = None
-                for layer in nicifi_imagery_layers:
-                    if layer.name() == NICFI_2018_LAYER_NAME:
-                        nicfi_2018_layer = layer
-                        break
-
-                has_api_key = PlanetClient.getInstance().has_api_key()
-                if not has_api_key:
-                    log(
-                        f"Warning user not logged in a Planet account. "
-                        f"Some of the layout maps won't "
-                        f"contain background imagery."
-                    )
-
-                api_key = PlanetClient.getInstance().api_key() if has_api_key else ""
-
-                if nicfi_2018_layer:
-                    nicfi_source = nicfi_2018_layer.source()
-                    source = nicfi_source
-
-                    if "api_key%3D&" in nicfi_source:
-                        source = nicfi_source.replace(
-                            "api_key%3D", f"api_key={api_key}"
-                        )
-
-                    nicfi_tile_layer = QgsRasterLayer(
-                        f"{source}", "Planet Mosaic 2018", "wms"
-                    )
-                    QgsProject.instance().addMapLayers([nicfi_tile_layer])
-
-                    landscape_no_mask_layers = [self._site_layer, nicfi_tile_layer]
-
-                    if self._landscape_layer is not None:
-                        landscape_no_mask_layers.append(self._landscape_layer)
-
-                    landscape_no_mask_map_2018.setFollowVisibilityPreset(False)
-                    landscape_no_mask_map_2018.setFollowVisibilityPresetName("")
-                    landscape_no_mask_map_2018.setLayers(landscape_no_mask_layers)
-                    landscape_no_mask_map_2018.zoomToExtent(landscape_no_mask_extent)
-
-                    QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
 
     def _configure_current_maps(
         self, detailed_extent: QgsRectangle, mask_layers: typing.List[QgsMapLayer]

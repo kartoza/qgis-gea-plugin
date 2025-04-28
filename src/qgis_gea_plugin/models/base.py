@@ -12,7 +12,6 @@ class IMAGERY(Enum):
     """Project imagery types"""
 
     HISTORICAL = "Historical"
-    NICFI = "Nicfi"
 
 
 class LayerNodeSearch(IntEnum):

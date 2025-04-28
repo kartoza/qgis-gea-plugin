@@ -117,34 +117,7 @@
        <string>Time Slider</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="historical_imagery">
-         <property name="text">
-          <string>Historical Imagery (Landsat)</string>
-         </property>
-         <property name="shortcut">
-          <string>Ctrl+S</string>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QCheckBox" name="nicfi_imagery">
-         <property name="text">
-          <string>Recent Imagery (NICFI)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="temporal_range_la">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
+       <item row="1" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
           <widget class="QSlider" name="time_slider">
@@ -190,6 +163,13 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="temporal_range_la">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -395,11 +375,7 @@
              <widget class="QLineEdit" name="report_author_le"/>
             </item>
             <item row="5" column="1">
-             <widget class="QgsFileWidget" name="project_folder">
-              <property name="storageMode">
-               <enum>QgsFileWidget::GetDirectory</enum>
-              </property>
-             </widget>
+             <widget class="QgsFileWidget" name="project_folder" native="true"/>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_2">
