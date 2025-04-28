@@ -369,19 +369,24 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         matching_node = None
         for node in root_tree.findLayers():
+            # log(f"Checking Node: {matching_node} for {node_name}")
             if group_name:
+                log(f"Group: {group_name}")
                 if node.parent() and node.parent().name() == group_name:
                     for child in node.parent().children():
+                        log(f"Child: {child.name()}")
                         if (
                             search_type == LayerNodeSearch.EXACT_MATCH
                             and child.name() == node_name
                         ):
+                            log(f"Exact match found for {child.name()}")
                             matching_node = child
                             break
                         elif (
                             search_type == LayerNodeSearch.CONTAINS
                             and node_name in child.name()
                         ):
+                            log(f"Partial match found for {child.name()}")
                             matching_node = child
                             break
             else:
@@ -389,17 +394,19 @@ class SiteReportReportGeneratorTask(QgsTask):
                     search_type == LayerNodeSearch.EXACT_MATCH
                     and node.name() == node_name
                 ):
+                    log(f"Exact match found for {node.name()}")
                     matching_node = node
                     break
                 elif (
                     search_type == LayerNodeSearch.CONTAINS and node_name in node.name()
                 ):
+                    log(f"Partial match found for {node.name()}")
                     matching_node = node
                     break
 
         if matching_node is None:
             tr_msg = tr("layer node not found.")
-            log(f"{tr_msg}, node name {node_name}")
+            log(f"{tr_msg}, node name {node_name} using search mode: {search_type}")
             self._error_messages.append(f"{node_name} {tr_msg}")
             return None
 
@@ -488,6 +495,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             LANDSAT_IMAGERY_GROUP_NAME,
         )
         if landsat_2013_layer is not None:
+            log("Landsat 2013 layer set .... OK")
             self._landscape_layer = landsat_2013_layer
 
         if self._landscape_layer is None:
@@ -535,6 +543,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         # landscape layer with mask map
         historic_mask_map = self._get_map_item_by_id("2013_historic_mask_map")
+        log("Setting up historic map with mask for 2013 landscape imagery")
         if historic_mask_map and detailed_extent:
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
@@ -546,10 +555,13 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
+                log(tr_msg)
             else:
+                log("Historic mask layer extent is set")
                 landscape_mask_layers = [self._site_layer]
                 landscape_mask_layers.extend(mask_layers)
                 if self._landscape_layer is not None:
+                    log("Landscape layer is set")
                     landscape_mask_layers.append(self._landscape_layer)
                 historic_mask_map.setFollowVisibilityPreset(False)
                 historic_mask_map.setFollowVisibilityPresetName("")
@@ -561,6 +573,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         landscape_no_mask_map = self._get_map_item_by_id("2013_historic_no_mask_map")
         if landscape_no_mask_map and detailed_extent:
             # Transform extent
+            log("Setting up landscape map with NO mask for 2013 landscape imagery")
             landscape_no_mask_extent = self._transform_extent(
                 detailed_extent, self._site_layer.crs(), landscape_no_mask_map.crs()
             )
@@ -572,8 +585,10 @@ class SiteReportReportGeneratorTask(QgsTask):
                 )
                 self._error_messages.append(tr_msg)
             else:
+                log("Historic mask layer extent is set")
                 landscape_no_mask_layers = [self._site_layer]
                 if self._landscape_layer is not None:
+                    log("Landscape layer is set")
                     landscape_no_mask_layers.append(self._landscape_layer)
 
                 landscape_no_mask_map.setFollowVisibilityPreset(False)
@@ -585,6 +600,8 @@ class SiteReportReportGeneratorTask(QgsTask):
         # landscape layer with mask map
         historic_mask_map = self._get_map_item_by_id("2018_historic_mask_map")
         if historic_mask_map and detailed_extent:
+            log("Setting up historic map WITH mask for 2018 imagery")
+
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
                 detailed_extent, self._site_layer.crs(), historic_mask_map.crs()
@@ -601,6 +618,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             "2018_historic_no_mask_map"
         )
         if landscape_no_mask_map_2018 and detailed_extent:
+            log("Setting up landscape map with NO mask for 2018 landscape imagery")
             # Transform extent
             landscape_no_mask_extent = self._transform_extent(
                 detailed_extent,
