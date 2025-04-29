@@ -9,5 +9,5 @@
   "git.enableCommitSigning": true,
   "workbench.startupEditor": "none",
   "keyboard.dispatch": "keyCode",
-  "extensions.ignoreRecommendations": false
+  "extensions.ignoreRecommendations": true
 }

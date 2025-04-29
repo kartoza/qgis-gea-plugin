@@ -33,6 +33,7 @@ from ...definitions.defaults import (
     EXCLUSION_MASK_GROUP_NAME,
     GOOGLE_LAYER_NAME,
     LANDSAT_2013_LAYER_SEGMENT,
+    LANDSAT_2018_LAYER_SEGMENT,
     LANDSAT_IMAGERY_GROUP_NAME,
     OVERVIEW_ZOOM_OUT_FACTOR,
     REPORT_SITE_BOUNDARY_STYLE,
@@ -70,7 +71,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._output_report_layout = None
         self._site_layer = None
         self._landscape_layer = None
-
+        self._2018_layer = None
         self.report_name = (
             context.metadata.area_name
             if isinstance(context.metadata, SiteMetadata)
@@ -285,6 +286,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             return False
 
         self._set_landscape_layer()
+        self._set_2018_layer()
 
         if self._check_feedback_cancelled_or_set_progress(55):
             return False
@@ -502,6 +504,24 @@ class SiteReportReportGeneratorTask(QgsTask):
             tr_msg = tr("Landscape layer not found")
             self._error_messages.append(f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}")
 
+    def _set_2018_layer(self):
+        """Set the 2018 layer i.e. Landsat depending on the
+        information in the TemporalInfo object.
+        """
+
+        landsat_2018_layer = self._get_layer_from_node_name(
+            LANDSAT_2018_LAYER_SEGMENT,
+            LayerNodeSearch.CONTAINS,
+            LANDSAT_IMAGERY_GROUP_NAME,
+        )
+        if landsat_2018_layer is not None:
+            log("Landsat 2018 layer set .... OK")
+            self._2018_layer = landsat_2018_layer
+
+        if self._2018_layer is None:
+            tr_msg = tr("2018 landsay layer not found")
+            self._error_messages.append(f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}")
+
     def _configure_map_items_zoom_level(self):
         """Set layers and zoom levels of map items."""
         if self._site_layer is None:
@@ -601,7 +621,6 @@ class SiteReportReportGeneratorTask(QgsTask):
         historic_mask_map = self._get_map_item_by_id("2018_historic_mask_map")
         if historic_mask_map and detailed_extent:
             log("Setting up historic map WITH mask for 2018 imagery")
-
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
                 detailed_extent, self._site_layer.crs(), historic_mask_map.crs()
@@ -612,6 +631,19 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
+                log(tr_msg)
+            else:
+                log("Historic mask layer extent is set")
+                landscape_mask_layers = [self._site_layer]
+                landscape_mask_layers.extend(mask_layers)
+                if self._landscape_layer is not None:
+                    log("Landscape layer is set")
+                    landscape_mask_layers.append(self._2018_layer)
+                historic_mask_map.setFollowVisibilityPreset(False)
+                historic_mask_map.setFollowVisibilityPresetName("")
+                historic_mask_map.setLayers(landscape_mask_layers)
+                historic_mask_map.zoomToExtent(landscape_imagery_extent)
+                historic_mask_map.refresh()
 
         # Landscape with no-mask map
         landscape_no_mask_map_2018 = self._get_map_item_by_id(
@@ -632,6 +664,18 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "with no-mask map"
                 )
                 self._error_messages.append(tr_msg)
+            else:
+                log("Historic mask layer extent is set")
+                landscape_mask_layers = [self._site_layer]
+                landscape_mask_layers.extend(mask_layers)
+                if self._landscape_layer is not None:
+                    log("2018 layer is set")
+                    landscape_mask_layers.append(self._2018_layer)
+                historic_mask_map.setFollowVisibilityPreset(False)
+                historic_mask_map.setFollowVisibilityPresetName("")
+                historic_mask_map.setLayers(landscape_mask_layers)
+                historic_mask_map.zoomToExtent(landscape_imagery_extent)
+                historic_mask_map.refresh()
 
     def _configure_current_maps(
         self, detailed_extent: QgsRectangle, mask_layers: typing.List[QgsMapLayer]
