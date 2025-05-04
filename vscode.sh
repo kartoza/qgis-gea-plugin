@@ -76,27 +76,27 @@ cat "$SETTINGS_FILE"
 code --user-data-dir='.vscode' \
 --profile='gea' \
 --extensions-dir='.vscode-extensions' . \
---install-extension batisteo.vscode-django@1.15.0 \
---install-extension donjayamanne.python-environment-manager@1.2.7 \
---install-extension donjayamanne.python-extension-pack@1.7.0 \
---install-extension fabianlauer.vs-code-xml-format@0.1.5 \
---install-extension github.copilot@1.277.0 \
---install-extension github.copilot-chat@0.24.1 \
---install-extension github.vscode-github-actions@0.27.1 \
---install-extension github.vscode-pull-request-github@0.106.0 \
---install-extension hbenl.vscode-test-explorer@2.22.1 \
---install-extension jamesqquick.python-class-generator@0.0.3 \
---install-extension kevinrose.vsc-python-indent@1.21.0 \
+--install-extension GitHub.copilot@1.277.0 \
 --install-extension littlefoxteam.vscode-python-test-adapter@0.8.2 \
+--install-extension KevinRose.vsc-python-indent@1.21.0 \
+--install-extension github.vscode-github-actions@0.27.1 \
+--install-extension hbenl.vscode-test-explorer@2.22.1 \
+--install-extension fabianlauer.vs-code-xml-format@0.1.5 \
+--install-extension jamesqquick.python-class-generator@0.0.3 \
+--install-extension batisteo.vscode-django@1.15.0 \
 --install-extension ms-python.black-formatter@2025.2.0 \
---install-extension ms-python.debugpy@2025.4.1 \
---install-extension ms-python.python@2025.2.0 \
---install-extension ms-python.vscode-pylance@2025.3.2 \
---install-extension ms-vscode.test-adapter-converter@0.2.1 \
+--install-extension GitHub.vscode-pull-request-github@0.106.0 \
 --install-extension njpwerner.autodocstring@0.6.1 \
---install-extension visualstudioexptteam.intellicode-api-usage-examples@0.2.9 \
---install-extension visualstudioexptteam.vscodeintellicode@1.3.2 \
---install-extension wholroyd.jinja@0.0.8
+--install-extension wholroyd.jinja@0.0.8 \
+--install-extension ms-python.debugpy@2025.4.1 \
+--install-extension ms-vscode.test-adapter-converter@0.2.1 \
+--install-extension ms-python.vscode-pylance@2025.3.2 \
+--install-extension VisualStudioExptTeam.vscodeintellicode@1.3.2 \
+--install-extension GitHub.copilot-chat@0.25.1 \
+--install-extension ms-python.python@2025.2.0 \
+--install-extension VisualStudioExptTeam.intellicode-api-usage-examples@0.2.9 \
+--install-extension donjayamanne.python-environment-manager@1.2.7 \
+--install-extension donjayamanne.python-extension-pack@1.7.0
 # Launch VSCode with the sandboxed environment
 code --user-data-dir='.vscode' \
 --profile='gea' \

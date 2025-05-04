@@ -17,7 +17,7 @@ import logging
 
 from typing import Optional
 from qgis.core import QgsSettings, Qgis
-from qgis.PyQt.QtCore import QTranslator, QCoreApplication, Qt
+from qgis.PyQt.QtCore import QTranslator, QCoreApplication, Qt, QSettings
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QMessageBox, QAction, QPushButton
 
@@ -84,6 +84,7 @@ class QgisGea:
         self.main_widget = QgisGeaPlugin(
             iface=self.iface, parent=self.iface.mainWindow()
         )
+        self.restore_geometry()
 
     def debug(self):
         """
@@ -257,9 +258,51 @@ class QgisGea:
         """Cleanup necessary items here when plugin widget is closed"""
         self.pluginIsActive = False
 
+    def save_geometry(self) -> None:
+        """
+        Saves the geometry and dock area of GeestDock to QSettings.
+        """
+        settings = QSettings("GEA", "GEA")
+
+        if self.main_widget:
+            # Save geometry
+            settings.setValue("dock/geometry", self.main_widget.saveGeometry())
+
+            # Save dock area (left or right)
+            dock_area = self.iface.mainWindow().dockWidgetArea(self.main_widget)
+            settings.setValue("dock/area", dock_area)
+
+    def restore_geometry(self) -> None:
+        """
+        Restores the geometry and dock area of GeestDock from QSettings.
+        """
+        settings = QSettings("GEA", "GEA")
+
+        if self.main_widget:
+            # Restore geometry
+            geometry = settings.value("dock/geometry")
+            if geometry:
+                self.main_widget.restoreGeometry(geometry)
+
+            # Restore dock area (left or right)
+            dock_area = settings.value("dock/area", type=int)
+            if dock_area is not None:
+                self.iface.addDockWidget(dock_area, self.main_widget)
+
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         try:
+
+            # Save geometry before unloading
+            self.save_geometry()
+
+            # Remove dock widget if it exists
+            if self.main_widget:
+                self.iface.removeDockWidget(self.main_widget)
+                self.main_widget.deleteLater()
+                self.main_widget = None
+
+            # Remove the plugin menu and toolbar
             for action in self.actions:
                 self.iface.removePluginMenu(
                     self.tr("&EPAL - Eligible Project Area Locator."), action

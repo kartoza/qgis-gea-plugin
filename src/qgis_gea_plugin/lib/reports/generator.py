@@ -195,6 +195,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                     break
 
             project.layoutManager().addLayout(self._output_report_layout)
+
             log(f"Successfully generated the report for " f"{self.report_name}.")
 
     def _check_feedback_cancelled_or_set_progress(self, value: float) -> bool:
@@ -236,16 +237,28 @@ class SiteReportReportGeneratorTask(QgsTask):
         pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
         log(f"Path when exporting pdf {pdf_path}")
 
-        result = exporter.exportToPdf(pdf_path, QgsLayoutExporter.PdfExportSettings())
+        # Ensure all map items are rendered before exporting
+        for item in self._layout.items():
+            if isinstance(item, QgsLayoutItemMap):
+                log(f"Waiting for map item '{item.id()}' to render...")
+                item.refresh()
+
+        # Export the layout to PDF
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.rasterizeWholeImage = True
+        self._layout.refresh()
+        result = exporter.exportToPdf(pdf_path, settings)
         if result == QgsLayoutExporter.ExportResult.Success:
+            log(f"PDF successfully exported to {pdf_path}")
             return True
         else:
             tr_msg = tr(
-                "Could not export report to PDF. Check if there is PDF "
+                "Could not export report to PDF. Check if there is a PDF "
                 "opened for the same project."
             )
             self._error_messages.append(f"{tr_msg} {pdf_path}.")
             return False
+        # open the layout in QGIS
 
     def _generate_report(self) -> bool:
         """Generate report.
