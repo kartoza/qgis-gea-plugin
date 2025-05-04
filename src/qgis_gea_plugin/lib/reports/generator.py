@@ -22,6 +22,9 @@ from qgis.core import (
     QgsRectangle,
     QgsTask,
     QgsVectorLayer,
+    QgsProject,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
 )
 
 from qgis.PyQt import QtCore, QtXml
@@ -383,10 +386,13 @@ class SiteReportReportGeneratorTask(QgsTask):
         root_tree = self._project.layerTreeRoot()
 
         matching_node = None
+        last_group = FileNotFoundError
         for node in root_tree.findLayers():
             # log(f"Checking Node: {matching_node} for {node_name}")
             if group_name:
-                log(f"Group: {group_name}")
+                if group_name != last_group:
+                    log(f"Group: {group_name}")
+                last_group = group_name
                 if node.parent() and node.parent().name() == group_name:
                     for child in node.parent().children():
                         log(f"Child: {child.name()}")
@@ -532,7 +538,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             self._2018_layer = landsat_2018_layer
 
         if self._2018_layer is None:
-            tr_msg = tr("2018 landsay layer not found")
+            tr_msg = tr("2018 Landsat layer not found")
             self._error_messages.append(f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}")
 
     def _configure_map_items_zoom_level(self):
@@ -751,12 +757,59 @@ class SiteReportReportGeneratorTask(QgsTask):
                 current_no_mask_map.zoomToExtent(current_no_mask_imagery_extent)
                 current_no_mask_map.refresh()
 
+    def get_first_layer_in_group(self, group_name: str) -> typing.Optional[QgsMapLayer]:
+        """Get the first layer in the group with the given name.
+
+        ..versionadded 1.5
+
+        ..addedby: Tim Sutton, 4 May 2025
+
+        I added this method because the original method returned layers with the incorrect source.
+        This method is a recursive function that searches for the first layer
+        in the group with the given name. It uses indentation to represent the hierarchy of groups
+        and layers. The function checks if the node is a group or a layer and returns the first
+        layer found in the group. If no layer is found, it returns None.
+
+        :param group_name: Name of the group to search for.
+        :type group_name: str
+        :returns: Returns the first layer found in the group or None if not found.
+        :rtype: QgsMapLayer
+        """
+
+        def recurse(node, indent="", parent=None):
+            if isinstance(node, QgsLayerTreeGroup):
+                if node.name() == group_name:
+                    for child in node.children():
+                        if isinstance(child, QgsLayerTreeLayer):
+                            layer = child.layer()
+                            if layer:
+                                log(
+                                    f"{indent}🗃️  Found Layer in group '{group_name}': {layer.name()}"
+                                )
+                                log(f"{indent}🚛  ↳ Source: {layer.source()}")
+                                log(f"{indent}🛍️  ↳ Provider: {layer.providerType()}")
+                                log(
+                                    "-----------------------------------------------------------"
+                                )
+                                return layer
+                    return None  # Group matched, but no layer found
+                else:
+                    for child in node.children():
+                        found = recurse(child, indent + "  ", node)
+                        if found:
+                            return found
+            return None
+
+        root = QgsProject.instance().layerTreeRoot()
+        return recurse(root)
+
     def _configure_site_maps(self) -> QgsRectangle:
         """Set the zoom level and layers for the overview and detailed maps.
 
         :returns: Returns the extent of the detailed map.
         :rtype: QgsRectangle
         """
+
         site_extent = self._site_layer.extent()
 
         google_layer = self._get_layer_from_node_name(
@@ -764,16 +817,12 @@ class SiteReportReportGeneratorTask(QgsTask):
         )
 
         map_item_layers = [self._site_layer]
-
-        ref_admin_layer = None
-        admin_layers = self._get_layers_in_group(ADMIN_AREAS_GROUP_NAME)
-        if len(admin_layers) > 0:
-            ref_admin_layer = admin_layers[0]
-            map_item_layers.extend(admin_layers)
+        admin_layer = self.get_first_layer_in_group(ADMIN_AREAS_GROUP_NAME)
+        map_item_layers.append(admin_layer)
 
         if google_layer:
             # We want the Google layer as the last item
-            map_item_layers.extend([google_layer])
+            map_item_layers.append(google_layer)
 
         # Overview map
         overview_map = self._get_map_item_by_id("site_location_overview_map")
@@ -781,34 +830,55 @@ class SiteReportReportGeneratorTask(QgsTask):
             # We use the admin layer to control the overview extent i.e.
             # ensure we do not zoom out beyond the national extent.
             admin_extent = None
-            if ref_admin_layer:
-                admin_extent = self._transform_extent(
-                    ref_admin_layer.extent(), ref_admin_layer.crs(), overview_map.crs()
+            overview_extent = None
+            log(f"Overview map CRS: {overview_map.crs().authid()}")
+            if admin_layer:
+                extent = admin_layer.extent()
+                log(
+                    f"Admin layer CRS: {admin_layer.crs().authid() if admin_layer else 'None'}"
+                )
+                log(f"Admin layer extent: {extent.toString()}")
+                log(
+                    f"Using reference admin layer for site_location_overview_map {admin_layer.name()}"
                 )
 
-            # Transform extent
-            overview_extent = self._transform_extent(
-                site_extent, self._site_layer.crs(), overview_map.crs()
-            )
-            if overview_extent.isNull():
+                admin_extent = self._transform_extent(
+                    extent, admin_layer.crs(), overview_map.crs()
+                )
+                log(f"Admin layer extent after transform: {admin_extent.toString()}")
+            else:
+                log("Reference admin layer not found, using site layer extent")
+
+                log(f"Site layer CRS: {self._site_layer.crs().authid()}")
+                log(f"Site layer extent: {self._site_layer.extent().toString()}")
+                # Transform extent
+                overview_extent = self._transform_extent(
+                    site_extent, self._site_layer.crs(), overview_map.crs()
+                )
+            if not overview_extent or overview_extent.isNull():
                 tr_msg = tr("Invalid extent for setting in the overview map.")
                 self._error_messages.append(tr_msg)
             else:
                 # Zoom out by factor
                 overview_extent.scale(OVERVIEW_ZOOM_OUT_FACTOR)
 
-                if admin_extent:
-                    if admin_extent.contains(overview_extent):
-                        overview_map.zoomToExtent(overview_extent)
-                    else:
-                        overview_map.zoomToExtent(admin_extent)
-                else:
+            if admin_extent:
+                log("Admin extent is set")
+                if overview_extent and admin_extent.contains(overview_extent):
+                    log("Admin extent contains overview extent")
                     overview_map.zoomToExtent(overview_extent)
-
-                overview_map.setFollowVisibilityPreset(False)
-                overview_map.setFollowVisibilityPresetName("")
-                overview_map.setLayers(map_item_layers)
-                overview_map.refresh()
+                else:
+                    log("Admin extent does not contain overview extent")
+                    overview_map.zoomToExtent(admin_extent)
+            else:
+                log("Admin extent is not set, using overview extent")
+                overview_map.zoomToExtent(overview_extent)
+            log(f"Overview map extent: {overview_map.extent().toString()}")
+            # Visibiity presets are the same thing as map themes
+            overview_map.setFollowVisibilityPreset(False)
+            overview_map.setFollowVisibilityPresetName("")
+            overview_map.setLayers(map_item_layers)
+            overview_map.refresh()
 
         # Detailed site map
         detailed_map = self._get_map_item_by_id("site_location_detailed_map")
