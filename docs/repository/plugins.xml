@@ -1,16 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <plugins>
-<pyqgis_plugin name="EPAL - Eligible Project Area Locator." version="1.0.5">
+<pyqgis_plugin name="EPAL - Eligible Project Area Locator." version="1.0.6">
                 <description><![CDATA[View, browse and navigate through imagery.]]></description>
                 <about><![CDATA[Adds functionality inside QGIS to enable EPAL afforestation visualization and analysis.]]></about>
-                <version>1.0.5</version>
+                <version>1.0.6</version>
                 <qgis_minimum_version>3.2</qgis_minimum_version>
                 <homepage><![CDATA[https://github.com/kartoza/qgis-gea-plugin]]></homepage>
-                <file_name>qgis_gea_plugin.0.0.1.zip</file_name>
+                <file_name>qgis_gea_plugin.1.0.6.zip</file_name>
                 <icon>icon.svg</icon>
                 <author_name><![CDATA[Kartoza]]></author_name>
-                <download_url>https://github.com/kartoza/qgis-gea-plugin/releases/download/v1.0.5/qgis_gea_plugin.0.0.1.zip</download_url>
-                <update_date>2025-05-05 10:31:33</update_date>
+                <download_url>https://github.com/kartoza/qgis-gea-plugin/releases/download/v1.0.6/qgis_gea_plugin.1.0.6.zip</download_url>
+                <update_date>2025-05-05 10:45:51</update_date>
                 <experimental>False</experimental>
                 <deprecated>False</deprecated>
                 <tracker><![CDATA[https://github.com/kartoza/qgis-gea-plugin/issues]]></tracker>
