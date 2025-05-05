@@ -510,11 +510,10 @@ class SiteReportReportGeneratorTask(QgsTask):
         information in the TemporalInfo object.
         """
 
-        landsat_2013_layer = self._get_layer_from_node_name(
-            LANDSAT_2013_LAYER_SEGMENT,
-            LayerNodeSearch.CONTAINS,
-            LANDSAT_IMAGERY_GROUP_NAME,
+        landsat_2013_layer = self.get_first_matching_layer_in_group(
+            LANDSAT_IMAGERY_GROUP_NAME, LANDSAT_2013_LAYER_SEGMENT
         )
+
         if landsat_2013_layer is not None:
             log("Landsat 2013 layer set .... OK")
             self._landscape_layer = landsat_2013_layer
@@ -528,11 +527,10 @@ class SiteReportReportGeneratorTask(QgsTask):
         information in the TemporalInfo object.
         """
 
-        landsat_2018_layer = self._get_layer_from_node_name(
-            LANDSAT_2018_LAYER_SEGMENT,
-            LayerNodeSearch.CONTAINS,
-            LANDSAT_IMAGERY_GROUP_NAME,
+        landsat_2018_layer = self.get_first_matching_layer_in_group(
+            LANDSAT_IMAGERY_GROUP_NAME, LANDSAT_2018_LAYER_SEGMENT
         )
+
         if landsat_2018_layer is not None:
             log("Landsat 2018 layer set .... OK")
             self._2018_layer = landsat_2018_layer
@@ -781,9 +779,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         I added this method because the original method returned layers with the incorrect source.
         This method is a recursive function that searches for the first layer
-        in the group with the given name. It uses indentation to represent the hierarchy of groups
-        and layers. The function checks if the node is a group or a layer and returns the first
-        layer found in the group. If no layer is found, it returns None.
+        in the group with the given name.
 
         :param group_name: Name of the group to search for.
         :type group_name: str
@@ -817,6 +813,99 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         root = QgsProject.instance().layerTreeRoot()
         return recurse(root)
+
+    def get_first_matching_layer_in_group(
+        self, group_name: str, search_string: str
+    ) -> typing.Optional[QgsMapLayer]:
+        """Get the first layer that contains the search string in the group that has the given group name.
+
+        ..versionadded 1.5
+
+        ..addedby: Tim Sutton, 4 May 2025
+
+        I added this method because the original method returned layers with the incorrect source.
+        This method is a recursive function that searches for the first layer
+        in the group with the given name.
+
+
+        :param group_name: Name of the group to search for.
+        :type group_name: str
+        :param search_string: The string to search for in the layer name.
+        :type search_string: str
+        :returns: Returns the first layer found in the group or None if not found.
+        :rtype: QgsMapLayer
+        """
+
+        def recurse(node, indent="", parent=None):
+            if isinstance(node, QgsLayerTreeGroup):
+                if node.name() == group_name:
+                    for child in node.children():
+                        if isinstance(child, QgsLayerTreeLayer):
+                            layer = child.layer()
+                            if search_string in layer.name():
+                                log(
+                                    f"{indent}🗃️  Found Layer in group '{group_name}': {layer.name()}"
+                                )
+                                log(f"{indent}🚛  ↳ Source: {layer.source()}")
+                                log(f"{indent}🛍️  ↳ Provider: {layer.providerType()}")
+                                log(
+                                    "-----------------------------------------------------------"
+                                )
+                                return layer
+                    return None  # Group matched, but no layer found
+                else:
+                    for child in node.children():
+                        found = recurse(child, indent + "  ", node)
+                        if found:
+                            return found
+            return None
+
+        root = QgsProject.instance().layerTreeRoot()
+        return recurse(root)
+
+    def _get_layers_in_group(self, group_name: str) -> typing.List[QgsMapLayer]:
+        """Gets all map layers in the group with the given name, recursively.
+
+        .. versionadded:: 1.5
+        .. addedby:: Tim Sutton, 4 May 2025
+
+        :param group_name: Group name to retrieve the layers.
+        :type group_name: str
+
+        :returns: List of all valid QgsMapLayer instances found in the group.
+        :rtype: list
+        """
+        result_layer_names: typing.List[str] = []
+        result_layers: typing.List[QgsMapLayer] = []
+
+        def recurse(node, indent=""):
+            if isinstance(node, QgsLayerTreeGroup):
+                if node.name() == group_name:
+                    log(f"📁 Found group: {group_name}")
+                    # Collect layers within this group only
+                    for child in node.children():
+                        if isinstance(child, QgsLayerTreeLayer):
+                            layer = child.layer()
+                            try:
+                                log(f"{indent}🗃️  Layer: {layer.name()}")
+                                result_layer_names.append(layer.name())
+                            except:
+                                log(
+                                    f"{indent}⚠️ Invalid or missing layer in group '{group_name}'"
+                                )
+                    return True  # Found and processed the group — stop recursion
+                else:
+                    for child in node.children():
+                        if recurse(child, indent + "  "):
+                            return True  # Early exit once group is found
+                return False
+
+        root = self._project.layerTreeRoot()
+        recurse(root)
+        for layer_name in result_layer_names:
+            layer = self.get_first_matching_layer_in_group(group_name, layer_name)
+            result_layers.append(layer)
+        return result_layers
 
     def _configure_site_maps(self) -> QgsRectangle:
         """Set the zoom level and layers for the overview and detailed maps.
@@ -934,25 +1023,6 @@ class SiteReportReportGeneratorTask(QgsTask):
             return []
 
         return [record.layer() for record in theme.layerRecords()]
-
-    def _get_layers_in_group(self, group_name: str) -> typing.List[QgsMapLayer]:
-        """Gets all the map layers in a group node.
-
-        :param group_name: Group name to retrieve the layers.
-        :type group_name: str
-
-        :returns: Returns all the layers in the given group or an
-        empty list if the group was not found or does not contain
-        any layers.
-        :rtype: list
-        """
-        root_tree = self._project.layerTreeRoot()
-
-        search_group = root_tree.findGroup(group_name)
-        if search_group is None:
-            return []
-
-        return [tree_layer.layer() for tree_layer in search_group.findLayers()]
 
     def _transform_extent(
         self,
