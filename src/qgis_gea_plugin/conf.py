@@ -44,7 +44,6 @@ class Settings(enum.Enum):
     """Plugin settings names"""
 
     HISTORICAL_VIEW = "historical"
-    NICFI_VIEW = "nicfi"
 
     SITE_REFERENCE = "site_reference"
     SITE_VERSION = "site_version"

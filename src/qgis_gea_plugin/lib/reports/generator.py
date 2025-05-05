@@ -22,6 +22,9 @@ from qgis.core import (
     QgsRectangle,
     QgsTask,
     QgsVectorLayer,
+    QgsProject,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
 )
 
 from qgis.PyQt import QtCore, QtXml
@@ -33,12 +36,11 @@ from ...definitions.defaults import (
     EXCLUSION_MASK_GROUP_NAME,
     GOOGLE_LAYER_NAME,
     LANDSAT_2013_LAYER_SEGMENT,
+    LANDSAT_2018_LAYER_SEGMENT,
     LANDSAT_IMAGERY_GROUP_NAME,
     OVERVIEW_ZOOM_OUT_FACTOR,
     REPORT_SITE_BOUNDARY_STYLE,
     PROJECT_INSTANCE_STYLE,
-    RECENT_IMAGERY_GROUP_NAME,
-    NICFI_2018_LAYER_NAME,
 )
 from ...models.base import LayerNodeSearch
 from ...models.report import (
@@ -53,11 +55,6 @@ from ...utils import (
     log,
     tr,
 )
-
-try:
-    from planet_explorer.planet_api import PlanetClient
-except ImportError:
-    log(f"Couldn't import planet api. " f"Check if planet plugin has been installed.")
 
 
 class SiteReportReportGeneratorTask(QgsTask):
@@ -77,7 +74,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._output_report_layout = None
         self._site_layer = None
         self._landscape_layer = None
-
+        self._2018_layer = None
         self.report_name = (
             context.metadata.area_name
             if isinstance(context.metadata, SiteMetadata)
@@ -201,6 +198,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                     break
 
             project.layoutManager().addLayout(self._output_report_layout)
+
             log(f"Successfully generated the report for " f"{self.report_name}.")
 
     def _check_feedback_cancelled_or_set_progress(self, value: float) -> bool:
@@ -242,16 +240,28 @@ class SiteReportReportGeneratorTask(QgsTask):
         pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
         log(f"Path when exporting pdf {pdf_path}")
 
-        result = exporter.exportToPdf(pdf_path, QgsLayoutExporter.PdfExportSettings())
+        # Ensure all map items are rendered before exporting
+        for item in self._layout.items():
+            if isinstance(item, QgsLayoutItemMap):
+                log(f"Waiting for map item '{item.id()}' to render...")
+                item.refresh()
+
+        # Export the layout to PDF
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.rasterizeWholeImage = True
+        self._layout.refresh()
+        result = exporter.exportToPdf(pdf_path, settings)
         if result == QgsLayoutExporter.ExportResult.Success:
+            log(f"PDF successfully exported to {pdf_path}")
             return True
         else:
             tr_msg = tr(
-                "Could not export report to PDF. Check if there is PDF "
+                "Could not export report to PDF. Check if there is a PDF "
                 "opened for the same project."
             )
             self._error_messages.append(f"{tr_msg} {pdf_path}.")
             return False
+        # open the layout in QGIS
 
     def _generate_report(self) -> bool:
         """Generate report.
@@ -292,6 +302,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             return False
 
         self._set_landscape_layer()
+        self._set_2018_layer()
 
         if self._check_feedback_cancelled_or_set_progress(55):
             return False
@@ -375,20 +386,28 @@ class SiteReportReportGeneratorTask(QgsTask):
         root_tree = self._project.layerTreeRoot()
 
         matching_node = None
+        last_group = FileNotFoundError
         for node in root_tree.findLayers():
+            # log(f"Checking Node: {matching_node} for {node_name}")
             if group_name:
+                if group_name != last_group:
+                    log(f"Group: {group_name}")
+                last_group = group_name
                 if node.parent() and node.parent().name() == group_name:
                     for child in node.parent().children():
+                        log(f"Child: {child.name()}")
                         if (
                             search_type == LayerNodeSearch.EXACT_MATCH
                             and child.name() == node_name
                         ):
+                            log(f"Exact match found for {child.name()}")
                             matching_node = child
                             break
                         elif (
                             search_type == LayerNodeSearch.CONTAINS
                             and node_name in child.name()
                         ):
+                            log(f"Partial match found for {child.name()}")
                             matching_node = child
                             break
             else:
@@ -396,17 +415,19 @@ class SiteReportReportGeneratorTask(QgsTask):
                     search_type == LayerNodeSearch.EXACT_MATCH
                     and node.name() == node_name
                 ):
+                    log(f"Exact match found for {node.name()}")
                     matching_node = node
                     break
                 elif (
                     search_type == LayerNodeSearch.CONTAINS and node_name in node.name()
                 ):
+                    log(f"Partial match found for {node.name()}")
                     matching_node = node
                     break
 
         if matching_node is None:
             tr_msg = tr("layer node not found.")
-            log(f"{tr_msg}, node name {node_name}")
+            log(f"{tr_msg}, node name {node_name} using search mode: {search_type}")
             self._error_messages.append(f"{node_name} {tr_msg}")
             return None
 
@@ -485,20 +506,37 @@ class SiteReportReportGeneratorTask(QgsTask):
         return None
 
     def _set_landscape_layer(self):
-        """Set the landscape layer i.e. Nicfi or Landsat depending on the
+        """Set the landscape layer i.e. Landsat depending on the
         information in the TemporalInfo object.
         """
 
-        landsat_2013_layer = self._get_layer_from_node_name(
-            LANDSAT_2013_LAYER_SEGMENT,
-            LayerNodeSearch.CONTAINS,
-            LANDSAT_IMAGERY_GROUP_NAME,
+        landsat_2013_layer = self.get_first_matching_layer_in_group(
+            LANDSAT_IMAGERY_GROUP_NAME, LANDSAT_2013_LAYER_SEGMENT
         )
+
         if landsat_2013_layer is not None:
+            log("Landsat 2013 layer set .... OK")
             self._landscape_layer = landsat_2013_layer
 
         if self._landscape_layer is None:
             tr_msg = tr("Landscape layer not found")
+            self._error_messages.append(f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}")
+
+    def _set_2018_layer(self):
+        """Set the 2018 layer i.e. Landsat depending on the
+        information in the TemporalInfo object.
+        """
+
+        landsat_2018_layer = self.get_first_matching_layer_in_group(
+            LANDSAT_IMAGERY_GROUP_NAME, LANDSAT_2018_LAYER_SEGMENT
+        )
+
+        if landsat_2018_layer is not None:
+            log("Landsat 2018 layer set .... OK")
+            self._2018_layer = landsat_2018_layer
+
+        if self._2018_layer is None:
+            tr_msg = tr("2018 Landsat layer not found")
             self._error_messages.append(f"{tr_msg} under {LANDSAT_IMAGERY_GROUP_NAME}")
 
     def _configure_map_items_zoom_level(self):
@@ -540,14 +578,13 @@ class SiteReportReportGeneratorTask(QgsTask):
             )
             self._error_messages.append(tr_msg)
 
-        nicifi_imagery_layers = self._get_layers_in_group(RECENT_IMAGERY_GROUP_NAME)
-
         # landscape layer with mask map
-        historic_mask_map = self._get_map_item_by_id("2013_historic_mask_map")
-        if historic_mask_map and detailed_extent:
+        historic_masked_map = self._get_map_item_by_id("2013_historic_mask_map")
+        log("Setting up historic map with mask for 2013 landscape imagery")
+        if historic_masked_map and detailed_extent:
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
-                detailed_extent, self._site_layer.crs(), historic_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), historic_masked_map.crs()
             )
 
             if landscape_imagery_extent.isNull():
@@ -555,23 +592,34 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
+                log(tr_msg)
             else:
+                log("Historic mask layer extent is set")
                 landscape_mask_layers = [self._site_layer]
                 landscape_mask_layers.extend(mask_layers)
                 if self._landscape_layer is not None:
+                    log(
+                        f"Historic Landscape layer is set to {self._landscape_layer.name()}"
+                    )
+                    log(
+                        f"Historic Landscape layer source {self._landscape_layer.source()}"
+                    )
                     landscape_mask_layers.append(self._landscape_layer)
-                historic_mask_map.setFollowVisibilityPreset(False)
-                historic_mask_map.setFollowVisibilityPresetName("")
-                historic_mask_map.setLayers(landscape_mask_layers)
-                historic_mask_map.zoomToExtent(landscape_imagery_extent)
-                historic_mask_map.refresh()
+                historic_masked_map.setFollowVisibilityPreset(False)
+                historic_masked_map.setFollowVisibilityPresetName("")
+                historic_masked_map.setLayers(landscape_mask_layers)
+                historic_masked_map.zoomToExtent(landscape_imagery_extent)
+                historic_masked_map.refresh()
 
         # Landscape with no-mask map
-        landscape_no_mask_map = self._get_map_item_by_id("2013_historic_no_mask_map")
-        if landscape_no_mask_map and detailed_extent:
+        historic_no_mask_map = self._get_map_item_by_id("2013_historic_no_mask_map")
+        if historic_no_mask_map and detailed_extent:
             # Transform extent
+            log(
+                "Setting up historic landscape map with NO mask for 2013 landscape imagery"
+            )
             landscape_no_mask_extent = self._transform_extent(
-                detailed_extent, self._site_layer.crs(), landscape_no_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), historic_no_mask_map.crs()
             )
 
             if landscape_no_mask_extent.isNull():
@@ -581,22 +629,31 @@ class SiteReportReportGeneratorTask(QgsTask):
                 )
                 self._error_messages.append(tr_msg)
             else:
+                log("Historic mask layer extent is set")
                 landscape_no_mask_layers = [self._site_layer]
                 if self._landscape_layer is not None:
+                    log(
+                        f"Historic Landscape layer is set to {self._landscape_layer.name()}"
+                    )
+                    log(
+                        f"Historic Landscape layer source {self._landscape_layer.source()}"
+                    )
+
                     landscape_no_mask_layers.append(self._landscape_layer)
 
-                landscape_no_mask_map.setFollowVisibilityPreset(False)
-                landscape_no_mask_map.setFollowVisibilityPresetName("")
-                landscape_no_mask_map.setLayers(landscape_no_mask_layers)
-                landscape_no_mask_map.zoomToExtent(landscape_no_mask_extent)
-                landscape_no_mask_map.refresh()
+                historic_no_mask_map.setFollowVisibilityPreset(False)
+                historic_no_mask_map.setFollowVisibilityPresetName("")
+                historic_no_mask_map.setLayers(landscape_no_mask_layers)
+                historic_no_mask_map.zoomToExtent(landscape_no_mask_extent)
+                historic_no_mask_map.refresh()
 
         # landscape layer with mask map
-        historic_mask_map = self._get_map_item_by_id("2018_historic_mask_map")
-        if historic_mask_map and detailed_extent:
+        landscape_masked_map_2018 = self._get_map_item_by_id("2018_historic_mask_map")
+        if landscape_masked_map_2018 and detailed_extent:
+            log("Setting up historic map WITH mask for 2018 imagery")
             # Transform extent
             landscape_imagery_extent = self._transform_extent(
-                detailed_extent, self._site_layer.crs(), historic_mask_map.crs()
+                detailed_extent, self._site_layer.crs(), landscape_masked_map_2018.crs()
             )
 
             if landscape_imagery_extent.isNull():
@@ -604,57 +661,27 @@ class SiteReportReportGeneratorTask(QgsTask):
                     "Invalid extent for setting in the current imagery " "with mask map"
                 )
                 self._error_messages.append(tr_msg)
+                log(tr_msg)
             else:
-                nicfi_2018_layer = None
-                for layer in nicifi_imagery_layers:
-                    if layer.name() == NICFI_2018_LAYER_NAME:
-                        nicfi_2018_layer = layer
-                        break
-
-                has_api_key = PlanetClient.getInstance().has_api_key()
-                if not has_api_key:
-                    log(
-                        f"Warning user not logged in a Planet account. "
-                        f"Some of the layout maps won't "
-                        f"contain background imagery."
-                    )
-
-                api_key = PlanetClient.getInstance().api_key() if has_api_key else ""
-
-                if nicfi_2018_layer:
-                    nicfi_source = nicfi_2018_layer.source()
-                    source = nicfi_source
-
-                    if "api_key%3D&" in nicfi_source:
-                        source = nicfi_source.replace(
-                            "api_key%3D", f"api_key={api_key}"
-                        )
-
-                    nicfi_tile_layer = QgsRasterLayer(
-                        f"{source}", "Planet Mosaic 2018", "wms"
-                    )
-                    QgsProject.instance().addMapLayers([nicfi_tile_layer])
-
-                    landscape_mask_layers = [self._site_layer]
-                    landscape_mask_layers.extend(mask_layers)
-                    landscape_mask_layers.append(nicfi_tile_layer)
-
-                    if self._landscape_layer is not None:
-                        landscape_mask_layers.append(self._landscape_layer)
-
-                    historic_mask_map.setFollowVisibilityPreset(False)
-                    historic_mask_map.setFollowVisibilityPresetName("")
-                    historic_mask_map.setLayers(landscape_mask_layers)
-                    historic_mask_map.zoomToExtent(landscape_imagery_extent)
-                    historic_mask_map.refresh()
-
-                    QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
+                log("Historic mask layer extent is set")
+                landscape_mask_layers = [self._site_layer]
+                landscape_mask_layers.extend(mask_layers)
+                if self._2018_layer is not None:
+                    log(f"2018 Landscape layer is set to {self._2018_layer.name()}")
+                    log(f"2018 Landscape layer source {self._2018_layer.source()}")
+                    landscape_mask_layers.append(self._2018_layer)
+                landscape_masked_map_2018.setFollowVisibilityPreset(False)
+                landscape_masked_map_2018.setFollowVisibilityPresetName("")
+                landscape_masked_map_2018.setLayers(landscape_mask_layers)
+                landscape_masked_map_2018.zoomToExtent(landscape_imagery_extent)
+                landscape_masked_map_2018.refresh()
 
         # Landscape with no-mask map
         landscape_no_mask_map_2018 = self._get_map_item_by_id(
             "2018_historic_no_mask_map"
         )
         if landscape_no_mask_map_2018 and detailed_extent:
+            log("Setting up landscape map with NO mask for 2018 landscape imagery")
             # Transform extent
             landscape_no_mask_extent = self._transform_extent(
                 detailed_extent,
@@ -669,47 +696,17 @@ class SiteReportReportGeneratorTask(QgsTask):
                 )
                 self._error_messages.append(tr_msg)
             else:
-                nicfi_2018_layer = None
-                for layer in nicifi_imagery_layers:
-                    if layer.name() == NICFI_2018_LAYER_NAME:
-                        nicfi_2018_layer = layer
-                        break
-
-                has_api_key = PlanetClient.getInstance().has_api_key()
-                if not has_api_key:
-                    log(
-                        f"Warning user not logged in a Planet account. "
-                        f"Some of the layout maps won't "
-                        f"contain background imagery."
-                    )
-
-                api_key = PlanetClient.getInstance().api_key() if has_api_key else ""
-
-                if nicfi_2018_layer:
-                    nicfi_source = nicfi_2018_layer.source()
-                    source = nicfi_source
-
-                    if "api_key%3D&" in nicfi_source:
-                        source = nicfi_source.replace(
-                            "api_key%3D", f"api_key={api_key}"
-                        )
-
-                    nicfi_tile_layer = QgsRasterLayer(
-                        f"{source}", "Planet Mosaic 2018", "wms"
-                    )
-                    QgsProject.instance().addMapLayers([nicfi_tile_layer])
-
-                    landscape_no_mask_layers = [self._site_layer, nicfi_tile_layer]
-
-                    if self._landscape_layer is not None:
-                        landscape_no_mask_layers.append(self._landscape_layer)
-
-                    landscape_no_mask_map_2018.setFollowVisibilityPreset(False)
-                    landscape_no_mask_map_2018.setFollowVisibilityPresetName("")
-                    landscape_no_mask_map_2018.setLayers(landscape_no_mask_layers)
-                    landscape_no_mask_map_2018.zoomToExtent(landscape_no_mask_extent)
-
-                    QgsProject.instance().removeMapLayer(nicfi_tile_layer.id())
+                log("Historic mask layer extent is set")
+                landscape_no_mask_layers = [self._site_layer]
+                if self._2018_layer is not None:
+                    log(f"2018 Landscape layer is set to {self._2018_layer.name()}")
+                    log(f"2018 Landscape layer source {self._2018_layer.source()}")
+                    landscape_mask_layers.append(self._2018_layer)
+                landscape_no_mask_map_2018.setFollowVisibilityPreset(False)
+                landscape_no_mask_map_2018.setFollowVisibilityPresetName("")
+                landscape_no_mask_map_2018.setLayers(landscape_no_mask_layers)
+                landscape_no_mask_map_2018.zoomToExtent(landscape_imagery_extent)
+                landscape_no_mask_map_2018.refresh()
 
     def _configure_current_maps(
         self, detailed_extent: QgsRectangle, mask_layers: typing.List[QgsMapLayer]
@@ -772,12 +769,150 @@ class SiteReportReportGeneratorTask(QgsTask):
                 current_no_mask_map.zoomToExtent(current_no_mask_imagery_extent)
                 current_no_mask_map.refresh()
 
+    def get_first_layer_in_group(self, group_name: str) -> typing.Optional[QgsMapLayer]:
+        """Get the first layer in the group with the given name.
+
+        ..versionadded 1.5
+
+        ..addedby: Tim Sutton, 4 May 2025
+
+        I added this method because the original method returned layers with the incorrect source.
+        This method is a recursive function that searches for the first layer
+        in the group with the given name.
+
+        :param group_name: Name of the group to search for.
+        :type group_name: str
+        :returns: Returns the first layer found in the group or None if not found.
+        :rtype: QgsMapLayer
+        """
+
+        def recurse(node, indent="", parent=None):
+            if isinstance(node, QgsLayerTreeGroup):
+                if node.name() == group_name:
+                    for child in node.children():
+                        if isinstance(child, QgsLayerTreeLayer):
+                            layer = child.layer()
+                            if layer:
+                                log(
+                                    f"{indent}🗃️  Found Layer in group '{group_name}': {layer.name()}"
+                                )
+                                log(f"{indent}🚛  ↳ Source: {layer.source()}")
+                                log(f"{indent}🛍️  ↳ Provider: {layer.providerType()}")
+                                log(
+                                    "-----------------------------------------------------------"
+                                )
+                                return layer
+                    return None  # Group matched, but no layer found
+                else:
+                    for child in node.children():
+                        found = recurse(child, indent + "  ", node)
+                        if found:
+                            return found
+            return None
+
+        root = QgsProject.instance().layerTreeRoot()
+        return recurse(root)
+
+    def get_first_matching_layer_in_group(
+        self, group_name: str, search_string: str
+    ) -> typing.Optional[QgsMapLayer]:
+        """Get the first layer that contains the search string in the group that has the given group name.
+
+        ..versionadded 1.5
+
+        ..addedby: Tim Sutton, 4 May 2025
+
+        I added this method because the original method returned layers with the incorrect source.
+        This method is a recursive function that searches for the first layer
+        in the group with the given name.
+
+
+        :param group_name: Name of the group to search for.
+        :type group_name: str
+        :param search_string: The string to search for in the layer name.
+        :type search_string: str
+        :returns: Returns the first layer found in the group or None if not found.
+        :rtype: QgsMapLayer
+        """
+
+        def recurse(node, indent="", parent=None):
+            if isinstance(node, QgsLayerTreeGroup):
+                if node.name() == group_name:
+                    for child in node.children():
+                        if isinstance(child, QgsLayerTreeLayer):
+                            layer = child.layer()
+                            if search_string in layer.name():
+                                log(
+                                    f"{indent}🗃️  Found Layer in group '{group_name}': {layer.name()}"
+                                )
+                                log(f"{indent}🚛  ↳ Source: {layer.source()}")
+                                log(f"{indent}🛍️  ↳ Provider: {layer.providerType()}")
+                                log(
+                                    "-----------------------------------------------------------"
+                                )
+                                return layer
+                    return None  # Group matched, but no layer found
+                else:
+                    for child in node.children():
+                        found = recurse(child, indent + "  ", node)
+                        if found:
+                            return found
+            return None
+
+        root = QgsProject.instance().layerTreeRoot()
+        return recurse(root)
+
+    def _get_layers_in_group(self, group_name: str) -> typing.List[QgsMapLayer]:
+        """Gets all map layers in the group with the given name, recursively.
+
+        .. versionadded:: 1.5
+        .. addedby:: Tim Sutton, 4 May 2025
+
+        :param group_name: Group name to retrieve the layers.
+        :type group_name: str
+
+        :returns: List of all valid QgsMapLayer instances found in the group.
+        :rtype: list
+        """
+        result_layer_names: typing.List[str] = []
+        result_layers: typing.List[QgsMapLayer] = []
+
+        def recurse(node, indent=""):
+            if isinstance(node, QgsLayerTreeGroup):
+                if node.name() == group_name:
+                    log(f"📁 Found group: {group_name}")
+                    # Collect layers within this group only
+                    for child in node.children():
+                        if isinstance(child, QgsLayerTreeLayer):
+                            layer = child.layer()
+                            try:
+                                log(f"{indent}🗃️  Layer: {layer.name()}")
+                                result_layer_names.append(layer.name())
+                            except:
+                                log(
+                                    f"{indent}⚠️ Invalid or missing layer in group '{group_name}'"
+                                )
+                    return True  # Found and processed the group — stop recursion
+                else:
+                    for child in node.children():
+                        if recurse(child, indent + "  "):
+                            return True  # Early exit once group is found
+                return False
+
+        root = self._project.layerTreeRoot()
+        recurse(root)
+        for layer_name in result_layer_names:
+            layer = self.get_first_matching_layer_in_group(group_name, layer_name)
+            result_layers.append(layer)
+        return result_layers
+
     def _configure_site_maps(self) -> QgsRectangle:
         """Set the zoom level and layers for the overview and detailed maps.
 
         :returns: Returns the extent of the detailed map.
         :rtype: QgsRectangle
         """
+
         site_extent = self._site_layer.extent()
 
         google_layer = self._get_layer_from_node_name(
@@ -785,16 +920,12 @@ class SiteReportReportGeneratorTask(QgsTask):
         )
 
         map_item_layers = [self._site_layer]
-
-        ref_admin_layer = None
-        admin_layers = self._get_layers_in_group(ADMIN_AREAS_GROUP_NAME)
-        if len(admin_layers) > 0:
-            ref_admin_layer = admin_layers[0]
-            map_item_layers.extend(admin_layers)
+        admin_layer = self.get_first_layer_in_group(ADMIN_AREAS_GROUP_NAME)
+        map_item_layers.append(admin_layer)
 
         if google_layer:
             # We want the Google layer as the last item
-            map_item_layers.extend([google_layer])
+            map_item_layers.append(google_layer)
 
         # Overview map
         overview_map = self._get_map_item_by_id("site_location_overview_map")
@@ -802,34 +933,55 @@ class SiteReportReportGeneratorTask(QgsTask):
             # We use the admin layer to control the overview extent i.e.
             # ensure we do not zoom out beyond the national extent.
             admin_extent = None
-            if ref_admin_layer:
-                admin_extent = self._transform_extent(
-                    ref_admin_layer.extent(), ref_admin_layer.crs(), overview_map.crs()
+            overview_extent = None
+            log(f"Overview map CRS: {overview_map.crs().authid()}")
+            if admin_layer:
+                extent = admin_layer.extent()
+                log(
+                    f"Admin layer CRS: {admin_layer.crs().authid() if admin_layer else 'None'}"
+                )
+                log(f"Admin layer extent: {extent.toString()}")
+                log(
+                    f"Using reference admin layer for site_location_overview_map {admin_layer.name()}"
                 )
 
-            # Transform extent
-            overview_extent = self._transform_extent(
-                site_extent, self._site_layer.crs(), overview_map.crs()
-            )
-            if overview_extent.isNull():
+                admin_extent = self._transform_extent(
+                    extent, admin_layer.crs(), overview_map.crs()
+                )
+                log(f"Admin layer extent after transform: {admin_extent.toString()}")
+            else:
+                log("Reference admin layer not found, using site layer extent")
+
+                log(f"Site layer CRS: {self._site_layer.crs().authid()}")
+                log(f"Site layer extent: {self._site_layer.extent().toString()}")
+                # Transform extent
+                overview_extent = self._transform_extent(
+                    site_extent, self._site_layer.crs(), overview_map.crs()
+                )
+            if not overview_extent or overview_extent.isNull():
                 tr_msg = tr("Invalid extent for setting in the overview map.")
                 self._error_messages.append(tr_msg)
             else:
                 # Zoom out by factor
                 overview_extent.scale(OVERVIEW_ZOOM_OUT_FACTOR)
 
-                if admin_extent:
-                    if admin_extent.contains(overview_extent):
-                        overview_map.zoomToExtent(overview_extent)
-                    else:
-                        overview_map.zoomToExtent(admin_extent)
-                else:
+            if admin_extent:
+                log("Admin extent is set")
+                if overview_extent and admin_extent.contains(overview_extent):
+                    log("Admin extent contains overview extent")
                     overview_map.zoomToExtent(overview_extent)
-
-                overview_map.setFollowVisibilityPreset(False)
-                overview_map.setFollowVisibilityPresetName("")
-                overview_map.setLayers(map_item_layers)
-                overview_map.refresh()
+                else:
+                    log("Admin extent does not contain overview extent")
+                    overview_map.zoomToExtent(admin_extent)
+            else:
+                log("Admin extent is not set, using overview extent")
+                overview_map.zoomToExtent(overview_extent)
+            log(f"Overview map extent: {overview_map.extent().toString()}")
+            # Visibiity presets are the same thing as map themes
+            overview_map.setFollowVisibilityPreset(False)
+            overview_map.setFollowVisibilityPresetName("")
+            overview_map.setLayers(map_item_layers)
+            overview_map.refresh()
 
         # Detailed site map
         detailed_map = self._get_map_item_by_id("site_location_detailed_map")
@@ -870,25 +1022,6 @@ class SiteReportReportGeneratorTask(QgsTask):
             return []
 
         return [record.layer() for record in theme.layerRecords()]
-
-    def _get_layers_in_group(self, group_name: str) -> typing.List[QgsMapLayer]:
-        """Gets all the map layers in a group node.
-
-        :param group_name: Group name to retrieve the layers.
-        :type group_name: str
-
-        :returns: Returns all the layers in the given group or an
-        empty list if the group was not found or does not contain
-        any layers.
-        :rtype: list
-        """
-        root_tree = self._project.layerTreeRoot()
-
-        search_group = root_tree.findGroup(group_name)
-        if search_group is None:
-            return []
-
-        return [tree_layer.layer() for tree_layer in search_group.findLayers()]
 
     def _transform_extent(
         self,

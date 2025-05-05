@@ -159,21 +159,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         self.time_values = []
 
-        self.historical_imagery.setChecked(
-            settings_manager.get_value(
-                Settings.HISTORICAL_VIEW, setting_type=bool, default=True
-            )
-        )
-
-        self.nicfi_imagery.setChecked(
-            settings_manager.get_value(
-                Settings.NICFI_VIEW, setting_type=bool, default=False
-            )
-        )
         self.prepare_time_slider()
-
-        self.historical_imagery.toggled.connect(self.historical_imagery_toggled)
-        self.nicfi_imagery.toggled.connect(self.nicfi_imagery_toggled)
 
         self.play_btn.clicked.connect(self.animate_layers)
 
@@ -428,62 +414,23 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             self.play_btn.setToolTip(tr("Pause animation"))
             self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PAUSE_ICON))
 
-    def historical_imagery_toggled(self):
-        """
-        Handles the toggling of the historical imagery checkbox.
-        """
-        if self.historical_imagery.isChecked():
-            settings_manager.set_value(Settings.HISTORICAL_VIEW, True)
-            settings_manager.set_value(Settings.NICFI_VIEW, False)
-            self.nicfi_imagery.setChecked(False)
-
-            self.current_imagery_type = IMAGERY.HISTORICAL
-            closed_imagery = IMAGERY.NICFI
-
-            self.prepare_time_slider(closed_imagery)
-        else:
-            settings_manager.set_value(Settings.HISTORICAL_VIEW, False)
-
-    def nicfi_imagery_toggled(self):
-        """
-        Hanldes the toggling of the NICFI imagery checkbox.
-        """
-        if self.nicfi_imagery.isChecked():
-            self.historical_imagery.setChecked(False)
-
-            settings_manager.set_value(Settings.NICFI_VIEW, True)
-            settings_manager.set_value(Settings.HISTORICAL_VIEW, False)
-
-            self.current_imagery_type = IMAGERY.NICFI
-            closed_imagery = IMAGERY.HISTORICAL
-            self.prepare_time_slider(closed_imagery)
-        else:
-            settings_manager.set_value(Settings.NICFI_VIEW, False)
-
-    def prepare_time_slider(self, closed_imagery=None):
+    def prepare_time_slider(self):
         """
         Prepare the time slider based on the current selected imagery type.
 
-        :param closed_imagery: The imagery type that was deselected. Defaults to None.
         :type closed_imagery: IMAGERY, optional
         """
         values = []
-        set_layer = None
         active_layer = None
 
         layers = QgsProject.instance().mapLayers()
         for path, layer in layers.items():
-            if closed_imagery is None:
-                self.update_layer_group(layer, True)
-                continue
+            self.update_layer_group(layer, True)
 
             if layer.metadata().contains(self.current_imagery_type.value.lower()):
                 values.append(layer.temporalProperties().fixedTemporalRange())
                 active_layer = layer
-            elif layer.metadata().contains(closed_imagery.value.lower()):
-                set_layer = layer
 
-        self.update_layer_group(set_layer)
         self.update_layer_group(active_layer, True)
 
         sorted_date_time_ranges = sorted(values, key=lambda x: x.begin())
@@ -1205,20 +1152,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             log(message=tr_msg, info=False)
             return
 
-        if (
-            not self.historical_imagery.isChecked()
-            and not self.nicfi_imagery.isChecked()
-        ):
-            self.show_message(
-                tr("Please select the imagery " "type under the Time Slider section."),
-                Qgis.Warning,
-            )
-            return
-
-        if self.historical_imagery.isChecked():
-            imagery_type = IMAGERY.HISTORICAL
-        else:
-            imagery_type = IMAGERY.NICFI
+        imagery_type = IMAGERY.HISTORICAL
 
         temporal_info = MapTemporalInfo(
             imagery_type, self.iface.mapCanvas().temporalRange()
