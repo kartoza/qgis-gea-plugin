@@ -612,14 +612,14 @@ class SiteReportReportGeneratorTask(QgsTask):
                 historic_masked_map.refresh()
 
         # Landscape with no-mask map
-        historic_masked_map = self._get_map_item_by_id("2013_historic_no_mask_map")
-        if historic_masked_map and detailed_extent:
+        historic_no_mask_map = self._get_map_item_by_id("2013_historic_no_mask_map")
+        if historic_no_mask_map and detailed_extent:
             # Transform extent
             log(
                 "Setting up historic landscape map with NO mask for 2013 landscape imagery"
             )
             landscape_no_mask_extent = self._transform_extent(
-                detailed_extent, self._site_layer.crs(), historic_masked_map.crs()
+                detailed_extent, self._site_layer.crs(), historic_no_mask_map.crs()
             )
 
             if landscape_no_mask_extent.isNull():
@@ -641,11 +641,11 @@ class SiteReportReportGeneratorTask(QgsTask):
 
                     landscape_no_mask_layers.append(self._landscape_layer)
 
-                historic_masked_map.setFollowVisibilityPreset(False)
-                historic_masked_map.setFollowVisibilityPresetName("")
-                historic_masked_map.setLayers(landscape_no_mask_layers)
-                historic_masked_map.zoomToExtent(landscape_no_mask_extent)
-                historic_masked_map.refresh()
+                historic_no_mask_map.setFollowVisibilityPreset(False)
+                historic_no_mask_map.setFollowVisibilityPresetName("")
+                historic_no_mask_map.setLayers(landscape_no_mask_layers)
+                historic_no_mask_map.zoomToExtent(landscape_no_mask_extent)
+                historic_no_mask_map.refresh()
 
         # landscape layer with mask map
         landscape_masked_map_2018 = self._get_map_item_by_id("2018_historic_mask_map")
@@ -697,15 +697,14 @@ class SiteReportReportGeneratorTask(QgsTask):
                 self._error_messages.append(tr_msg)
             else:
                 log("Historic mask layer extent is set")
-                landscape_mask_layers = [self._site_layer]
-                landscape_mask_layers.extend(mask_layers)
+                landscape_no_mask_layers = [self._site_layer]
                 if self._2018_layer is not None:
                     log(f"2018 Landscape layer is set to {self._2018_layer.name()}")
                     log(f"2018 Landscape layer source {self._2018_layer.source()}")
                     landscape_mask_layers.append(self._2018_layer)
                 landscape_no_mask_map_2018.setFollowVisibilityPreset(False)
                 landscape_no_mask_map_2018.setFollowVisibilityPresetName("")
-                landscape_no_mask_map_2018.setLayers(landscape_mask_layers)
+                landscape_no_mask_map_2018.setLayers(landscape_no_mask_layers)
                 landscape_no_mask_map_2018.zoomToExtent(landscape_imagery_extent)
                 landscape_no_mask_map_2018.refresh()
 
