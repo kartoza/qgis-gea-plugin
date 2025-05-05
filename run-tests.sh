@@ -3,11 +3,13 @@
 QGIS_IMAGE=qgis/qgis
 
 QGIS_IMAGE_latest=latest
-QGIS_IMAGE_V_3_26=release-3_26
+QGIS_IMAGE_V_3_26=release-3_34
 
-QGIS_VERSION_TAGS=($QGIS_IMAGE_latest $QGIS_IMAGE_V_3_26)
+QGIS_VERSION_TAGS=($QGIS_IMAGE_V_3_26)
 
 export IMAGE=$QGIS_IMAGE
+
+python admin.py build --tests
 
 for TAG in "${QGIS_VERSION_TAGS[@]}"
 do

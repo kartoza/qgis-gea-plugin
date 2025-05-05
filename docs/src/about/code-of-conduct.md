@@ -1,20 +1,19 @@
 ---
-title: GEA AFFORESTATION
-summary: PROJECT_SUMMARY
+title: EPAL-Eligible Project Area Locator
+summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
-copyright: Copyright 2024, PROJECT_OWNER
-contact: PROJECT_CONTACT
-license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+copyright: Copyright 2024
+contact: marketing@geoterra360.pt
+license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
 # Contributor covenant code of conduct
 
 ## Our pledge
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make participation in our project and
 our community a harassment-free experience for everyone, regardless of age, body
 size, disability, ethnicity, gender identity and expression, level of experience,
 education, socio-economic status, nationality, personal appearance, race,
@@ -33,7 +32,7 @@ include:
 
 Examples of unacceptable behaviour by participants include:
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
+* The use of sexualised language or imagery and unwelcome sexual attention or
   advances
 * Trolling, insulting/derogatory comments, and personal or political attacks
 * Public or private harassment
@@ -51,7 +50,7 @@ response to any instances of unacceptable behaviour.
 Project maintainers have the right and responsibility to remove, edit, or
 reject comments, commits, code, wiki edits, issues, and other contributions
 that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
+permanently any contributor for other behaviours that they deem inappropriate,
 threatening, offensive, or harmful.
 
 ## Scope

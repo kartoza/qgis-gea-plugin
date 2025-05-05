@@ -14,4 +14,4 @@ license: This program is free software; you can redistribute it and/or modify it
 # Disclaimer
 <!-- To Be Populated -->
 
-Disclaimer about project.
+Disclaimer about the project.

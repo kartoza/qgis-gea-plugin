@@ -1,14 +1,22 @@
 ---
-title: GEA AFFORESTATION
-summary: PROJECT_SUMMARY
+title: EPAL-Eligible Project Area Locator
+summary: Visualise historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
-copyright: Copyright 2024, PROJECT_OWNER
-contact: PROJECT_CONTACT
-license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+copyright: Copyright 2024
+contact: marketing@geoterra360.pt
+license: the reforestation tool is made available to Eligible Project Area Locator (EPAL) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows EPAL to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by EPAL. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
-# User guide
-<!-- Narrative Instructions on how to use the product/platform -->
-<!-- Replace all of the titles with relevant titles -->
+# EPAL-Eligible Project Area Locator user guide
+
+* **[EPAL-Eligible Project Area Locator:](gea-reforestation.md)** A comprehensive guide to the EPAL-Eligible Project Area Locator QGIS Project. It covers project setup, QGIS interface navigation, and detailed explanations of project layers including administrative boundaries, exclusion masks, and various imagery sources (Google, NICFI, Landsat). The guide also includes instructions for image enhancement techniques.
+
+* **[EPAL-Eligible Project Area Locator Tool (Plugin):](gea-reforestation-tool.md)** This guide details the installation and use of the EPAL-Eligible Project Area Locator Tool Plugin for QGIS. It covers plugin installation, using the time slider for historical imagery, the Drawing Tool for creating project areas, and generating automated reports. Step-by-step instructions with screenshots are provided throughout.
+
+* **[NICFI Imagery:](nicfi-imagery.md)** A tutorial on accessing and using NICFI imagery in QGIS. It covers Planet Explore account setup, enabling NICFI layers in QGIS, selecting specific imagery dates, and using QGIS tools for analysis. The guide also provides tips for effective use of NICFI imagery in tropical forest analysis and conservation projects.
+
+* **[Sign Up:](sign-up.md)** This page will show you how to `sign up` for Planet Explorer.
+
+* **[Login:](login.md)** This page will show you how to `log in` to Planet Explorer.

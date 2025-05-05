@@ -1,12 +1,12 @@
 ---
-title: GEA AFFORESTATION
-summary: PROJECT_SUMMARY
+title: EPAL-Eligible Project Area Locator
+summary: Visualize historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
-copyright: Copyright 2024, PROJECT_OWNER
-contact: PROJECT_CONTACT
-license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+copyright: Copyright 2024
+contact: marketing@geoterra360.pt
+license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
 # Setting up your IDE
@@ -17,7 +17,7 @@ This section outlines the process for configuring your IDE for development.
 
 ## VS Code setup
 
-Open the project in VSCode (1️⃣, 2️⃣) by navigating the the place on your file system where you checked out the code in the pre-requisites step above (3️⃣).
+Open the project in VSCode (1️⃣, 2️⃣) by navigating the place on your file system where you checked out the code in the pre-requisites step above (3️⃣).
 
 ![IDE Setup 1.png](./img/ide-setup-1.png)
 
@@ -55,7 +55,7 @@ Rename the file to `docker-compose.override.yml`
 
 ![image.png](./img/ide-setup-6.png)
 
-Initially you will not need to change anything in this file, though you may want to take a look through the various configurations provided here if you want to tweak your local setup.
+Initially, you will not need to change anything in this file, though you may want to take a look through the various configurations provided here if you want to tweak your local setup.
 
 Now that you have your IDE set up, we can move on to [building the project](building.md).
 
@@ -75,7 +75,7 @@ Requirements:
 1. Go to File -> Settings -> Project -> Project Interpreter. Then click on the cog -> add
    <br>![Project Interpreter ](img/1.png "Project Interpreter")<br><br>
 
-2. Go to the ssh interpreter tab and fill in the form as below
+2. Go to the ssh interpreter tab and fill in the form as shown below
    <br>![Project Interpreter ](img/2.png "Project Interpreter")<br><br>
 
 3. Click next and fill in **docker** as the password
@@ -87,7 +87,7 @@ Requirements:
 5. After you click finish, it will show all of the packages like below.
    <br>![Project Interpreter ](img/5.png "Project Interpreter")<br><br>
 
-6. In current page, click **path mappings**, click + button and put local path to where the project (django-project folder) and remote path is like below. and click oK.
+6. In the current page, click **path mappings**, click the + button and put the local path to where the project (django-project folder) and the remote path are like below. and click OK.
    <br>![Project Interpreter ](img/6.png "Project Interpreter")
 
 Now the interpreter is done. When we restart the machine, we need to do `make up` to run the project.
@@ -103,25 +103,25 @@ After the interpreter is done, we need configuration to run the project in devel
    <br>![Project Interpreter ](img/8.png "Project Interpreter")
    <br>![Project Interpreter ](img/9.png "Project Interpreter")<br><br>
 
-3. It will show the form and fill like below.
+3. It will show the form and fill it as shown below.
    <br>![Project Interpreter ](img/10.png "Project Interpreter")<br><br>
 
-4. Don't click the OK yet, but click **Environment Variables** and add environments like below (by clicking + button).
+4. Don't click the OK yet, but click **Environment Variables** and add environments as shown below (by clicking the + button).
    <br>![Project Interpreter ](img/11.png "Project Interpreter")<br><br>
 
 5. After that, click OK.
 
-6. Now we need to run the server by clicking **go** button in below image.
+6. Now we need to run the server by clicking **go** button in the below image.
    <br>![Project Interpreter ](img/12.png "Project Interpreter")<br><br>
 
-7. When we click the **go** button, pycharm will run a process until like image below.
+7. When we click the **go** button, pycharm will run a process as shown in the image below.
    <br>![Project Interpreter ](img/13.png "Project Interpreter")<br><br>
 
 8. Now it is done. We can access the development server in [http://localhost:2000/](http://localhost:2000/)
 
-This development mode is DEBUG mode, and also whenever we change the code, the site will also change in runtime.
+This development mode is DEBUG mode, and whenever we change the code, the site will also change in runtime.
 
-For more information how to set up on pycharm, please visit [Using a Docker Compose-Based Python Interpreter in PyCharm](https://kartoza.com/en/blog/using-docker-compose-based-python-interpreter-in-)
+For more information on how to set up on pycharm, please visit [Using a Docker Compose-Based Python Interpreter in PyCharm](https://kartoza.com/en/blog/using-docker-compose-based-python-interpreter-in-)
 
 ## Quick setup guide
 
@@ -161,7 +161,7 @@ cp docker-compose.override.template.yml docker-compose.override.yml
 After that,
 
 - open new terminal
-- on folder root of project, do
+- on folder root of the project, do
 
 ```
 make frontend-dev
@@ -184,7 +184,7 @@ Wait until it is on.
 
 The web can be accessed using `http://localhost:2000/`
 
-If the web is taking long time to load, restart project-name_dev container by `make dev-reload`.<br>
+If the web is taking a long time to load, restart project-name_dev container by `make dev-reload`.<br>
 The sequence should be `make frontend-dev`, after that run or restart project-name_dev. 
 
 To stop dev:
@@ -193,7 +193,7 @@ To stop dev:
 make dev-kill
 ```
 
-To reload container:
+To reload the container:
 
 ```
 make dev-reload

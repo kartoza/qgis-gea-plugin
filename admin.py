@@ -4,6 +4,7 @@
 """
 
 import os
+import sys
 
 import configparser
 import datetime as dt
@@ -40,8 +41,13 @@ class GithubRelease:
     published_at: dt.datetime
 
 
-@app.callback()
-def main(context: typer.Context, verbose: bool = False, qgis_profile: str = "default"):
+@app.callback(invoke_without_command=True)
+def main(
+    context: typer.Context,
+    verbose: bool = False,
+    qgis_profile: str = "default",
+    help: bool = False,
+):
     """Performs various development-oriented tasks for this plugin
 
     :param context: Application context
@@ -54,11 +60,61 @@ def main(context: typer.Context, verbose: bool = False, qgis_profile: str = "def
             QGIS application
     :type qgis_profile: str
 
+    :param help: Boolean flag to display usage instructions and available subcommands
+    :type help: bool
+
+    Usage:
+        To call this command with the options provided, use the following syntax:
+
+        python admin.py --verbose --qgis-profile <profile_name>
+
+        Examples:
+        - Enable verbose mode and use the default QGIS profile:
+          python admin.py --verbose
+
+        - Enable verbose mode and specify a custom QGIS profile:
+          python admin.py --verbose --qgis-profile custom_profile
+
+        - Use the default QGIS profile without verbose mode:
+          python admin.py
+
+        - Display help information:
+          python admin.py --help
     """
+    # Show help if help flag is set or if no subcommand is specified
+    if help or context.invoked_subcommand is None:
+        typer.echo(main.__doc__)
+        typer.echo("\nAvailable subcommands:")
+        for command in app.registered_commands:
+            # Get command name from callback function name
+            cmd_name = command.callback.__name__
+            # Get first line of docstring for help text
+            cmd_help = (
+                command.callback.__doc__.split("\n")[0].strip()
+                if command.callback.__doc__
+                else "No help available"
+            )
+            typer.echo(f"  - {cmd_name}: {cmd_help}")
+        raise typer.Exit()
+
     context.obj = {
         "verbose": verbose,
         "qgis_profile": qgis_profile,
     }
+
+
+def _qgis_profile_path() -> str:
+    """Returns the path segment to QGIS profiles folder based on the platform.
+
+    :returns: Correct path segment corresponding to the current platform.
+    :rtype: str
+    """
+    if sys.platform == "win32":
+        app_data_dir = "AppData/Roaming"
+    else:
+        app_data_dir = ".local/share"
+
+    return f"{app_data_dir}/QGIS/QGIS3/profiles/"
 
 
 @app.command()
@@ -80,8 +136,7 @@ def install(context: typer.Context, build_src: bool = True):
     )
 
     root_directory = (
-        Path.home() / f".local/share/QGIS/QGIS3/profiles/"
-        f"{context.obj['qgis_profile']}"
+        Path.home() / f"{_qgis_profile_path()}{context.obj['qgis_profile']}"
     )
 
     base_target_directory = root_directory / "python/plugins" / SRC_NAME
@@ -104,12 +159,16 @@ def symlink(context: typer.Context):
     build_path = LOCAL_ROOT_DIR / "build" / SRC_NAME
 
     root_directory = (
-        Path.home() / f".local/share/QGIS/QGIS3/profiles/"
-        f"{context.obj['qgis_profile']}"
+        Path.home() / f"{_qgis_profile_path()}{context.obj['qgis_profile']}"
     )
 
     destination_path = root_directory / "python/plugins" / SRC_NAME
-
+    # ensure the destination path exists
+    destination_path.parent.mkdir(parents=True, exist_ok=True)
+    # remove any existing symlink
+    if destination_path.is_symlink():
+        destination_path.unlink()
+    # create a new symlink
     if not os.path.islink(destination_path):
         os.symlink(build_path, destination_path)
     else:
@@ -124,8 +183,7 @@ def uninstall(context: typer.Context):
     :type context: typer.Context
     """
     root_directory = (
-        Path.home() / f".local/share/QGIS/QGIS3/profiles/"
-        f"{context.obj['qgis_profile']}"
+        Path.home() / f"{_qgis_profile_path()}{context.obj['qgis_profile']}"
     )
     base_target_directory = root_directory / "python/plugins" / SRC_NAME
     shutil.rmtree(str(base_target_directory), ignore_errors=True)
@@ -136,6 +194,7 @@ def uninstall(context: typer.Context):
 def generate_zip(
     context: typer.Context,
     version: str = None,
+    file_name: str = None,
     output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "dist",
 ):
     """Generates plugin zip folder, that can be used to installed the
@@ -147,6 +206,9 @@ def generate_zip(
     :param version: Plugin version
     :type version: str
 
+    :param file_name: Plugin zip file name
+    :type file_name: str
+
     :param output_directory: Directory where the zip folder will be saved.
     :type context: Path
     """
@@ -154,7 +216,10 @@ def generate_zip(
     metadata = _get_metadata()
     plugin_version = metadata["version"] if version is None else version
     output_directory.mkdir(parents=True, exist_ok=True)
-    zip_path = output_directory / f"{SRC_NAME}.{plugin_version}.zip"
+    zip_file_name = (
+        f"{SRC_NAME}.{plugin_version}.zip" if file_name is None else file_name
+    )
+    zip_path = output_directory / f"{zip_file_name}"
     with zipfile.ZipFile(zip_path, "w") as fh:
         _add_to_zip(build_dir, fh, arc_path_base=build_dir.parent)
     typer.echo(
@@ -190,7 +255,7 @@ def build(
     :returns: Build directory path.
     :rtype: Path
     """
-    if clean:
+    if clean and output_directory.exists():
         shutil.rmtree(str(output_directory), ignore_errors=True)
     output_directory.mkdir(parents=True, exist_ok=True)
     copy_source_files(output_directory, tests=tests)
@@ -247,14 +312,26 @@ def copy_source_files(
     for child in (LOCAL_ROOT_DIR / "src" / SRC_NAME).iterdir():
         if child.name != "__pycache__":
             target_path = output_directory / child.name
-            handler = shutil.copytree if child.is_dir() else shutil.copy
-            handler(str(child.resolve()), str(target_path))
+            if child.is_dir():
+                shutil.copytree(
+                    str(child.resolve()),
+                    str(target_path),
+                    ignore=shutil.ignore_patterns("*.pyc", "__pycache*"),
+                )
+            else:
+                shutil.copy(str(child.resolve()), str(target_path))
     if tests:
         for child in LOCAL_ROOT_DIR.iterdir():
             if child.name in TEST_FILES:
                 target_path = output_directory / child.name
-                handler = shutil.copytree if child.is_dir() else shutil.copy
-                handler(str(child.resolve()), str(target_path))
+                if child.is_dir():
+                    shutil.copytree(
+                        str(child.resolve()),
+                        str(target_path),
+                        ignore=shutil.ignore_patterns("*.pyc", "__pycache*"),
+                    )
+                else:
+                    shutil.copy(str(child.resolve()), str(target_path))
 
 
 @app.command()
@@ -273,6 +350,12 @@ def compile_resources(
     resources_path = LOCAL_ROOT_DIR / "resources" / "resources.qrc"
     target_path = output_directory / "resources.py"
     target_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Windows handling of paths for shlex.split function
+    if sys.platform == "win32":
+        target_path = target_path.as_posix()
+        resources_path = resources_path.as_posix()
+
     _log(f"compile_resources target_path: {target_path}", context=context)
     subprocess.run(shlex.split(f"pyrcc5 -o {target_path} {resources_path}"))
 

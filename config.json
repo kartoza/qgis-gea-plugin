@@ -1,21 +1,21 @@
 {
   "general": {
-    "name" : "QGIS GEA afforestation tool",
-    "qgisMinimumVersion": 3.0,
+    "name" : "EPAL - Eligible Project Area Locator.",
+    "qgisMinimumVersion": 3.20,
     "qgisMaximumVersion": 3.99,
-    "icon": "icon.png",
+    "icon": "icon.svg",
     "experimental": false,
     "deprecated": false,
     "homepage": "https://github.com/kartoza/qgis-gea-plugin",
     "tracker": "https://github.com/kartoza/qgis-gea-plugin/issues",
     "repository": "https://github.com/kartoza/qgis-gea-plugin",
-    "tags": ["gea", "maps", "afforestation"],
+    "tags": ["epal", "maps", "afforestation"],
     "category": ["plugins"],
     "hasProcessingProvider": "no",
-    "about": "Adds functionality inside QGIS to enable GEA afforestation visualization and analysis.",
+    "about": "Adds functionality inside QGIS to enable EPAL afforestation visualization and analysis.",
     "author": "Kartoza",
     "email": "info@kartoza.com",
-    "description": "QGIS plugin for the GEA afforestation",
+    "description": "View, browse and navigate through imagery.",
     "version": "0.0.1",
     "changelog": ""
   }

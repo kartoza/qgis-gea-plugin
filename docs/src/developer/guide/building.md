@@ -1,12 +1,12 @@
 ---
-title: GEA AFFORESTATION
-summary: PROJECT_SUMMARY
+title: EPAL-Eligible Project Area Locator
+summary: Visualize historical imagery, access different landscape maps and generate reports for potential afforestation sites.
     - Ketan Bamniya
 date: 19-06-2024
 some_url: https://github.com/kartoza/qgis-gea-plugin
-copyright: Copyright 2024, PROJECT_OWNER
-contact: PROJECT_CONTACT
-license: This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+copyright: Copyright 2024
+contact: marketing@geoterra360.pt
+license: the reforestation tool is made available to Global Evergreening Global Alliance (GEA) under a non-exclusive, sub-licensable, perpetual, irrevocable, royalty-free licence. This which allows GEA to use and replicate the QGIS plugin and tool for the appointed project areas in Kenya, Uganda, and Malawi; and any other carbon offset future project areas managed, operated, and undertaken by GEA. The reforestation tool concept, functionality, and operations, as well as the physical QGIS plugin are covered, considered, and always remain the Intellectual Property of GT360.
 ---
 
 # Building the dev environment
@@ -15,17 +15,17 @@ This section covers the process of building and running the application from you
 
 🚩 Make sure you have gone through the [IDE Setup Process](ide-setup.md) before following these notes.
 
-Press `Ctrl -> P` 1️⃣ and then `>`and search for `Rebuild`. Select `Dev Containers: Rebuild and Reopen in Container`2️⃣. This will essentially mount your code tree inside a docker container and switch the development context of VSCode to be inside the container where all of the python etc. dependencies will be installed.
+Press `Ctrl -> P` 1️⃣ and then `>` and search for `Rebuild`. Select `Dev Containers: Rebuild and Reopen in Container`2️⃣. This will essentially mount your code tree inside a docker container and switch the development context of VSCode to be inside the container where all of the python etc. dependencies will be installed.
 
 ![image.png](img/building-1.png)
 
-Once the task is running, a notification 1️⃣ will be shown in the bottom right of the VSCode window. Clicking in the notification will show you the setup progress 2️⃣. Note that this make take quite a while depending on the internet bandwidth you have and the CPU power of your machine.
+Once the task is running, a notification 1️⃣ will be shown in the bottom right of the VSCode window. Clicking on the notification will show you the setup progress 2️⃣. Note that this may take quite a while depending on the internet bandwidth you have and the CPU power of your machine.
 
 ![image.png](img/building-2.png)
 
 ## Open a dev container terminal
 
-Open  terminal within the dev container context by clicking the `+`icon in the terminal pane 1️⃣. The new terminal 2️⃣ will show up in the list of running terminals 3️⃣
+Open  the terminal within the dev container context by clicking the `+`icon in the terminal pane 1️⃣. The new terminal 2️⃣ will show up in the list of running terminals 3️⃣
 
 ![image.png](img/building-3.png)
 
@@ -52,7 +52,7 @@ cd /home/web/project/django_project
 python manage.py createsuperuser
 ```
 
-During this process you will be prompted for your user name (defaults to root), email address and a password (which you need to confirm). Complete these as needed.
+During this process, you will be prompted for your user name (defaults to root), email address and a password (which you need to confirm). Complete these as needed.
 
 
 ## Viewing your test instance

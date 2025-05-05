@@ -124,9 +124,52 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
 # Pyre type checker
 .pyre/
 
 # Development
 .idea/
 build/
+.idea/GEEST-main.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/vcs.xml
+
+# VS Code
+.vscode/
+.vscode-extensions/
+
+# Nix
+result/
+nix-result/
+
+# nix
+.direnv/
+
+data
+.~lock.*
+
+.shell.nix.swp
+gitlog.txt
+test/output
+
+# Ignore files named 'core'
+core
+
+# Don't ignore directories named 'core'
+!core/
+
+# VSCode files to include (override any existing .vscode ignores)
+!.vscode/tasks.json
+!.vscode/keybindings.json
+!.vscode/extensions.js
+!.vscode/settings.json
