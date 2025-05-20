@@ -39,7 +39,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
-from qgis.gui import QgsLayerTreeView, QgsMessageBar
+from qgis.gui import QgsLayerTreeView, QgsMessageBar, QgsFileWidget
 
 # Relative imports
 from ..conf import Settings, settings_manager
@@ -114,6 +114,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         self.restore_settings()
 
+        self.project_folder.setStorageMode(QgsFileWidget.GetDirectory)
+        self.project_folder.setDialogTitle("Select project folder")
+        self.project_folder.setFilter("")
         self.project_folder.fileChanged.connect(self.project_folder_changed)
 
         self.site_reference_le.textChanged.connect(self.save_settings)
