@@ -20,15 +20,11 @@ The EPAL-Eligible Project Area Locator Tool consists of two main components:
 To use the tool, a few dependencies are required:
 
 1. QGIS: The tool runs in QGIS geographical software, which needs to be installed on the user's computer.
-2. A free account for NICFI data: https://www.planet.com/nicfi
-3. Planet_explorer: Some data (e.g., NICFI imagery) is streamed in via the Planet plugin, so this plugin needs to be installed in QGIS.
 
 The following Quick Start documentation will guide users on how to set up the tool with its dependencies:
 
 1. Get QGIS.
 2. The project file for an area of interest.
-3. Sign in for a Planet NICFI account.
-4. Install the Plantet_Explorer Plugin.
 5. Install the EPAL-Eligible Project Area Locator Plugin.
 
 ## 1. How to install QGIS:
@@ -119,55 +115,6 @@ QGIS will then open with the following project and map layers viewable.
 
 ![QGIS Project](./img/quick-start-25.png)
 
-### Viewing the Recent NICFI imagery
-
-To ensure you are able to see the NICFI imagery already included in the QGIS project make sure you are logged into the Planet Explorer plugin. This allows you to view and analyse the NICFI data alongside your locally stored Landsat images and vector data layers. If not follow the steps below to get the supporting imagery. 
-
-- **NICFI and Google Imagery:** The `NICFI` and `Google` imagery are not stored locally but are streamed directly into the project.
-
-## 3. Sign up for a Planet NICFI account:
-
-Sign up for a Planet NICFI account to stream the NICFI imagery. For detailed documentation on the sign-in for a Planet NICFI account click [here](../manual/sign-up.md)
-
-## 4. How to install Planet_Explorer Plugin
-
-In the open EPAL QGIS project. 
-
-![Plugins option](./img/quick-start-1.png)
-
-- **Access the Plugins Menu:** Click on the 1️⃣ `Plugins` in the Menu Bar at the top of the QGIS window. Upon clicking you will see a dropdown menu.
-
-![Option](./img/quick-start-2.png)
-
-- **Manage and Install Plugins** Select the 1️⃣ `Manage and Install Plugins..` option from the dropdown menu.
-
-![Search bar](./img/quick-start-3.png)
-
-- **Search for the Plugin:** In the Plugin Manager window, click on the 1️⃣ search bar and type Planet_explorer.
-
-![Install plugin](./img/quick-start-4.png)
-
-- **Select and Install:** Once you find the Planet_explorer plugin in the search results, select it by clicking on the 1️⃣ `Planet_Explorer` and then click on the 2️⃣ `Install Plugin` button.
-
-![Installed](./img/quick-start-5.png)
-
-After the installation, you will see the login option.
-
-![Login](./img/quick-start-6.png)
-
-After installing the plugin you will see the option for login to the `Planet Explorer` site. register to the site and log in to view Norway’s International Climate & Forests Initiative (NICFI), imagery.
-
-Click [sign-up](../manual/sign-up.md) to view the detailed documentation on how to sign up on the `Planet Explorer` site.
-
-Click on [login](../manual/login.md) to view the detailed documentation on how to log in on the `Planet Explorer` site.
-
-### Login
-
-In the Planet Explorer panel, click on the login button and login to the Planet Explorer. Upon logging in you will see options like upload, draw, select or extent.
-
-![Planet imagery](./img/quick-start-7.png)
-
-
 ## 5. How to Install EPAL-Eligible Project Area Locator Tool
 
 
@@ -211,4 +158,4 @@ After successful installation, you will see the plugin icon.
 
 ## Conclusion
 
-By following the steps outlined in this Quick Start Guide, you will be able to set up your environment for effective use of plugins, access essential project data, and install necessary plugins such as Planet_Explorer. This setup will enable you to view, analyse, and manage geospatial data, including streamed imagery from NICFI and Google, as well as local data like Landsat images and vector data layers.
+By following the steps outlined in this Quick Start Guide, you will be able to set up your environment for effective use of plugins, access essential project data, and install necessary plugins such as Planet_Explorer. This setup will enable you to view, analyse, and manage geospatial data, including streamed imagery from Google, as well as local data like Landsat images and vector data layers.
