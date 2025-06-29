@@ -83,6 +83,50 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
 
+
+class SiteReportReportGeneratorTask(QgsTask):
+    """Class for generating the site report."""
+
+    def __init__(self, context: SiteReportContext):
+        super().__init__()
+        self._context = context
+        self._metadata = self._context.metadata
+        self._feedback = self._context.feedback
+        self._result = None
+        self._layout = None
+        self._project = None
+        self._error_messages: typing.List[str] = []
+        self._output_layout_path = ""
+        self._base_layout_name = ""
+        self._output_report_layout = None
+        self._site_layer = None
+        self._landscape_layer = None
+        self._2015_layer = None
+        self.report_name = (
+            context.metadata.area_name
+            if isinstance(context.metadata, SiteMetadata)
+            else f"Farmer ID {context.metadata.farmer_id}"
+        )
+
+        self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
+
+        # Log class properties and their types
+        log("SiteReportReportGeneratorTask initialized with:")
+        log(f"  _context: {type(self._context).__name__}")
+        log(f"  _metadata: {type(self._metadata).__name__}")
+        log(f"  _feedback: {type(self._feedback).__name__}")
+        log(f"  _result: {type(self._result).__name__}")
+        log(f"  _layout: {type(self._layout).__name__}")
+        log(f"  _project: {type(self._project).__name__}")
+        log(f"  _error_messages: {type(self._error_messages).__name__}")
+        log(f"  _output_layout_path: {type(self._output_layout_path).__name__}")
+        log(f"  _base_layout_name: {type(self._base_layout_name).__name__}")
+        log(f"  _output_report_layout: {type(self._output_report_layout).__name__}")
+        log(f"  _site_layer: {type(self._site_layer).__name__}")
+        log(f"  _landscape_layer: {type(self._landscape_layer).__name__}")
+        log(f"  _2015_layer: {type(self._2015_layer).__name__}")
+        log(f"  report_name: {type(self.report_name).__name__}")
+
     @property
     def context(self) -> SiteReportContext:
         """Gets the context used for generating the report.
