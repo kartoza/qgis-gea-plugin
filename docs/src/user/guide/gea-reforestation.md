@@ -146,7 +146,7 @@ Check the respective checkboxes to visualise the exclusion masks on the map canv
 
 ![Nicfi](./img/gea-reforestation-12.png)
 
-    >NOTE: To view the NICFI imagery you need to register/log in to the Planet Explore site. If you are not already registered on the site you can refer to the below links for the detailed documentation on register/log in.
+>NOTE: To view the NICFI imagery you need to register/log in to the Planet Explore site. If you are not already registered on the site you can refer to the below links for the detailed documentation on register/log in.
 
 - [Register to the Planet Explore site](./sign-up.md)
 
