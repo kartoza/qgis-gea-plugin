@@ -14,6 +14,7 @@ import os
 import tempfile
 import datetime
 import logging
+from pathlib import Path
 
 from typing import Optional
 from qgis.core import QgsSettings, Qgis
@@ -21,8 +22,6 @@ from qgis.PyQt.QtCore import QTranslator, QCoreApplication, Qt, QSettings
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QMessageBox, QAction, QPushButton
 
-# Initialize Qt resources from file resources.py
-from .resources import *
 from .utils import log
 
 from .gui.qgis_gea import QgisGeaPlugin
@@ -180,7 +179,7 @@ class QgisGea:
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
+            path (e.g. 'bar.png') or a normal file system path.
         :type icon_path: str
 
         :param text: Text that should be shown in menu items for this action.
@@ -246,7 +245,9 @@ class QgisGea:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        icon_path = ":/plugins/qgis_gea_plugin/icon.svg"
+        LOCAL_ROOT_DIR = Path(__file__).parent.resolve()
+
+        icon_path = os.path.join(LOCAL_ROOT_DIR, "icon.svg")
         self.add_action(
             icon_path,
             text=self.tr("Open Plugin"),

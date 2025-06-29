@@ -59,4 +59,4 @@ rm -f $GEA_LOG
 # This is the new way, using Ivan Mincik's nix spatial project and a flake
 # see flake.nix for implementation details
 GEA_LOG=${GEA_LOG} GEA_DEBUG=${DEBUG_MODE} RUNNING_ON_LOCAL=1 \
-      nix run .#default -- qgis --profile GEA
+      nix run .#default -- --profile GEA

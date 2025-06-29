@@ -6,6 +6,7 @@ The plugin main window class file.
 import os
 import pathlib
 import typing
+from pathlib import Path
 
 import uuid
 
@@ -25,17 +26,12 @@ from qgis.core import (
     QgsFillSymbol,
     QgsInterval,
     QgsLayerTreeGroup,
-    QgsLayerTreeLayer,
-    QgsPalLayerSettings,
     QgsProject,
     QgsTask,
-    QgsTextFormat,
     QgsTemporalNavigationObject,
     QgsUnitTypes,
     QgsVectorFileWriter,
     QgsVectorLayer,
-    QgsVectorLayerEditUtils,
-    QgsVectorLayerSimpleLabeling,
     QgsWkbTypes,
 )
 
@@ -61,7 +57,6 @@ from ..lib.reports.manager import report_manager
 from ..models.base import IMAGERY, MapTemporalInfo
 from ..models.report import ReportSubmitResult, SiteMetadata, ProjectMetadata
 
-from ..resources import *
 from ..utils import clean_filename, create_dir, log, tr
 from ..utils import FileUtils
 
@@ -155,10 +150,15 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         self.current_imagery_type = IMAGERY.HISTORICAL
 
-        icon_pixmap = QtGui.QPixmap(PLUGIN_ICON)
+        LOCAL_ROOT_DIR = Path(__file__).parent.parent.resolve()
+
+        icon_pixmap = QtGui.QPixmap(os.path.join(LOCAL_ROOT_DIR, PLUGIN_ICON))
+        log(f"Icon path: {os.path.join(LOCAL_ROOT_DIR, PLUGIN_ICON)}")
         self.icon_la.setPixmap(icon_pixmap)
 
-        self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PLAY_ICON))
+        self.play_btn.setIcon(
+            QtGui.QIcon(os.path.join(LOCAL_ROOT_DIR, ANIMATION_PLAY_ICON))
+        )
 
         self.time_values = []
 
@@ -376,17 +376,22 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         Toggle animation of layers based on the current animation state.
         This function is called when user press the play button.
         """
+        LOCAL_ROOT_DIR = Path(__file__).parent.parent.resolve()
         if (
             self.navigation_object.animationState()
             == QgsTemporalNavigationObject.AnimationState.Idle
         ):
-            self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PAUSE_ICON))
+            self.play_btn.setIcon(
+                QtGui.QIcon(os.path.join(LOCAL_ROOT_DIR, ANIMATION_PAUSE_ICON))
+            )
             self.play_btn.setToolTip(tr("Pause animation"))
             self.navigation_object.playForward()
         else:
             self.navigation_object.pause()
             self.play_btn.setToolTip(tr("Click to play animation"))
-            self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PLAY_ICON))
+            self.play_btn.setIcon(
+                QtGui.QIcon(os.path.join(LOCAL_ROOT_DIR, ANIMATION_PLAY_ICON))
+            )
 
     def temporal_range_changed(self, temporal_range):
         """
@@ -395,6 +400,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         :param temporal_range: New temporal range.
         :type temporal_range: QgsDateTimeRange
         """
+        LOCAL_ROOT_DIR = Path(__file__).parent.parent.resolve()
         self.iface.mapCanvas().setTemporalRange(temporal_range)
         if temporal_range and temporal_range.begin():
             self.temporal_range_la.setText(
@@ -412,10 +418,14 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         ):
 
             self.play_btn.setToolTip(tr("Click to play animation"))
-            self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PLAY_ICON))
+            self.play_btn.setIcon(
+                QtGui.QIcon(os.path.join(LOCAL_ROOT_DIR, ANIMATION_PLAY_ICON))
+            )
         else:
             self.play_btn.setToolTip(tr("Pause animation"))
-            self.play_btn.setIcon(QtGui.QIcon(ANIMATION_PAUSE_ICON))
+            self.play_btn.setIcon(
+                QtGui.QIcon(os.path.join(LOCAL_ROOT_DIR, ANIMATION_PAUSE_ICON))
+            )
 
     def prepare_time_slider(self):
         """
