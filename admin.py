@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-""" QGIS plugin admin operations
-
-"""
+"""QGIS plugin admin operations"""
 
 import os
 import sys
@@ -262,7 +260,6 @@ def build(
     icon_path = copy_icon(output_directory)
     if icon_path is None:
         _log("Could not copy icon", context=context)
-    compile_resources(context, output_directory)
     generate_metadata(context, output_directory)
     return output_directory
 
@@ -332,32 +329,6 @@ def copy_source_files(
                     )
                 else:
                     shutil.copy(str(child.resolve()), str(target_path))
-
-
-@app.command()
-def compile_resources(
-    context: typer.Context,
-    output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "build/temp",
-):
-    """Compiles plugin resources using the pyrcc package
-
-    :param context: Application context
-    :type context: typer.Context
-
-    :param output_directory: Output directory where the resources will be saved.
-    :type output_directory: Path
-    """
-    resources_path = LOCAL_ROOT_DIR / "resources" / "resources.qrc"
-    target_path = output_directory / "resources.py"
-    target_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Windows handling of paths for shlex.split function
-    if sys.platform == "win32":
-        target_path = target_path.as_posix()
-        resources_path = resources_path.as_posix()
-
-    _log(f"compile_resources target_path: {target_path}", context=context)
-    subprocess.run(shlex.split(f"pyrcc5 -o {target_path} {resources_path}"))
 
 
 @app.command()

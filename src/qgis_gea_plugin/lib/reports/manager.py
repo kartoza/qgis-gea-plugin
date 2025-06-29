@@ -225,13 +225,19 @@ class ReportManager(QtCore.QObject):
             return None
 
         # Copy project file to 'reports' folder
-        report_qgs_project_path = (
-            os.path.normpath(f"{report_dir}/{clean_filename(metadata.area_name)}.qgz")
-            if isinstance(metadata, SiteMetadata)
-            else os.path.normpath(
-                f"{report_dir}/{clean_filename(metadata.farmer_id)}.qgz"
+        try:
+            report_qgs_project_path = (
+                os.path.normpath(
+                    f"{report_dir}/{clean_filename(metadata.area_name)}.qgz"
+                )
+                if isinstance(metadata, SiteMetadata)
+                else os.path.normpath(
+                    f"{report_dir}/{clean_filename(metadata.farmer_id)}.qgz"
+                )
             )
-        )
+        except TypeError:
+            log("FarmerID is None or invalid")
+            return None
         try:
             shutil.copy(current_qgs_project_path, report_qgs_project_path)
         except (OSError, shutil.SameFileError):

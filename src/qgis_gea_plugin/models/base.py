@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Plugin models."""
+"""Plugin models."""
 import dataclasses
 import dataclasses
 from enum import Enum, IntEnum
