@@ -23,6 +23,7 @@ def log(
     name: str = "qgis_gea",
     info: bool = True,
     notify: bool = True,
+    to_file: bool = False,
 ):
     """Logs the message into QGIS logs using qgis_cplus as the default
     log instance.
@@ -40,6 +41,9 @@ def log(
 
     :param notify: Whether to notify user about the log
     :type notify: bool
+
+    :param to_file: Whether to log the message to a file
+    :type to_file: bool
     """
     level = Qgis.Info if info else Qgis.Warning
     QgsMessageLog.logMessage(
@@ -48,6 +52,16 @@ def log(
         level=level,
         notifyUser=notify,
     )
+    if to_file:
+        # use user home dir as temp dir
+        temp_dir = Path.home() / ".qgis_gea_temp"
+        if not temp_dir.exists():
+            temp_dir.mkdir(parents=True, exist_ok=True)
+        # Create a log file in the temp directory
+        log_file = os.path.join(temp_dir, f"{name}_log.txt")
+        # Append the message to the log file
+        with open(log_file, "a") as file:
+            file.write(f"{message}\n")
 
 
 def tr(message):

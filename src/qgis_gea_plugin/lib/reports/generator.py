@@ -111,21 +111,36 @@ class SiteReportReportGeneratorTask(QgsTask):
         self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
 
         # Log class properties and their types
-        log("SiteReportReportGeneratorTask initialized with:")
-        log(f"  _context: {type(self._context).__name__}")
-        log(f"  _metadata: {type(self._metadata).__name__}")
-        log(f"  _feedback: {type(self._feedback).__name__}")
-        log(f"  _result: {type(self._result).__name__}")
-        log(f"  _layout: {type(self._layout).__name__}")
-        log(f"  _project: {type(self._project).__name__}")
-        log(f"  _error_messages: {type(self._error_messages).__name__}")
-        log(f"  _output_layout_path: {type(self._output_layout_path).__name__}")
-        log(f"  _base_layout_name: {type(self._base_layout_name).__name__}")
-        log(f"  _output_report_layout: {type(self._output_report_layout).__name__}")
-        log(f"  _site_layer: {type(self._site_layer).__name__}")
-        log(f"  _landscape_layer: {type(self._landscape_layer).__name__}")
-        log(f"  _2015_layer: {type(self._2015_layer).__name__}")
-        log(f"  report_name: {type(self.report_name).__name__}")
+        log("SiteReportReportGeneratorTask initialized with:", to_file=True)
+        log(
+            f"-----------------------------------------------------------", to_file=True
+        )
+        log(f"  _context: {type(self._context).__name__}", to_file=True)
+        log(f"  _metadata: {type(self._metadata).__name__}", to_file=True)
+        log(f"  _feedback: {type(self._feedback).__name__}", to_file=True)
+        log(f"  _result: {type(self._result).__name__}", to_file=True)
+        log(f"  _layout: {type(self._layout).__name__}", to_file=True)
+        log(f"  _project: {type(self._project).__name__}", to_file=True)
+        log(f"  _error_messages: {type(self._error_messages).__name__}", to_file=True)
+        log(
+            f"  _output_layout_path: {type(self._output_layout_path).__name__}",
+            to_file=True,
+        )
+        log(
+            f"  _base_layout_name: {type(self._base_layout_name).__name__}",
+            to_file=True,
+        )
+        log(
+            f"  _output_report_layout: {type(self._output_report_layout).__name__}",
+            to_file=True,
+        )
+        log(f"  _site_layer: {type(self._site_layer).__name__}", to_file=True)
+        log(f"  _landscape_layer: {type(self._landscape_layer).__name__}", to_file=True)
+        log(f"  _2015_layer: {type(self._2015_layer).__name__}", to_file=True)
+        log(f"  report_name: {type(self.report_name).__name__}", to_file=True)
+        log(
+            f"-----------------------------------------------------------", to_file=True
+        )
 
     @property
     def context(self) -> SiteReportContext:
@@ -191,19 +206,8 @@ class SiteReportReportGeneratorTask(QgsTask):
         """
         if self.isCanceled():
             return False
-
-        try:
-            if not self._generate_report():
-                self._result = self._get_failed_result()
-                return False
-
+        else:
             return True
-        except Exception as ex:
-            # Last resort to capture general exceptions.
-            exc_info = "".join(traceback.TracebackException.from_exception(ex).format())
-            self._error_messages.append(exc_info)
-            self._result = self._get_failed_result()
-            return False
 
     def finished(self, result: bool):
         """If successful, add the layout to the project.
@@ -213,6 +217,19 @@ class SiteReportReportGeneratorTask(QgsTask):
         else False.
         :type result: bool
         """
+        if self.isCanceled():
+            return
+        try:
+            if not self._generate_report():
+                self._result = self._get_failed_result()
+
+        except Exception as ex:
+            # Last resort to capture general exceptions.
+            exc_info = "".join(traceback.TracebackException.from_exception(ex).format())
+            self._error_messages.append(exc_info)
+            self._result = self._get_failed_result()
+            return
+
         if self._result and len(self._result.errors) > 0:
             log(
                 f"Errors occurred when generating the "
@@ -223,27 +240,26 @@ class SiteReportReportGeneratorTask(QgsTask):
             for err in self._result.errors:
                 err_msg = f"{err}\n"
                 log(err_msg, info=False)
+            return
+        # Load layout
+        project = QgsProject.instance()
+        self._output_report_layout = _load_layout_from_file(
+            self._output_layout_path, project
+        )
+        if self._output_report_layout is None:
+            log("Could not load output report from file.", info=False)
+            return
 
-        if result:
-            # Load layout
-            project = QgsProject.instance()
-            self._output_report_layout = _load_layout_from_file(
-                self._output_layout_path, project
-            )
-            if self._output_report_layout is None:
-                log("Could not load output report from file.", info=False)
-                return
+        layout_name = self._output_report_layout.name()
 
-            layout_name = self._output_report_layout.name()
+        for layout in project.layoutManager().printLayouts():
+            if layout.name() == layout_name:
+                project.layoutManager().removeLayout(layout)
+                break
 
-            for layout in project.layoutManager().printLayouts():
-                if layout.name() == layout_name:
-                    project.layoutManager().removeLayout(layout)
-                    break
+        project.layoutManager().addLayout(self._output_report_layout)
 
-            project.layoutManager().addLayout(self._output_report_layout)
-
-            log(f"Successfully generated the report for " f"{self.report_name}.")
+        log(f"Successfully generated the report for " f"{self.report_name}.")
 
     def _check_feedback_cancelled_or_set_progress(self, value: float) -> bool:
         """Check if there is a request to cancel the process, else
