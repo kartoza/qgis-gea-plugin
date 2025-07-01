@@ -60,6 +60,8 @@ in pkgs.mkShell rec {
     pinnedPkgs.qt5.qtquickcontrols2
     pinnedPkgs.vscode
     pinnedPkgs.jq
+    pinnedPkgs.scrot # console app to take screenshots for making a timelaps of system resources window
+    pinnedPkgs.ffmpeg
     # Would be nice if this worked, we could replace the same logic in the QGIS start script
     #qgis.override { extraPythonPackages = ps: [ ps.numpy ps.future ps.geopandas ps.rasterio ];}
     pinnedPkgs.gum # UX for TUIs

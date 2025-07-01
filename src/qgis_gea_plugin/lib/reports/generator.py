@@ -294,10 +294,15 @@ class SiteReportReportGeneratorTask(QgsTask):
         if self._layout is None or self._project is None:
             return False
 
-        clean_report_name = clean_filename(self._base_layout_name)
+        clean_report_name = clean_filename(self.report_name)
+        pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
+
+        # check if the pdf already exists, if it does, skip
+        if os.path.exists(pdf_path):
+            log(f"PDF file {pdf_path} already exists, skipping export.")
+            return True
 
         exporter = QgsLayoutExporter(self._layout)
-        pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
         log(f"Path when exporting pdf {pdf_path}")
 
         # Ensure all map items are rendered before exporting
@@ -310,6 +315,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.rasterizeWholeImage = True
         self._layout.refresh()
+
         result = exporter.exportToPdf(pdf_path, settings)
         if result == QgsLayoutExporter.ExportResult.Success:
             log(f"PDF successfully exported to {pdf_path}")
@@ -332,6 +338,14 @@ class SiteReportReportGeneratorTask(QgsTask):
         if self._check_feedback_cancelled_or_set_progress(0):
             return False
 
+        # Early check to see if the output already exists so we can skip the generation
+        clean_report_name = clean_filename(self.report_name)
+        pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
+        log(f"Early check of PDF file {pdf_path} checking...")
+
+        if os.path.exists(pdf_path):
+            log(f"Early check of PDF file {pdf_path} already exists, skipping export.")
+            return True
         # Set QGIS project
         self._set_project()
         if self._project is None:
