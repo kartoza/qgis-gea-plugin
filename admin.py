@@ -195,7 +195,7 @@ def generate_zip(
     file_name: str = None,
     output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "dist",
 ):
-    """Generates plugin zip folder, that can be used to installed the
+    """generate-zip (use hyphen instead of underscore) generates plugin zip folder, that can be used to installed the
         plugin in QGIS
 
     :param context: Application context
@@ -268,7 +268,7 @@ def build(
 def copy_icon(
     output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "build/temp",
 ) -> Path:
-    """Copies the plugin intended icon to the specified output
+    """copy-icon (dont use underscore) Copies the plugin intended icon to the specified output
         directory.
 
     :param output_directory: Output directory where the icon will be saved.
@@ -295,7 +295,7 @@ def copy_source_files(
     output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "build/temp",
     tests: bool = False,
 ):
-    """Copies the plugin source files to the specified output
+    """copy-source-files (Dont use underscore) Copies the plugin source files to the specified output
             directory.
 
     :param output_directory: Output directory where the icon will be saved.
@@ -336,7 +336,7 @@ def generate_metadata(
     context: typer.Context,
     output_directory: typing.Optional[Path] = LOCAL_ROOT_DIR / "build/temp",
 ):
-    """Generates plugin metadata file using settings defined in the
+    """generate-metadata (Dont use underscore) Generates plugin metadata file using settings defined in the
         project configuration file config.json
 
     :param context: Application context
@@ -362,7 +362,7 @@ def generate_metadata(
 def generate_plugin_repo_xml(
     context: typer.Context,
 ):
-    """Generates the plugin repository xml file, from which users
+    """generate-plugin-repo-xml (dont use underscore) Generates the plugin repository xml file, from which users
         can use to install the plugin in QGIS.
 
     :param context: Application context
