@@ -1185,7 +1185,17 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                 else:
                     farmer_map[farmer_id] = {}
                     farmer_map[farmer_id]["area"] = area
-                    farmer_map[farmer_id]["incep_date"] = site_feature["IncepDate"]
+                    try:
+                        farmer_map[farmer_id]["incep_date"] = site_feature["IncepDate"]
+                    except KeyError:
+                        try:
+                            farmer_map[farmer_id]["incep_date"] = site_feature[
+                                "StartDate"
+                            ]
+                        except KeyError:
+                            log(
+                                f"Key 'StartDate' or 'IncepDate' not found in feature {site_feature.id()}. "
+                            )
                     farmer_map[farmer_id]["author"] = site_feature["author"]
                     farmer_map[farmer_id]["project"] = site_feature["project"]
 
