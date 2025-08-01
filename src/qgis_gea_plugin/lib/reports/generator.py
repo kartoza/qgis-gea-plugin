@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import traceback
 import typing
+import re
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -111,36 +112,46 @@ class SiteReportReportGeneratorTask(QgsTask):
         self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
 
         # Log class properties and their types
-        log("SiteReportReportGeneratorTask initialized with:", to_file=True)
-        log(
-            f"-----------------------------------------------------------", to_file=True
-        )
-        log(f"  _context: {type(self._context).__name__}", to_file=True)
-        log(f"  _metadata: {type(self._metadata).__name__}", to_file=True)
-        log(f"  _feedback: {type(self._feedback).__name__}", to_file=True)
-        log(f"  _result: {type(self._result).__name__}", to_file=True)
-        log(f"  _layout: {type(self._layout).__name__}", to_file=True)
-        log(f"  _project: {type(self._project).__name__}", to_file=True)
-        log(f"  _error_messages: {type(self._error_messages).__name__}", to_file=True)
-        log(
-            f"  _output_layout_path: {type(self._output_layout_path).__name__}",
-            to_file=True,
-        )
-        log(
-            f"  _base_layout_name: {type(self._base_layout_name).__name__}",
-            to_file=True,
-        )
-        log(
-            f"  _output_report_layout: {type(self._output_report_layout).__name__}",
-            to_file=True,
-        )
-        log(f"  _site_layer: {type(self._site_layer).__name__}", to_file=True)
-        log(f"  _landscape_layer: {type(self._landscape_layer).__name__}", to_file=True)
-        log(f"  _2015_layer: {type(self._2015_layer).__name__}", to_file=True)
-        log(f"  report_name: {type(self.report_name).__name__}", to_file=True)
-        log(
-            f"-----------------------------------------------------------", to_file=True
-        )
+        log_verbose = False
+        if log_verbose:
+            log("SiteReportReportGeneratorTask initialized with:", to_file=True)
+            log(
+                f"-----------------------------------------------------------",
+                to_file=True,
+            )
+            log(f"  _context: {type(self._context).__name__}", to_file=True)
+            log(f"  _metadata: {type(self._metadata).__name__}", to_file=True)
+            log(f"  _feedback: {type(self._feedback).__name__}", to_file=True)
+            log(f"  _result: {type(self._result).__name__}", to_file=True)
+            log(f"  _layout: {type(self._layout).__name__}", to_file=True)
+            log(f"  _project: {type(self._project).__name__}", to_file=True)
+            log(
+                f"  _error_messages: {type(self._error_messages).__name__}",
+                to_file=True,
+            )
+            log(
+                f"  _output_layout_path: {type(self._output_layout_path).__name__}",
+                to_file=True,
+            )
+            log(
+                f"  _base_layout_name: {type(self._base_layout_name).__name__}",
+                to_file=True,
+            )
+            log(
+                f"  _output_report_layout: {type(self._output_report_layout).__name__}",
+                to_file=True,
+            )
+            log(f"  _site_layer: {type(self._site_layer).__name__}", to_file=True)
+            log(
+                f"  _landscape_layer: {type(self._landscape_layer).__name__}",
+                to_file=True,
+            )
+            log(f"  _2015_layer: {type(self._2015_layer).__name__}", to_file=True)
+            log(f"  report_name: {type(self.report_name).__name__}", to_file=True)
+            log(
+                f"-----------------------------------------------------------",
+                to_file=True,
+            )
 
     @property
     def context(self) -> SiteReportContext:
@@ -341,10 +352,12 @@ class SiteReportReportGeneratorTask(QgsTask):
         # Early check to see if the output already exists so we can skip the generation
         clean_report_name = clean_filename(self.report_name)
         pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
-        log(f"Early check of PDF file {pdf_path} checking...")
+        verbose = False
+        if verbose:
+            log(f"Early check of PDF file {pdf_path} checking...")
 
         if os.path.exists(pdf_path):
-            log(f"Early check of PDF file {pdf_path} already exists, skipping export.")
+            log(f"PDF file {pdf_path} already exists, skipping export.")
             return True
         # Set QGIS project
         self._set_project()
@@ -424,9 +437,38 @@ class SiteReportReportGeneratorTask(QgsTask):
                 "site_area_label", f"{self._metadata.computed_area} ha"
             )
         elif isinstance(self._metadata, ProjectMetadata):
-            self.set_label_value(
-                "farmer_id_label", f"Area Eligibility - {self._metadata.farmer_id}"
-            )
+            # Check if the farmer_id ends with an integer and if so split it off
+            # and use it for the ID label
+            # The ending integer is used as the farmer number
+            # we use a regex to strip off the whole multidigit number at the start or end of the string
+
+            start_match_regex = r"^(\d+)"
+            start_match = re.search(start_match_regex, self._metadata.farmer_id)
+
+            end_match_regex = r"(\d+)$"
+            end_match = re.search(end_match_regex, self._metadata.farmer_id)
+            if start_match:
+                log(f"Farmer ID starts with an integer: {start_match.group(0)}")
+                farmer_number = str(start_match.group(0))
+                farmer_name = self._metadata.farmer_id.replace(
+                    farmer_number, ""
+                ).strip()
+                self.set_label_value("farmer_id_label", f"{farmer_name}")
+                self.set_label_value("farmer_number_label", f"{farmer_number}")
+            elif end_match:
+                log(f"Farmer ID ends with an integer: {end_match.group(0)}")
+                farmer_name = self._metadata.farmer_id[: end_match.start()]
+                farmer_number = end_match.group(0)
+                self.set_label_value("farmer_id_label", f"{farmer_name}")
+                self.set_label_value("farmer_number_label", f"{farmer_number}")
+            else:
+                log("Farmer ID does not start or end with an integer.")
+                # If the farmer_id does not start or end with an integer, use it as is
+                self.set_label_value("farmer_id_label", f"{self._metadata.farmer_id}")
+                # and hide the number box
+                label_item = self._layout.itemById("farmer_number_label")
+                label_item.hide()
+
             self.set_label_value("report_author_label", self._metadata.author)
             self.set_label_value("project_label", self._metadata.project)
             self.set_label_value("inception_date_label", self._metadata.inception_date)
