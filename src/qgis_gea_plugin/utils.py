@@ -88,7 +88,7 @@ def clean_filename(filename):
     :returns A clean file name
     :rtype str
     """
-    characters = " %:/,\[]<>*?"
+    characters = " %:/,\\[]<>*?\\'"
 
     for character in characters:
         if character in filename:

@@ -44,6 +44,7 @@ from ...definitions.defaults import (
     PROJECT_INSTANCE_STYLE,
 )
 from ...models.base import LayerNodeSearch
+from qgis.PyQt.QtCore import QDate
 from ...models.report import (
     SiteReportContext,
     ReportOutputResult,
@@ -302,6 +303,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: True if the layout was successfully exported else False.
         :rtype: bool
         """
+        log("Exporting report to PDF...")
         if self._layout is None or self._project is None:
             return False
 
@@ -359,6 +361,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         if os.path.exists(pdf_path):
             log(f"PDF file {pdf_path} already exists, skipping export.")
             return True
+
         # Set QGIS project
         self._set_project()
         if self._project is None:
@@ -377,42 +380,51 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         if self._check_feedback_cancelled_or_set_progress(35):
             return False
+        log("Report template loaded successfully.")
 
         self._set_metadata_values()
-
+        log("Metadata values set in report layout.")
         if self._check_feedback_cancelled_or_set_progress(45):
             return False
 
         self._set_site_layer()
+        log("Site layer set in report layout.")
 
         if self._check_feedback_cancelled_or_set_progress(50):
             return False
 
         self._set_landscape_layer()
         self._set_2015_layer()
+        log("Landscape layers set in report layout.")
 
         if self._check_feedback_cancelled_or_set_progress(55):
             return False
 
         self._configure_map_items_zoom_level()
+        log("Map items zoom levels configured.")
 
         if self._check_feedback_cancelled_or_set_progress(75):
             return False
+        log("Map items zoom levels configured.")
 
         # Save report layout in temporary file
         if not self._save_layout_to_file():
             return False
+        log("Report layout saved to file.")
 
         if self._check_feedback_cancelled_or_set_progress(80):
             return False
 
+        log("Report layout saved to file.")
         # Export report to PDF
         if not self._export_to_pdf():
             return False
 
+        log("Report exported to PDF.")
         if self._check_feedback_cancelled_or_set_progress(100):
             return False
 
+        log("Report generation completed successfully.")
         # Set result
         self._result = ReportOutputResult(
             True,
@@ -420,13 +432,14 @@ class SiteReportReportGeneratorTask(QgsTask):
             self._base_layout_name,
             tuple(self._error_messages),
         )
-
+        log("Report generation result set successfully.")
         return True
 
     def _set_metadata_values(self):
         """Set the report metadata values."""
 
         if isinstance(self._metadata, SiteMetadata):
+            log("Setting metadata values for SiteMetadata.")
             self.set_label_value("inception_date_label", self._metadata.inception_date)
             self.set_label_value("site_version_label", self._metadata.version)
             self.set_label_value("site_reference_label", self._metadata.site_reference)
@@ -437,6 +450,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                 "site_area_label", f"{self._metadata.computed_area} ha"
             )
         elif isinstance(self._metadata, ProjectMetadata):
+            log("Setting metadata values for ProjectMetadata.")
             # Check if the farmer_id ends with an integer and if so split it off
             # and use it for the ID label
             # The ending integer is used as the farmer number
@@ -468,11 +482,73 @@ class SiteReportReportGeneratorTask(QgsTask):
                 # and hide the number box
                 label_item = self._layout.itemById("farmer_number_label")
                 label_item.hide()
+            log("Setting report label values for ProjectMetadata.")
+            try:
+                if self._metadata.author:
+                    log("report_author_label: " f"{self._metadata.author}")
+                    self.set_label_value("report_author_label", self._metadata.author)
+                else:
+                    log("report_author_label: Not set")
+            except AttributeError as e:
+                log(
+                    f"Error setting report author label value: {e}. "
+                    "Author metadata attribute may be missing."
+                )
+            try:
+                if self._metadata.project:
+                    log("project_label: " f"{self._metadata.project}")
+                    self.set_label_value("project_label", self._metadata.project)
+                else:
+                    log("project_label: Not set")
+            except AttributeError as e:
+                log(
+                    f"Error setting project label value: {e}. "
+                    "Project metadata attribute may be missing."
+                )
+            try:
+                if self._metadata.inception_date:
+                    log("inception_date_label: " f"{self._metadata.inception_date}")
+                    # Check if inception_date is a QDate, convert to string if needed
+                    inception_date = self._metadata.inception_date
+                    if isinstance(inception_date, QDate):
+                        inception_date = inception_date.toString("yyyy-MM-dd")
+                    self.set_label_value("inception_date_label", inception_date)
+                else:
+                    log("inception_date_label: Not set")
+            except AttributeError as e:
+                log(
+                    f"Error setting inception date label value: {e}. "
+                    "Inception date metadata attribute may be missing."
+                )
+            return
+            try:
+                if self._metadata.capture_date:
+                    log("capture_date_label: " f"{self._metadata.capture_date}")
+                    self.set_label_value(
+                        "capture_date_label", self._metadata.capture_date
+                    )
+                else:
+                    log("capture_date_label: Not set")
+            except AttributeError as e:
 
-            self.set_label_value("report_author_label", self._metadata.author)
-            self.set_label_value("project_label", self._metadata.project)
-            self.set_label_value("inception_date_label", self._metadata.inception_date)
-            self.set_label_value("area_label", f"{self._metadata.total_area} ha")
+                log(
+                    f"Error setting capture date label value: {e}. "
+                    "Capture date metadata attribute may be missing."
+                )
+            try:
+                if self._metadata.total_area:
+                    log("area_label: " f"{self._metadata.total_area} ha")
+                    self.set_label_value(
+                        "area_label", f"{self._metadata.total_area} ha"
+                    )
+                else:
+                    log("area_label: Not set")
+            except AttributeError as e:
+                log(
+                    f"Error setting area label value: {e}. "
+                    "Area metadata attribute may be missing."
+                )
+            log("Report label values set successfully.")
 
     def _get_layer_from_node_name(
         self,
@@ -569,7 +645,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
     def _set_site_layer(self):
         """Fetch the project boundary layer."""
-
+        log("Setting site layer for the report...")
         site_path = (
             settings_manager.get_value(Settings.LAST_SITE_LAYER_PATH, default="")
             if isinstance(self._context.metadata, SiteMetadata)
@@ -577,7 +653,7 @@ class SiteReportReportGeneratorTask(QgsTask):
                 Settings.CURRENT_PROJECT_LAYER_PATH, default=""
             )
         )
-
+        log(f"Site layer path: {site_path}")
         path = Path(site_path)
         if not path.exists():
             tr_msg = tr("Report layer shapefile does not exist")
@@ -589,17 +665,18 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         if site_layer is None:
             return
-
+        log(f"Found site layer: {site_layer.name()}")
         if not site_layer.isValid():
             tr_msg = tr("Report layer shapefile is invalid")
             log(tr_msg)
             self._error_messages.append(tr_msg)
             return
-
+        log("Site layer is valid.")
         if isinstance(self._context.metadata, SiteMetadata):
             site_symbol = QgsFillSymbol.createSimple(REPORT_SITE_BOUNDARY_STYLE)
             site_layer.renderer().setSymbol(site_symbol)
             site_layer.triggerRepaint()
+            log("Site layer style set successfully.")
         else:
             style_file = FileUtils.style_file_path(PROJECT_INSTANCE_STYLE)
             site_layer.loadNamedStyle(style_file)
@@ -610,6 +687,7 @@ class SiteReportReportGeneratorTask(QgsTask):
             )
 
             site_layer.triggerRepaint()
+            log("Project layer style set successfully.")
 
         self._site_layer = site_layer
 

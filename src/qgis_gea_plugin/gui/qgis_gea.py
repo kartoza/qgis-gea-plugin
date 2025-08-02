@@ -491,7 +491,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
         if (
             self.site_reference_le.text() is None
-            or self.site_reference_le.text().replace(" ", "") is ""
+            or self.site_reference_le.text().strip() == ""
         ):
             self.show_message(
                 tr(
@@ -505,7 +505,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             return
         if (
             self.site_ref_version_le.text() is None
-            or self.site_ref_version_le.text().replace(" ", "") is ""
+            or self.site_ref_version_le.text().strip() == ""
         ):
             self.show_message(
                 tr(
@@ -519,7 +519,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             return
         if (
             self.report_author_le.text() is None
-            or self.report_author_le.text().replace(" ", "") is ""
+            or self.report_author_le.text().strip() == ""
         ):
             self.show_message(
                 tr(
@@ -657,19 +657,19 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             return False
         if (
             self.site_reference_le.text() is None
-            or self.site_reference_le.text().replace(" ", "") is ""
+            or self.site_reference_le.text().strip() == ""
         ):
             self.show_message(message, Qgis.Warning)
             return False
         if (
             self.report_author_le.text() is None
-            or self.report_author_le.text().replace(" ", "") is ""
+            or self.report_author_le.text().strip() == ""
         ):
             self.show_message(message, Qgis.Warning)
             return False
         if (
             self.site_ref_version_le.text() is None
-            or self.site_ref_version_le.text().replace(" ", "") is ""
+            or self.site_ref_version_le.text().strip() == ""
         ):
             self.show_message(message, Qgis.Warning)
             return False
@@ -1198,7 +1198,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                             )
                     farmer_map[farmer_id]["author"] = site_feature["author"]
                     farmer_map[farmer_id]["project"] = site_feature["project"]
-
+            log("Farmer map: " + str(len(farmer_map.keys())))
             project_instances = []
 
             for farmer_id, farmer_map_items in farmer_map.items():
@@ -1212,12 +1212,12 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                 )
 
                 project_instances.append(metadata)
-
+            log("Project instances: " + str(len(project_instances)))
             tasks = []
             main_task = QgsTask.fromFunction(
                 "Report task", self.main_report_task, on_finished=self.main_report_task
             )
-
+            log("Main task created")
             self.feedback = QgsFeedback()
 
             main_task.progressChanged.connect(self.report_progress_changed)
@@ -1251,7 +1251,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                 tasks.append(submit_result.task)
 
                 task_counter += 1
-
+            log("Tasks added to main task:" + str(len(tasks)))
             QgsApplication.taskManager().addTask(main_task)
 
             result = ReportSubmitResult(True, self.feedback, None, main_task)
