@@ -1233,7 +1233,6 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
 
             self.main_task.progressChanged.connect(self.report_progress_changed)
             self.main_task.taskTerminated.connect(self.report_terminated)
-            task_counter = 0
             self.project_chunk = 0
             self.project_dir = project_folder
 
@@ -1252,16 +1251,18 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                     )
 
                     return
-                last_sub_task = task_counter == len(self.project_instances) - 1
+
+                last_sub_task = tasks[-1] if tasks else None
                 if last_sub_task:
                     self.main_task.addSubTask(
-                        submit_result.task, tasks, QgsTask.ParentDependsOnSubTask
+                        submit_result.task,
+                        dependencies=[last_sub_task],
+                        subTaskDependency=QgsTask.ParentDependsOnSubTask,
                     )
-                else:
-                    self.main_task.addSubTask(submit_result.task, tasks)
+                else:  # This is the first task so run it without dependencies
+                    self.main_task.addSubTask(submit_result.task)
                 tasks.append(submit_result.task)
 
-                task_counter += 1
             log("Tasks added to main task:" + str(len(tasks)))
             QgsApplication.taskManager().addTask(self.main_task)
 
