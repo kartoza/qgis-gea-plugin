@@ -179,6 +179,12 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
         self.saved_layer = None
 
         self.feature_count = 0
+        # These are used to keep track of the project instances reporting
+        # which we process in chunks
+        self.project_instances = []
+        self.project_chunk_size = 10
+        self.project_chunk = 0
+        self.main_task = None
 
         self.iface.projectRead.connect(self.prepare_time_slider)
 
@@ -1130,6 +1136,9 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
     def on_generate_report(self):
         """Slot raised to initiate the generation of a site report."""
 
+        # Set the cursor to wait
+        self.setCursor(QtCore.Qt.WaitCursor)
+
         # Get last saved layer
         site_layer = self.get_site_layer()
 
@@ -1177,6 +1186,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             farmer_map = {}
 
             for site_feature in site_layer.getFeatures():
+                id = site_feature.id()
                 farmer_id = site_feature[FARMER_ID_FIELD]
                 area = float(site_feature["area (ha)"])
 
@@ -1184,6 +1194,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                     farmer_map[farmer_id]["area"] += area
                 else:
                     farmer_map[farmer_id] = {}
+                    farmer_map[farmer_id]["id"] = id
                     farmer_map[farmer_id]["area"] = area
                     try:
                         farmer_map[farmer_id]["incep_date"] = site_feature["IncepDate"]
@@ -1199,7 +1210,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                     farmer_map[farmer_id]["author"] = site_feature["author"]
                     farmer_map[farmer_id]["project"] = site_feature["project"]
             log("Farmer map: " + str(len(farmer_map.keys())))
-            project_instances = []
+            self.project_instances = []
 
             for farmer_id, farmer_map_items in farmer_map.items():
 
@@ -1211,22 +1222,22 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                     total_area=f"{farmer_map_items['area']:,.2f}",
                 )
 
-                project_instances.append(metadata)
-            log("Project instances: " + str(len(project_instances)))
+                self.project_instances.append(metadata)
+            log("Project instances: " + str(len(self.project_instances)))
             tasks = []
-            main_task = QgsTask.fromFunction(
+            self.main_task = QgsTask.fromFunction(
                 "Report task", self.main_report_task, on_finished=self.main_report_task
             )
             log("Main task created")
             self.feedback = QgsFeedback()
 
-            main_task.progressChanged.connect(self.report_progress_changed)
-            main_task.taskTerminated.connect(self.report_terminated)
+            self.main_task.progressChanged.connect(self.report_progress_changed)
+            self.main_task.taskTerminated.connect(self.report_terminated)
             task_counter = 0
-
+            self.project_chunk = 0
             self.project_dir = project_folder
 
-            for metadata in project_instances:
+            for metadata in self.project_instances:
 
                 submit_result = report_manager.generate_site_report(
                     metadata, project_folder, temporal_info
@@ -1241,26 +1252,30 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
                     )
 
                     return
-                last_sub_task = task_counter == len(project_instances) - 1
+                last_sub_task = task_counter == len(self.project_instances) - 1
                 if last_sub_task:
-                    main_task.addSubTask(
+                    self.main_task.addSubTask(
                         submit_result.task, tasks, QgsTask.ParentDependsOnSubTask
                     )
                 else:
-                    main_task.addSubTask(submit_result.task, tasks)
+                    self.main_task.addSubTask(submit_result.task, tasks)
                 tasks.append(submit_result.task)
 
                 task_counter += 1
             log("Tasks added to main task:" + str(len(tasks)))
-            QgsApplication.taskManager().addTask(main_task)
+            QgsApplication.taskManager().addTask(self.main_task)
 
-            result = ReportSubmitResult(True, self.feedback, None, main_task)
+            result = ReportSubmitResult(True, self.feedback, None, self.main_task)
 
-            progress_message = tr(f"Generating {len(project_instances)} report(s) ...")
+            progress_message = tr(
+                f"Generating {len(self.project_instances)} report(s) ..."
+            )
             self.report_progress_dialog = ReportProgressDialog(
                 result, project_folder, True, message=progress_message
             )
             self.report_progress_dialog.setModal(False)
+            # remove the wait cursor
+            self.setCursor(QtCore.Qt.ArrowCursor)
             self.report_progress_dialog.show()
 
         elif group == SITE_GROUP_NAME:

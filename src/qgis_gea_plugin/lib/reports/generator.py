@@ -682,9 +682,10 @@ class SiteReportReportGeneratorTask(QgsTask):
             site_layer.loadNamedStyle(style_file)
             site_layer.triggerRepaint()
 
-            site_layer.setSubsetString(
-                f"\"FarmerID\" = '{self._context.metadata.farmer_id}'"
-            )
+            raw_id = self._context.metadata.farmer_id
+            safe_id = raw_id.replace("'", "''")  # escape single quotes
+
+            site_layer.setSubsetString(f"\"FarmerID\" = '{safe_id}'")
 
             site_layer.triggerRepaint()
             log("Project layer style set successfully.")

@@ -48,6 +48,7 @@
           pkgs.autoflake
           pkgs.chafa
           pkgs.ffmpeg
+          pkgs.glogg
           pkgs.gdb
           pkgs.git
           pkgs.glow # terminal markdown viewer
