@@ -154,7 +154,7 @@ def symlink(context: typer.Context):
     :type context: typer.Context
     """
 
-    build_path = LOCAL_ROOT_DIR / "build" / SRC_NAME
+    build_path = LOCAL_ROOT_DIR / "src" / SRC_NAME
 
     root_directory = (
         Path.home() / f"{_qgis_profile_path()}{context.obj['qgis_profile']}"
@@ -171,6 +171,7 @@ def symlink(context: typer.Context):
         os.symlink(build_path, destination_path)
     else:
         _log(f"Symlink already exists, skipping creation.", context=context)
+    generate_metadata(context, destination_path)  # will be .gitignored
 
 
 @app.command()
