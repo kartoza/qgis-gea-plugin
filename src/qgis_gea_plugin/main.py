@@ -253,7 +253,7 @@ class QgisGea:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         LOCAL_ROOT_DIR = Path(__file__).parent.resolve()
 
-        icon_path = os.path.join(LOCAL_ROOT_DIR, "icon.svg")
+        icon_path = os.path.join(LOCAL_ROOT_DIR, "icons", "icon.svg")
         self.add_action(
             icon_path,
             text=self.tr("Open Plugin"),

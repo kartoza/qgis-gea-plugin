@@ -1236,7 +1236,7 @@ class QgisGeaPlugin(QtWidgets.QDockWidget, WidgetUi):
             self.project_chunk = 0
             self.project_dir = project_folder
 
-            for metadata in self.project_instances[100:]:
+            for metadata in self.project_instances:
 
                 submit_result = report_manager.generate_site_report(
                     metadata, project_folder, temporal_info

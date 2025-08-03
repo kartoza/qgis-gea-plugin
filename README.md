@@ -1,6 +1,6 @@
 # QGIS EPAL plugin
 
-<img src="resources/icon.svg" alt="icon" width="100" height="100">
+<img src="src/icons/icon.svg" alt="icon" width="100" height="100">
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kartoza/qgis-gea-plugin/ci.yml?branch=main)
 ![GitHub](https://img.shields.io/github/license/kartoza/qgis-gea-plugin)

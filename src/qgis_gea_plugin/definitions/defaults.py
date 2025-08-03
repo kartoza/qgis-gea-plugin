@@ -3,7 +3,7 @@
 Definitions for all defaults settings
 """
 
-PLUGIN_ICON = "icon.svg"
+PLUGIN_ICON = "icons/icon.svg"
 
 ANIMATION_PLAY_ICON = "icons/mActionPlay.svg"
 ANIMATION_PAUSE_ICON = "icons/pause.svg"
