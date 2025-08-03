@@ -62,32 +62,7 @@ from ...utils import (
 class SiteReportReportGeneratorTask(QgsTask):
     """Class for generating the site report."""
 
-    def __init__(self, context: SiteReportContext):
-        super().__init__()
-        self._context = context
-        self._metadata = self._context.metadata
-        self._feedback = self._context.feedback
-        self._result = None
-        self._layout = None
-        self._project = None
-        self._error_messages: typing.List[str] = []
-        self._output_layout_path = ""
-        self._base_layout_name = ""
-        self._output_report_layout = None
-        self._site_layer = None
-        self._landscape_layer = None
-        self._2015_layer = None
-        self.report_name = (
-            context.metadata.area_name
-            if isinstance(context.metadata, SiteMetadata)
-            else f"Farmer ID {context.metadata.farmer_id}"
-        )
-
-        self.setDescription(f"{tr('Generating report for')}: {self.report_name}")
-
-
-class SiteReportReportGeneratorTask(QgsTask):
-    """Class for generating the site report."""
+    _lock = QtCore.QMutex()
 
     def __init__(self, context: SiteReportContext):
         super().__init__()
@@ -216,9 +191,24 @@ class SiteReportReportGeneratorTask(QgsTask):
         or False it if failed.
         :rtype: bool
         """
+        log("Starting report run... ")
+
+        if not self._lock.tryLock():
+            log("Another report task is already running.")
+            self._error_messages.append("Another report is already being generated.")
+            return False
         if self.isCanceled():
             return False
         else:
+            try:
+                log("Acquired lock, starting report...")
+                if not self._generate_report():
+                    self._result = self._get_failed_result()
+                    return False
+            finally:
+                log("Releasing report generation lock...")
+                self._lock.unlock()
+
             return True
 
     def finished(self, result: bool):
@@ -229,6 +219,8 @@ class SiteReportReportGeneratorTask(QgsTask):
         else False.
         :type result: bool
         """
+        log("Report generation process finished.")
+
         if self.isCanceled():
             return
         try:
@@ -280,6 +272,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns True if the process was cancelled else False.
         :rtype: bool
         """
+        log(f"Setting progress to {value}%.")
         if self._feedback.isCanceled():
             tr_msg = tr("Generation of report has been cancelled.")
             self._error_messages.append(tr_msg)
@@ -292,6 +285,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
     def _get_failed_result(self) -> ReportOutputResult:
         """Creates the report result object."""
+        log("Report generation failed, setting result.")
         return ReportOutputResult(
             False, "", self.report_name, tuple(self._error_messages)
         )
@@ -309,6 +303,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
         clean_report_name = clean_filename(self.report_name)
         pdf_path = f"{self._context.report_dir}/{clean_report_name}.pdf"
+        log(f"Exporting report to PDF...:{pdf_path}")
 
         # check if the pdf already exists, if it does, skip
         if os.path.exists(pdf_path):
@@ -348,6 +343,8 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns True if the process succeeded, else False.
         :rtype: bool
         """
+        log("Starting report generation process...XXX")
+        log(f"Report name: {self.report_name}")
         if self._check_feedback_cancelled_or_set_progress(0):
             return False
 
@@ -437,7 +434,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
     def _set_metadata_values(self):
         """Set the report metadata values."""
-
+        log("Setting metadata values in report layout...")
         if isinstance(self._metadata, SiteMetadata):
             log("Setting metadata values for SiteMetadata.")
             self.set_label_value("inception_date_label", self._metadata.inception_date)
@@ -575,6 +572,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         not found.
         :rtype: QgsMapLayer
         """
+        log(f"Searching for layer node: {node_name} in group: {group_name}")
         root_tree = self._project.layerTreeRoot()
 
         matching_node = None
@@ -635,6 +633,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         given ID else None if not found.
         :rtype: QgsLayoutItemMap
         """
+        log(f"Searching for map item with ID: {map_id}")
         map_item = self._layout.itemById(map_id)
         if map_item is None:
             tr_msg = tr("not found in report template.")
@@ -693,6 +692,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         self._site_layer = site_layer
 
     def find_layer_by_name(self, layer_name):
+        log(f"Searching for layer: {layer_name}")
         layers = QgsProject.instance().mapLayers()
 
         for layer_id, layer in layers.items():
@@ -704,7 +704,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         """Set the landscape layer i.e. Landsat depending on the
         information in the TemporalInfo object.
         """
-
+        log("Setting landscape layer for the report...")
         landsat_2013_layer = self.get_first_matching_layer_in_group(
             LANDSAT_IMAGERY_GROUP_NAME, LANDSAT_2013_LAYER_SEGMENT
         )
@@ -721,7 +721,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         """Set the 2015 layer i.e. Landsat depending on the
         information in the TemporalInfo object.
         """
-
+        log("Setting 2015 Landsat layer for the report...")
         landsat_2015_layer = self.get_first_matching_layer_in_group(
             LANDSAT_IMAGERY_GROUP_NAME, LANDSAT_2015_LAYER_SEGMENT
         )
@@ -736,6 +736,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
     def _configure_map_items_zoom_level(self):
         """Set layers and zoom levels of map items."""
+        log("Configuring map items zoom levels...")
         if self._site_layer is None:
             tr_msg = tr("Project layer not found or shapefile is invalid")
             self._error_messages.append(tr_msg)
@@ -766,6 +767,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :param mask_layers: Exclusion mask layers
         :type mask_layers: list
         """
+        log("Configuring landscape maps...")
         if self._landscape_layer is None:
             tr_msg = tr(
                 "Landscape layer is missing, landscape maps will not "
@@ -914,6 +916,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :param mask_layers: Exclusion mask layers
         :type mask_layers: list
         """
+        log("Configuring current imagery maps...")
         google_layer = self._get_layer_from_node_name(
             GOOGLE_LAYER_NAME, LayerNodeSearch.EXACT_MATCH
         )
@@ -980,6 +983,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns the first layer found in the group or None if not found.
         :rtype: QgsMapLayer
         """
+        log(f"Searching for first layer in group: {group_name}")
 
         def recurse(node, indent="", parent=None):
             if isinstance(node, QgsLayerTreeGroup):
@@ -1029,6 +1033,9 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns the first layer found in the group or None if not found.
         :rtype: QgsMapLayer
         """
+        log(
+            f"Searching for first layer in group: {group_name} with search string: {search_string}"
+        )
 
         def recurse(node, indent="", parent=None):
             if isinstance(node, QgsLayerTreeGroup):
@@ -1069,6 +1076,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: List of all valid QgsMapLayer instances found in the group.
         :rtype: list
         """
+        log(f"Searching for layers in group: {group_name}")
         result_layer_names: typing.List[str] = []
         result_layers: typing.List[QgsMapLayer] = []
 
@@ -1107,7 +1115,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns the extent of the detailed map.
         :rtype: QgsRectangle
         """
-
+        log("Configuring site maps...")
         site_extent = self._site_layer.extent()
 
         google_layer = self._get_layer_from_node_name(
@@ -1211,6 +1219,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns the list of visible map layers or an empty list.
         :rtype: list
         """
+        log(f"Getting layers in theme: {theme_name}")
         theme_collection = self._project.mapThemeCollection()
         theme = theme_collection.mapThemeState(theme_name)
         if theme is None:
@@ -1238,6 +1247,9 @@ class SiteReportReportGeneratorTask(QgsTask):
         :returns: Returns the reprojected extent.
         :rtype: QgsRectangle
         """
+        log(
+            f"Transforming extent {extent.toString()} from {source_crs.authid()} to {target_crs.authid()}"
+        )
         if source_crs == target_crs:
             return extent
 
@@ -1257,6 +1269,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
     def _set_project(self):
         """Deserialize the project from the report context."""
+        log("Setting project for the report...")
         if not self._context.qgs_project_path:
             tr_msg = tr("Project file not specified")
             self._error_messages.append(tr_msg)
@@ -1299,6 +1312,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         else False.
         :rtype: bool
         """
+        log("Loading report template...")
         if self._project is None:
             tr_msg = tr("Project not set.")
             self._error_messages.append(tr_msg)
@@ -1324,6 +1338,7 @@ class SiteReportReportGeneratorTask(QgsTask):
 
     def _save_layout_to_file(self) -> bool:
         """Serialize the updated report layout to a temporary file."""
+        log("Saving report layout to a temporary file...")
         temp_layout_file = QtCore.QTemporaryFile()
         if not temp_layout_file.open():
             tr_msg = tr("Could not open temporary file to write the report.")
@@ -1355,6 +1370,7 @@ class SiteReportReportGeneratorTask(QgsTask):
         :param value: Value to be set in the label.
         :type value: str
         """
+        log(f"Setting label value for ID: {label_id} to '{value}'")
         if self._layout is None:
             tr_msg = tr("Unable to set label value, layout not found.")
             self._error_messages.append(tr_msg)
@@ -1375,6 +1391,7 @@ def _load_layout_from_file(
     """Util for loading layout templates from a file. It supports
     an optional argument for list to write error messages.
     """
+    log(f"Loading layout from file: {template_path}")
     p = Path(template_path)
     if not p.exists():
         if error_messages:
