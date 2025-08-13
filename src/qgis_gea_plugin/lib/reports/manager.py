@@ -181,7 +181,9 @@ class ReportManager(QtCore.QObject):
             if isinstance(metadata, SiteMetadata)
             else FileUtils.project_instance_report_template_path()
         )
-        log(f"Using this report template: {report_template_path}", info=False)
+        verbose = False
+        if verbose:
+            log(f"Using this report template: {report_template_path}", info=False)
         if not Path(report_template_path).exists():
             log(f"Report template {report_template_path} not found.", info=False)
             return None

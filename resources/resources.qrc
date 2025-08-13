@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/qgis_gea_plugin">
-        <file>icon.svg</file>
-    </qresource>
-</RCC>

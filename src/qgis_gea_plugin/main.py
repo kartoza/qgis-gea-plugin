@@ -35,7 +35,13 @@ log_path_env = os.getenv("GEA_LOG", 0)
 if log_path_env:
     log_file_path = log_path_env
 else:
-    log_file_path = os.path.join(temp_dir, f"geest_logfile_{datestamp}.log")
+    log_file_path = os.path.join(temp_dir, f"gea_logfile_{datestamp}.log")
+
+# flush the log file if it exists
+if os.path.exists(log_file_path):
+    with open(log_file_path, "w") as log_file:
+        log_file.write("")
+
 logging.basicConfig(
     filename=log_file_path,
     filemode="a",  # Append mode
@@ -44,7 +50,7 @@ logging.basicConfig(
 )
 date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 log(f"»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»")
-log(f"GEA Pluging started at {date}")
+log(f"GEA Plugin started at {date}")
 log(f"Logging output to: {log_file_path}")
 log(f"log_path_env: {log_path_env}")
 log(f"»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»")
@@ -247,7 +253,7 @@ class QgisGea:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         LOCAL_ROOT_DIR = Path(__file__).parent.resolve()
 
-        icon_path = os.path.join(LOCAL_ROOT_DIR, "icon.svg")
+        icon_path = os.path.join(LOCAL_ROOT_DIR, "icons", "icon.svg")
         self.add_action(
             icon_path,
             text=self.tr("Open Plugin"),

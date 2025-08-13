@@ -1,22 +1,30 @@
 {
-  "python.envFile": "${workspaceFolder}/.env",
-  "python.analysis.extraPaths": [
-    "/nix/store/4iyh9pym7a4galzywzrch564rgimzccl-qgis-3.38.3/share/qgis/python",
-    "/nix/store/6brp5akfvbilhg83c65fjs7gz6a5pc8h-qgis-3.38.3/share/qgis/python",
-    "/nix/store/6brp5akfvbilhg83c65fjs7gz6a5pc8h-qgis-3.38.3/share/qgis/python",
-    "/nix/store/6brp5akfvbilhg83c65fjs7gz6a5pc8h-qgis-3.38.3/share/qgis/python",
-    "/nix/store/6brp5akfvbilhg83c65fjs7gz6a5pc8h-qgis-3.38.3/share/qgis/python",
-    "/nix/store/6brp5akfvbilhg83c65fjs7gz6a5pc8h-qgis-3.38.3/share/qgis/python",
-    "/nix/store/6brp5akfvbilhg83c65fjs7gz6a5pc8h-qgis-3.38.3/share/qgis/python",
-    "/nix/store/jsw39qkhp0wlmngbgc1pb1d4ah08kbpd-qgis-3.38.3/share/qgis/python",
-    "/nix/store/jsw39qkhp0wlmngbgc1pb1d4ah08kbpd-qgis-3.38.3/share/qgis/python",
-    "/nix/store/jsw39qkhp0wlmngbgc1pb1d4ah08kbpd-qgis-3.38.3/share/qgis/python"
-  ],
-  "terminal.integrated.env.linux": {
-    "PYTHONPATH": "/nix/store/jsw39qkhp0wlmngbgc1pb1d4ah08kbpd-qgis-3.38.3/share/qgis/python"
-  },
   "git.enableCommitSigning": true,
-  "workbench.startupEditor": "none",
-  "keyboard.dispatch": "keyCode",
-  "extensions.ignoreRecommendations": true
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.formatOnSave": true
+  },
+  "shellcheck.enable": true,
+  "shellformat.flag": "-i 4 -bn -ci",
+  "editor.formatOnSave": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.pytestArgs": "test",
+    "envFile": "${workspaceFolder}/.env"
+  },
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.editor.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "[sql]": {
+    "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+    "editor.formatOnSave": true
+  },
+  "sqlfluff.dialect": "postgres",
+  "markdown.marp.themes": [
+    "presentations/slide-style.css"
+  ]
 }

@@ -173,3 +173,4 @@ core
 !.vscode/keybindings.json
 !.vscode/extensions.js
 !.vscode/settings.json
+src/qgis_gea_plugin/metadata.txt
