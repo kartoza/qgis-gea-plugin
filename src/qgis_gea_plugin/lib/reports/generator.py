@@ -517,7 +517,6 @@ class SiteReportReportGeneratorTask(QgsTask):
                     f"Error setting inception date label value: {e}. "
                     "Inception date metadata attribute may be missing."
                 )
-            return
             try:
                 if self._metadata.capture_date:
                     log("capture_date_label: " f"{self._metadata.capture_date}")
